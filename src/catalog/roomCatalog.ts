@@ -1,0 +1,621 @@
+export type RoomCategory = 'main' | 'alt' | 'special';
+
+export interface RoomPalette {
+  wallColor: string;
+  wallBrickColor: string;
+  floorPrimary: string;
+  floorSecondary: string;
+  groutColor: string;
+  doorFrameColor: string;
+  doorInnerColor: string;
+  ambientGlowColor: string;
+  particleColor: string;
+}
+
+export interface RoomBackdropRecord {
+  id: string;
+  name: string;
+  subtitle: string;
+  category: RoomCategory;
+  accentDotColor: string;
+  palette: RoomPalette;
+  textureDataUrl: string;
+}
+
+function createRoomSvgDataUrl(palette: RoomPalette, label: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180" shape-rendering="crispEdges">
+    <rect width="320" height="180" fill="${palette.wallColor}" />
+    <rect x="20" y="34" width="280" height="132" fill="${palette.floorPrimary}" />
+    <g fill="${palette.floorSecondary}">
+      <rect x="20" y="34" width="35" height="22" />
+      <rect x="90" y="34" width="35" height="22" />
+      <rect x="160" y="34" width="35" height="22" />
+      <rect x="230" y="34" width="35" height="22" />
+      <rect x="55" y="56" width="35" height="22" />
+      <rect x="125" y="56" width="35" height="22" />
+      <rect x="195" y="56" width="35" height="22" />
+      <rect x="265" y="56" width="35" height="22" />
+      <rect x="20" y="78" width="35" height="22" />
+      <rect x="90" y="78" width="35" height="22" />
+      <rect x="160" y="78" width="35" height="22" />
+      <rect x="230" y="78" width="35" height="22" />
+      <rect x="55" y="100" width="35" height="22" />
+      <rect x="125" y="100" width="35" height="22" />
+      <rect x="195" y="100" width="35" height="22" />
+      <rect x="265" y="100" width="35" height="22" />
+      <rect x="20" y="122" width="35" height="22" />
+      <rect x="90" y="122" width="35" height="22" />
+      <rect x="160" y="122" width="35" height="22" />
+      <rect x="230" y="122" width="35" height="22" />
+    </g>
+    <rect x="142" y="8" width="36" height="26" fill="${palette.doorFrameColor}" />
+    <rect x="147" y="13" width="26" height="21" fill="${palette.doorInnerColor}" />
+    <title>${label}</title>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+const RAW_ROOMS: Array<Omit<RoomBackdropRecord, 'textureDataUrl'>> = [
+  // Main Path
+  {
+    id: 'basement',
+    name: 'Basement',
+    subtitle: 'Chapter I • Classic Wood & Stone',
+    category: 'main',
+    accentDotColor: '#B87A56',
+    palette: {
+      wallColor: '#241712',
+      wallBrickColor: '#36231B',
+      floorPrimary: '#4A3126',
+      floorSecondary: '#3F291F',
+      groutColor: '#291A13',
+      doorFrameColor: '#694737',
+      doorInnerColor: '#170E0B',
+      ambientGlowColor: 'rgba(212, 138, 92, 0.22)',
+      particleColor: '#E8A87C',
+    },
+  },
+  {
+    id: 'cellar',
+    name: 'Cellar',
+    subtitle: 'Chapter I • Dry Timber Beams & Cobwebs',
+    category: 'main',
+    accentDotColor: '#C28D61',
+    palette: {
+      wallColor: '#261A12',
+      wallBrickColor: '#3A281C',
+      floorPrimary: '#523827',
+      floorSecondary: '#452F21',
+      groutColor: '#2B1D14',
+      doorFrameColor: '#735038',
+      doorInnerColor: '#17100B',
+      ambientGlowColor: 'rgba(218, 162, 108, 0.22)',
+      particleColor: '#E6BC94',
+    },
+  },
+  {
+    id: 'burning-basement',
+    name: 'Burning Basement',
+    subtitle: 'Chapter I • Charred Ember Planks',
+    category: 'main',
+    accentDotColor: '#FF5722',
+    palette: {
+      wallColor: '#1F0C08',
+      wallBrickColor: '#38150E',
+      floorPrimary: '#3A1710',
+      floorSecondary: '#2D110B',
+      groutColor: '#190805',
+      doorFrameColor: '#7A2918',
+      doorInnerColor: '#120503',
+      ambientGlowColor: 'rgba(255, 110, 35, 0.36)',
+      particleColor: '#FFB347',
+    },
+  },
+  {
+    id: 'caves',
+    name: 'Caves',
+    subtitle: 'Chapter II • Damp Subterranean Rock',
+    category: 'main',
+    accentDotColor: '#8D7765',
+    palette: {
+      wallColor: '#1A1614',
+      wallBrickColor: '#2A2420',
+      floorPrimary: '#3B322C',
+      floorSecondary: '#312924',
+      groutColor: '#1E1916',
+      doorFrameColor: '#574B42',
+      doorInnerColor: '#110E0D',
+      ambientGlowColor: 'rgba(168, 145, 125, 0.2)',
+      particleColor: '#B8A593',
+    },
+  },
+  {
+    id: 'catacombs',
+    name: 'Catacombs',
+    subtitle: 'Chapter II • Bone-Lined Crypt Tunnels',
+    category: 'main',
+    accentDotColor: '#9C8A78',
+    palette: {
+      wallColor: '#1C1713',
+      wallBrickColor: '#2E2620',
+      floorPrimary: '#40352D',
+      floorSecondary: '#342B24',
+      groutColor: '#1E1814',
+      doorFrameColor: '#615145',
+      doorInnerColor: '#120E0C',
+      ambientGlowColor: 'rgba(180, 155, 132, 0.22)',
+      particleColor: '#CBB9A6',
+    },
+  },
+  {
+    id: 'flooded-caves',
+    name: 'Flooded Caves',
+    subtitle: 'Chapter II • Waterlogged Abyssal Rock',
+    category: 'main',
+    accentDotColor: '#4F8EA8',
+    palette: {
+      wallColor: '#10181F',
+      wallBrickColor: '#1B2833',
+      floorPrimary: '#243645',
+      floorSecondary: '#1E2D3A',
+      groutColor: '#121C24',
+      doorFrameColor: '#3E5B73',
+      doorInnerColor: '#0A0F14',
+      ambientGlowColor: 'rgba(88, 160, 196, 0.26)',
+      particleColor: '#7FC3E0',
+    },
+  },
+  {
+    id: 'depths',
+    name: 'Depths',
+    subtitle: 'Chapter III • Dark Necropolis Slate',
+    category: 'main',
+    accentDotColor: '#64748B',
+    palette: {
+      wallColor: '#111318',
+      wallBrickColor: '#1B1F28',
+      floorPrimary: '#242934',
+      floorSecondary: '#1D222B',
+      groutColor: '#12151B',
+      doorFrameColor: '#3E4656',
+      doorInnerColor: '#0A0B0E',
+      ambientGlowColor: 'rgba(110, 135, 180, 0.22)',
+      particleColor: '#94A3B8',
+    },
+  },
+  {
+    id: 'necropolis',
+    name: 'Necropolis',
+    subtitle: 'Chapter III • Skulls & Obsidian Tiles',
+    category: 'main',
+    accentDotColor: '#78716C',
+    palette: {
+      wallColor: '#141212',
+      wallBrickColor: '#242020',
+      floorPrimary: '#2E2929',
+      floorSecondary: '#242020',
+      groutColor: '#141212',
+      doorFrameColor: '#4A4242',
+      doorInnerColor: '#0C0A0A',
+      ambientGlowColor: 'rgba(150, 140, 135, 0.22)',
+      particleColor: '#A8A29E',
+    },
+  },
+  {
+    id: 'dank-depths',
+    name: 'Dank Depths',
+    subtitle: 'Chapter III • Tar-Soaked Pitch Bricks',
+    category: 'main',
+    accentDotColor: '#52525B',
+    palette: {
+      wallColor: '#0D0D10',
+      wallBrickColor: '#17171C',
+      floorPrimary: '#1F1F26',
+      floorSecondary: '#18181E',
+      groutColor: '#0C0C0F',
+      doorFrameColor: '#33333E',
+      doorInnerColor: '#070709',
+      ambientGlowColor: 'rgba(110, 110, 128, 0.2)',
+      particleColor: '#A1A1AA',
+    },
+  },
+  {
+    id: 'womb',
+    name: 'Womb',
+    subtitle: 'Chapter IV • Pulsing Flesh Walls',
+    category: 'main',
+    accentDotColor: '#E11D48',
+    palette: {
+      wallColor: '#21070C',
+      wallBrickColor: '#360C14',
+      floorPrimary: '#4A101B',
+      floorSecondary: '#3D0D16',
+      groutColor: '#24070C',
+      doorFrameColor: '#701929',
+      doorInnerColor: '#140407',
+      ambientGlowColor: 'rgba(225, 29, 72, 0.28)',
+      particleColor: '#FDA4AF',
+    },
+  },
+  {
+    id: 'utero',
+    name: 'Utero',
+    subtitle: 'Chapter IV • Arterial Crimson Chamber',
+    category: 'main',
+    accentDotColor: '#BE123C',
+    palette: {
+      wallColor: '#1E060A',
+      wallBrickColor: '#330A11',
+      floorPrimary: '#450E17',
+      floorSecondary: '#380B13',
+      groutColor: '#21060B',
+      doorFrameColor: '#691523',
+      doorInnerColor: '#120306',
+      ambientGlowColor: 'rgba(190, 18, 60, 0.28)',
+      particleColor: '#FB7185',
+    },
+  },
+  {
+    id: 'scarred-womb',
+    name: 'Scarred Womb',
+    subtitle: 'Chapter IV • Crimson Flesh & Viscera',
+    category: 'main',
+    accentDotColor: '#DC2626',
+    palette: {
+      wallColor: '#24080B',
+      wallBrickColor: '#3B0E13',
+      floorPrimary: '#52141B',
+      floorSecondary: '#431016',
+      groutColor: '#29080C',
+      doorFrameColor: '#7A1F28',
+      doorInnerColor: '#170406',
+      ambientGlowColor: 'rgba(225, 50, 65, 0.3)',
+      particleColor: '#F87171',
+    },
+  },
+  {
+    id: 'sheol',
+    name: 'Sheol',
+    subtitle: 'Chapter V • Netherworld Black Stone',
+    category: 'main',
+    accentDotColor: '#991B1B',
+    palette: {
+      wallColor: '#0C090B',
+      wallBrickColor: '#171115',
+      floorPrimary: '#1E161C',
+      floorSecondary: '#161015',
+      groutColor: '#0A0709',
+      doorFrameColor: '#54151D',
+      doorInnerColor: '#060405',
+      ambientGlowColor: 'rgba(185, 28, 28, 0.28)',
+      particleColor: '#F87171',
+    },
+  },
+  {
+    id: 'cathedral',
+    name: 'Cathedral',
+    subtitle: 'Chapter V • Sacred Azure & Ivory Tile',
+    category: 'main',
+    accentDotColor: '#93C5FD',
+    palette: {
+      wallColor: '#161D29',
+      wallBrickColor: '#243044',
+      floorPrimary: '#31415C',
+      floorSecondary: '#28364D',
+      groutColor: '#18202E',
+      doorFrameColor: '#60A5FA',
+      doorInnerColor: '#0E131B',
+      ambientGlowColor: 'rgba(147, 197, 253, 0.3)',
+      particleColor: '#DBEAFE',
+    },
+  },
+  {
+    id: 'chest',
+    name: 'The Chest',
+    subtitle: 'Chapter VI • Brass Locks & Oak Panels',
+    category: 'main',
+    accentDotColor: '#D97706',
+    palette: {
+      wallColor: '#24150B',
+      wallBrickColor: '#3B2312',
+      floorPrimary: '#4F2F18',
+      floorSecondary: '#422714',
+      groutColor: '#29180C',
+      doorFrameColor: '#E5A93C',
+      doorInnerColor: '#170D07',
+      ambientGlowColor: 'rgba(217, 119, 6, 0.3)',
+      particleColor: '#FBBF24',
+    },
+  },
+  {
+    id: 'dark-room',
+    name: 'Dark Room',
+    subtitle: 'Chapter VI • Purple Void & Red Runes',
+    category: 'main',
+    accentDotColor: '#7C3AED',
+    palette: {
+      wallColor: '#0E0917',
+      wallBrickColor: '#191029',
+      floorPrimary: '#221638',
+      floorSecondary: '#1B112E',
+      groutColor: '#0F091A',
+      doorFrameColor: '#6D28D9',
+      doorInnerColor: '#08050E',
+      ambientGlowColor: 'rgba(124, 58, 237, 0.3)',
+      particleColor: '#C4B5FD',
+    },
+  },
+  {
+    id: 'home',
+    name: 'Home',
+    subtitle: 'Final Chapter • Mom’s Hallway Rug & Wallpaper',
+    category: 'main',
+    accentDotColor: '#F59E0B',
+    palette: {
+      wallColor: '#291D15',
+      wallBrickColor: '#402D21',
+      floorPrimary: '#573E2D',
+      floorSecondary: '#473224',
+      groutColor: '#2B1E16',
+      doorFrameColor: '#8A6248',
+      doorInnerColor: '#1A120D',
+      ambientGlowColor: 'rgba(245, 158, 11, 0.26)',
+      particleColor: '#FDE68A',
+    },
+  },
+
+  // Repentance Alt Path
+  {
+    id: 'downpour',
+    name: 'Downpour',
+    subtitle: 'Alt Chapter I • Flooded Slate & Rain',
+    category: 'alt',
+    accentDotColor: '#38BDF8',
+    palette: {
+      wallColor: '#0F1A24',
+      wallBrickColor: '#182938',
+      floorPrimary: '#21384C',
+      floorSecondary: '#1B2E3F',
+      groutColor: '#101C26',
+      doorFrameColor: '#355A7A',
+      doorInnerColor: '#091017',
+      ambientGlowColor: 'rgba(56, 189, 248, 0.28)',
+      particleColor: '#7DD3FC',
+    },
+  },
+  {
+    id: 'dross',
+    name: 'Dross',
+    subtitle: 'Alt Chapter I • Sewer Grates & Murk',
+    category: 'alt',
+    accentDotColor: '#A3E635',
+    palette: {
+      wallColor: '#191B12',
+      wallBrickColor: '#2A2D1E',
+      floorPrimary: '#383C28',
+      floorSecondary: '#2E3221',
+      groutColor: '#1C1E14',
+      doorFrameColor: '#565C3D',
+      doorInnerColor: '#0F110B',
+      ambientGlowColor: 'rgba(163, 230, 53, 0.24)',
+      particleColor: '#BEF264',
+    },
+  },
+  {
+    id: 'mines',
+    name: 'Mines',
+    subtitle: 'Alt Chapter II • Brimstone Ore & Rails',
+    category: 'alt',
+    accentDotColor: '#F59E0B',
+    palette: {
+      wallColor: '#1F160E',
+      wallBrickColor: '#332417',
+      floorPrimary: '#422F1E',
+      floorSecondary: '#362618',
+      groutColor: '#21170E',
+      doorFrameColor: '#6E4E32',
+      doorInnerColor: '#120C07',
+      ambientGlowColor: 'rgba(245, 158, 11, 0.26)',
+      particleColor: '#FBBF24',
+    },
+  },
+  {
+    id: 'ashpit',
+    name: 'Ashpit',
+    subtitle: 'Alt Chapter II • Smoldering Cinder & Bone',
+    category: 'alt',
+    accentDotColor: '#FB923C',
+    palette: {
+      wallColor: '#211612',
+      wallBrickColor: '#36241E',
+      floorPrimary: '#473028',
+      floorSecondary: '#3B2721',
+      groutColor: '#241814',
+      doorFrameColor: '#734D40',
+      doorInnerColor: '#140D0B',
+      ambientGlowColor: 'rgba(251, 146, 60, 0.28)',
+      particleColor: '#FDBA74',
+    },
+  },
+  {
+    id: 'mausoleum',
+    name: 'Mausoleum',
+    subtitle: 'Alt Chapter III • Arcane Violet Sanctum',
+    category: 'alt',
+    accentDotColor: '#A855F7',
+    palette: {
+      wallColor: '#191024',
+      wallBrickColor: '#291A3A',
+      floorPrimary: '#36224C',
+      floorSecondary: '#2C1C3E',
+      groutColor: '#1A1026',
+      doorFrameColor: '#5B3A80',
+      doorInnerColor: '#0F0917',
+      ambientGlowColor: 'rgba(168, 85, 247, 0.3)',
+      particleColor: '#C084FC',
+    },
+  },
+  {
+    id: 'gehenna',
+    name: 'Gehenna',
+    subtitle: 'Alt Chapter III • Hellfire Chains & Blood Stone',
+    category: 'alt',
+    accentDotColor: '#EF4444',
+    palette: {
+      wallColor: '#210A0E',
+      wallBrickColor: '#381118',
+      floorPrimary: '#4A1620',
+      floorSecondary: '#3C121A',
+      groutColor: '#240A0F',
+      doorFrameColor: '#7A2435',
+      doorInnerColor: '#140608',
+      ambientGlowColor: 'rgba(239, 68, 68, 0.34)',
+      particleColor: '#FCA5A5',
+    },
+  },
+  {
+    id: 'corpse',
+    name: 'Corpse',
+    subtitle: 'Alt Chapter IV • Putrid Bile & Rot',
+    category: 'alt',
+    accentDotColor: '#84CC16',
+    palette: {
+      wallColor: '#141B11',
+      wallBrickColor: '#222E1C',
+      floorPrimary: '#2E3D26',
+      floorSecondary: '#25321F',
+      groutColor: '#161E12',
+      doorFrameColor: '#4B633E',
+      doorInnerColor: '#0C100A',
+      ambientGlowColor: 'rgba(132, 204, 22, 0.25)',
+      particleColor: '#A3E635',
+    },
+  },
+
+  // Special Rooms
+  {
+    id: 'devil-room',
+    name: 'Devil Room',
+    subtitle: 'Special • Obsidian Pact Chamber',
+    category: 'special',
+    accentDotColor: '#C83A3A',
+    palette: {
+      wallColor: '#0E0A0D',
+      wallBrickColor: '#1B1116',
+      floorPrimary: '#23141B',
+      floorSecondary: '#1B0F15',
+      groutColor: '#0D070A',
+      doorFrameColor: '#781D27',
+      doorInnerColor: '#080406',
+      ambientGlowColor: 'rgba(200, 58, 58, 0.38)',
+      particleColor: '#EF4444',
+    },
+  },
+  {
+    id: 'angel-room',
+    name: 'Angel Room',
+    subtitle: 'Special • Seraphic Marble & Rays',
+    category: 'special',
+    accentDotColor: '#FDE047',
+    palette: {
+      wallColor: '#1B2028',
+      wallBrickColor: '#2B3340',
+      floorPrimary: '#3B4656',
+      floorSecondary: '#313B49',
+      groutColor: '#1F2630',
+      doorFrameColor: '#E5A93C',
+      doorInnerColor: '#12161C',
+      ambientGlowColor: 'rgba(253, 224, 71, 0.35)',
+      particleColor: '#FEF08A',
+    },
+  },
+  {
+    id: 'planetarium',
+    name: 'Planetarium',
+    subtitle: 'Special • Starlight Astral Dome',
+    category: 'special',
+    accentDotColor: '#60A5FA',
+    palette: {
+      wallColor: '#0B1021',
+      wallBrickColor: '#131C38',
+      floorPrimary: '#1A274D',
+      floorSecondary: '#141F3E',
+      groutColor: '#0B1124',
+      doorFrameColor: '#60A5FA',
+      doorInnerColor: '#060914',
+      ambientGlowColor: 'rgba(96, 165, 250, 0.36)',
+      particleColor: '#93C5FD',
+    },
+  },
+  {
+    id: 'treasure-room',
+    name: 'Treasure Room',
+    subtitle: 'Special • Golden Vault Chamber',
+    category: 'special',
+    accentDotColor: '#E5A93C',
+    palette: {
+      wallColor: '#211A0E',
+      wallBrickColor: '#362B17',
+      floorPrimary: '#47381E',
+      floorSecondary: '#3B2E18',
+      groutColor: '#241C0E',
+      doorFrameColor: '#E5A93C',
+      doorInnerColor: '#141008',
+      ambientGlowColor: 'rgba(229, 169, 60, 0.34)',
+      particleColor: '#FCD34D',
+    },
+  },
+  {
+    id: 'ultra-secret-red-room',
+    name: 'Ultra Secret Red Room',
+    subtitle: 'Special • Red Key Crimson Void',
+    category: 'special',
+    accentDotColor: '#F43F5E',
+    palette: {
+      wallColor: '#26050B',
+      wallBrickColor: '#420914',
+      floorPrimary: '#5E0D1C',
+      floorSecondary: '#4A0A16',
+      groutColor: '#2B050C',
+      doorFrameColor: '#F43F5E',
+      doorInnerColor: '#170206',
+      ambientGlowColor: 'rgba(244, 63, 94, 0.42)',
+      particleColor: '#FB7185',
+    },
+  },
+  {
+    id: 'shop-room',
+    name: 'Shop',
+    subtitle: 'Special • Greed Keeper Wooden Emporium',
+    category: 'special',
+    accentDotColor: '#FBBF24',
+    palette: {
+      wallColor: '#241910',
+      wallBrickColor: '#3B291A',
+      floorPrimary: '#4F3723',
+      floorSecondary: '#422E1D',
+      groutColor: '#291C12',
+      doorFrameColor: '#D97706',
+      doorInnerColor: '#17100A',
+      ambientGlowColor: 'rgba(251, 191, 36, 0.28)',
+      particleColor: '#FDE68A',
+    },
+  },
+];
+
+const ROOM_CATALOG: RoomBackdropRecord[] = RAW_ROOMS.map((room) => ({
+  ...room,
+  textureDataUrl: createRoomSvgDataUrl(room.palette, room.name),
+}));
+
+export function listRoomBackdrops(category?: RoomCategory): RoomBackdropRecord[] {
+  if (!category) {
+    return [...ROOM_CATALOG];
+  }
+  return ROOM_CATALOG.filter((room) => room.category === category);
+}
+
+export function getRoomBackdropById(id: string): RoomBackdropRecord {
+  const found = ROOM_CATALOG.find((room) => room.id === id);
+  return found ?? ROOM_CATALOG.find((room) => room.id === 'burning-basement')!;
+}
