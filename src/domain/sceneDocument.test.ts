@@ -203,6 +203,88 @@ describe('sceneDocument', () => {
     expect(slot4.quality).toBe(4);
     expect(slot4.priceTag).toBe('none');
   });
+
+  it('creates, updates, drags, rotates (-45° to +45°), aligns (left, center, right), and deletes multiple independent text layers while preserving upper-third default placement', async () => {
+    const sceneMod = await import('./sceneDocument');
+    const initial = createDefaultSceneState();
+
+    // Default headline uses Gold-to-Orange swatch, thick black outline, Upheaval TT font, and upper-third Y placement (< 240)
+    expect(initial.textLayers).toHaveLength(1);
+    const defaultLayer = initial.textLayers[0];
+    expect(defaultLayer.swatch).toBe('gold-orange');
+    expect(defaultLayer.fontFamily).toBe('upheaval');
+    expect(defaultLayer.align).toBe('center');
+    expect(defaultLayer.strokeWidth).toBeGreaterThanOrEqual(4);
+    expect(defaultLayer.dropShadow).toBeGreaterThanOrEqual(4);
+    expect(defaultLayer.inkBanner).toBe(true);
+    expect(defaultLayer.y).toBeLessThan(240);
+    expect(defaultLayer.y).toBeLessThan(initial.character.y - 200);
+
+    // Add a second independent text layer
+    const withSecond = sceneMod.addTextLayer(initial);
+    expect(withSecond.textLayers).toHaveLength(2);
+    const secondLayer = withSecond.textLayers[1];
+    expect(secondLayer.id).not.toBe(defaultLayer.id);
+    expect(secondLayer.swatch).toBe('gold-orange');
+    expect(secondLayer.y).toBeLessThan(240);
+
+    // Update second layer typography properties, alignment, and clamp rotation to [-45, +45]
+    const updatedSecond = sceneMod.updateTextLayer(withSecond, secondLayer.id, {
+      text: 'STREAK #42!',
+      fontFamily: 'team-meat',
+      fontSize: 78,
+      rotationDeg: 90, // should clamp to +45
+      align: 'right',
+      swatch: 'brimstone-red',
+      strokeWidth: 8,
+      dropShadow: 10,
+      inkBanner: false,
+    });
+
+    const targetAfterUpdate = updatedSecond.textLayers.find((l) => l.id === secondLayer.id)!;
+    expect(targetAfterUpdate.text).toBe('STREAK #42!');
+    expect(targetAfterUpdate.fontFamily).toBe('team-meat');
+    expect(targetAfterUpdate.fontSize).toBe(78);
+    expect(targetAfterUpdate.rotationDeg).toBe(45);
+    expect(targetAfterUpdate.align).toBe('right');
+    expect(targetAfterUpdate.swatch).toBe('brimstone-red');
+    expect(targetAfterUpdate.strokeWidth).toBe(8);
+    expect(targetAfterUpdate.dropShadow).toBe(10);
+    expect(targetAfterUpdate.inkBanner).toBe(false);
+
+    // First layer remains untouched
+    expect(updatedSecond.textLayers[0].text).toBe(defaultLayer.text);
+
+    // Clamp negative rotation to -45
+    const clampedNeg = sceneMod.updateTextLayer(updatedSecond, secondLayer.id, {
+      rotationDeg: -80,
+    });
+    expect(clampedNeg.textLayers.find((l) => l.id === secondLayer.id)!.rotationDeg).toBe(-45);
+
+    // Drag second text layer on stage via updateNodeDragOffset
+    const beforeX = clampedNeg.textLayers[1].x;
+    const beforeY = clampedNeg.textLayers[1].y;
+    const draggedText = sceneMod.updateNodeDragOffset(clampedNeg, secondLayer.id, {
+      x: -120,
+      y: 45,
+    });
+    const afterDragLayer = draggedText.textLayers.find((l) => l.id === secondLayer.id)!;
+    expect(afterDragLayer.x).toBe(beforeX - 120);
+    expect(afterDragLayer.y).toBe(beforeY + 45);
+
+    const layout = sceneMod.resolveSceneLayout(draggedText);
+    const resolvedSecond = layout.find((n) => n.id === secondLayer.id)!;
+    expect(resolvedSecond.kind).toBe('text');
+    expect(resolvedSecond.x).toBe(beforeX - 120);
+    expect(resolvedSecond.y).toBe(beforeY + 45);
+    expect(resolvedSecond.rotationDeg).toBe(-45);
+
+    // Delete first text layer while preserving the second
+    const afterDelete = sceneMod.deleteTextLayer(draggedText, defaultLayer.id);
+    expect(afterDelete.textLayers).toHaveLength(1);
+    expect(afterDelete.textLayers[0].id).toBe(secondLayer.id);
+  });
 });
+
 
 

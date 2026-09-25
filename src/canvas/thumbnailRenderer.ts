@@ -4,12 +4,35 @@ import {
   getCollectibleById,
 } from '../catalog/gameAssetsCatalog';
 import { getRoomBackdropById, type RoomBackdropRecord } from '../catalog/roomCatalog';
-import type { ResolvedSceneNode, SceneState } from '../domain/sceneDocument';
+import {
+  TEXT_FONT_OPTIONS,
+  TEXT_GRADIENT_SWATCHES,
+  type ResolvedSceneNode,
+  type SceneState,
+  type TextLayerNode,
+  type Vec2,
+} from '../domain/sceneDocument';
 
 export type AssetBitmapCache = Map<string, CanvasImageSource>;
 
 export interface RenderOptions {
   includeEditorOverlays: boolean;
+  selectedNodeId?: string | null;
+}
+
+export interface NodeGizmoGeometry {
+  nodeId: string;
+  kind: 'character' | 'pedestal' | 'text';
+  anchorX: number;
+  anchorY: number;
+  rotationDeg: number;
+  localLeft: number;
+  localRight: number;
+  localTop: number;
+  localBottom: number;
+  handleX: number;
+  handleY: number;
+  corners: Vec2[];
 }
 
 export const ASSET_URLS = {
@@ -22,11 +45,32 @@ export const ASSET_URLS = {
 const pendingLoads = new Set<string>();
 const roomPixelTileCache = new Map<string, HTMLCanvasElement>();
 
+let bundledFontsPreloaded = false;
+
 export function preloadSceneAssets(
   scene: SceneState,
   cache: AssetBitmapCache,
   onLoaded?: () => void
 ): void {
+  if (
+    !bundledFontsPreloaded &&
+    typeof document !== 'undefined' &&
+    'fonts' in document &&
+    typeof document.fonts?.load === 'function'
+  ) {
+    bundledFontsPreloaded = true;
+    Promise.all([
+      document.fonts.load('900 64px "Upheaval TT"'),
+      document.fonts.load('900 64px "Team Meat"'),
+    ])
+      .then(() => {
+        onLoaded?.();
+      })
+      .catch(() => {
+        // Fallback already embedded via inline @font-face data URI
+      });
+  }
+
   if (typeof Image === 'undefined') {
     return;
   }
@@ -206,6 +250,13 @@ function renderPass2Sprites(
     const nx = Math.round(node.x * scaleRatio);
     const ny = Math.round(node.y * scaleRatio);
 
+    ctx.save();
+    if (node.rotationDeg !== 0) {
+      ctx.translate(nx, ny);
+      ctx.rotate((node.rotationDeg * Math.PI) / 180);
+      ctx.translate(-nx, -ny);
+    }
+
     if (node.kind === 'character') {
       const charPixelScale = 3.2 * (node.scale / 1.85) * scaleRatio;
       const stack = composeCharacterStack(scene.character);
@@ -353,9 +404,166 @@ function renderPass2Sprites(
         ctx.fillRect(nx - itemSize / 2, itemDy, itemSize, itemSize);
       }
     }
+
+    ctx.restore();
   }
 
   ctx.restore();
+}
+
+function computeTextLayerBoxMetrics(layer: TextLayerNode) {
+  const align = layer.align ?? 'center';
+  const boxW = Math.max(
+    180,
+    Math.min(1160, Math.round(layer.text.length * layer.fontSize * 0.62 + 64))
+  );
+  const boxH = Math.max(52, Math.round(layer.fontSize * 1.38));
+  const localLeft =
+    align === 'left' ? -18 : align === 'right' ? -boxW + 18 : -boxW / 2;
+  const bannerW = Math.max(420, boxW + 32);
+  const bannerLeft =
+    align === 'left' ? -24 : align === 'right' ? -bannerW + 24 : -bannerW / 2;
+
+  return {
+    align,
+    boxW,
+    boxH,
+    localLeft,
+    localRight: localLeft + boxW,
+    localTop: -boxH / 2,
+    localBottom: boxH / 2,
+    bannerW,
+    bannerH: boxH,
+    bannerLeft,
+  };
+}
+
+function projectLocalGizmoGeometry(
+  nodeId: string,
+  kind: 'character' | 'pedestal' | 'text',
+  anchorX: number,
+  anchorY: number,
+  rotationDeg: number,
+  localLeft: number,
+  localRight: number,
+  localTop: number,
+  localBottom: number,
+  handleOffset: number
+): NodeGizmoGeometry {
+  const localCenterX = (localLeft + localRight) / 2;
+  const localHandleY = localTop - handleOffset;
+  const rad = (rotationDeg * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  const toWorld = (lx: number, ly: number): Vec2 => ({
+    x: anchorX + lx * cos - ly * sin,
+    y: anchorY + lx * sin + ly * cos,
+  });
+
+  const handlePt = toWorld(localCenterX, localHandleY);
+  const corners: Vec2[] = [
+    toWorld(localLeft, localTop),
+    toWorld(localRight, localTop),
+    toWorld(localLeft, localBottom),
+    toWorld(localRight, localBottom),
+  ];
+
+  return {
+    nodeId,
+    kind,
+    anchorX,
+    anchorY,
+    rotationDeg,
+    localLeft,
+    localRight,
+    localTop,
+    localBottom,
+    handleX: handlePt.x,
+    handleY: handlePt.y,
+    corners,
+  };
+}
+
+export function getNodeGizmoBounds(
+  scene: SceneState,
+  resolvedNodes: ResolvedSceneNode[],
+  nodeId: string
+): NodeGizmoGeometry | null {
+  const textLayer = scene.textLayers.find((l) => l.id === nodeId);
+  if (textLayer) {
+    const metrics = computeTextLayerBoxMetrics(textLayer);
+    return projectLocalGizmoGeometry(
+      textLayer.id,
+      'text',
+      textLayer.x,
+      textLayer.y,
+      textLayer.rotationDeg ?? 0,
+      metrics.localLeft,
+      metrics.localRight,
+      metrics.localTop,
+      metrics.localBottom,
+      28
+    );
+  }
+
+  const resolved = resolvedNodes.find(
+    (n) =>
+      n.id === nodeId || (nodeId === 'character' && n.kind === 'character')
+  );
+  if (resolved) {
+    const halfW = resolved.kind === 'character' ? 68 : 64;
+    const localTop = resolved.kind === 'character' ? -156 : -148;
+    return projectLocalGizmoGeometry(
+      resolved.kind === 'character' ? 'character' : resolved.id,
+      resolved.kind,
+      resolved.x,
+      resolved.y,
+      resolved.rotationDeg ?? 0,
+      -halfW,
+      halfW,
+      localTop,
+      20,
+      26
+    );
+  }
+
+  return null;
+}
+
+export function hitTestTextLayer(
+  scene: SceneState,
+  pt: Vec2
+): TextLayerNode | null {
+  let bestLayer: TextLayerNode | null = null;
+  let bestDist = Infinity;
+
+  for (let i = scene.textLayers.length - 1; i >= 0; i--) {
+    const layer = scene.textLayers[i];
+    const bounds = getNodeGizmoBounds(scene, [], layer.id);
+    if (!bounds) {
+      continue;
+    }
+    const dx = pt.x - bounds.anchorX;
+    const dy = pt.y - bounds.anchorY;
+    const rad = (-bounds.rotationDeg * Math.PI) / 180;
+    const lx = dx * Math.cos(rad) - dy * Math.sin(rad);
+    const ly = dx * Math.sin(rad) + dy * Math.cos(rad);
+    if (
+      lx >= bounds.localLeft - 6 &&
+      lx <= bounds.localRight + 6 &&
+      ly >= bounds.localTop - 6 &&
+      ly <= bounds.localBottom + 6
+    ) {
+      const localCenterX = (bounds.localLeft + bounds.localRight) / 2;
+      const dist = Math.hypot(lx - localCenterX, ly);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestLayer = layer;
+      }
+    }
+  }
+  return bestLayer;
 }
 
 function renderPass3Typography(
@@ -369,29 +577,93 @@ function renderPass3Typography(
   for (const layer of scene.textLayers) {
     const tx = layer.x * scaleRatio;
     const ty = layer.y * scaleRatio;
-    const fontSize = Math.max(8, Math.round(layer.fontSize * scaleRatio));
+    const fontSize = Math.max(6, Math.round(layer.fontSize * scaleRatio));
+    const metrics = computeTextLayerBoxMetrics(layer);
+    const fontFamilyId = layer.fontFamily ?? 'upheaval';
+    const fontOpt =
+      TEXT_FONT_OPTIONS.find((f) => f.id === fontFamilyId) ??
+      TEXT_FONT_OPTIONS[0];
+    const swatch =
+      TEXT_GRADIENT_SWATCHES[layer.swatch ?? 'gold-orange'] ??
+      TEXT_GRADIENT_SWATCHES['gold-orange'];
+    const rotationDeg = layer.rotationDeg ?? 0;
 
-    if (layer.inkBanner) {
-      const bannerW = 760 * scaleRatio;
-      const bannerH = 84 * scaleRatio;
-      ctx.fillStyle = 'rgba(10, 8, 12, 0.76)';
-      ctx.fillRect(tx - bannerW / 2, ty - bannerH / 2, bannerW, bannerH);
+    ctx.save();
+    ctx.translate(tx, ty);
+    if (rotationDeg !== 0) {
+      ctx.rotate((rotationDeg * Math.PI) / 180);
     }
 
-    ctx.font = `900 ${fontSize}px "Space Grotesk", sans-serif`;
-    ctx.textAlign = 'center';
+    if (layer.inkBanner) {
+      const bannerW = metrics.bannerW * scaleRatio;
+      const bannerH = metrics.bannerH * scaleRatio;
+      const bannerLeft = metrics.bannerLeft * scaleRatio;
+
+      // Dark Isaac Ink-Streak Torn Underlay Band
+      ctx.fillStyle = 'rgba(10, 8, 12, 0.86)';
+      ctx.fillRect(bannerLeft, -bannerH / 2, bannerW, bannerH);
+
+      // Tapered ink-streak end feathers & top/bottom parchment/brimstone rules
+      ctx.fillStyle = 'rgba(200, 58, 58, 0.48)';
+      ctx.fillRect(
+        bannerLeft + 10 * scaleRatio,
+        -bannerH / 2 + 2 * scaleRatio,
+        bannerW - 20 * scaleRatio,
+        Math.max(1, 2 * scaleRatio)
+      );
+      ctx.fillStyle = 'rgba(229, 169, 60, 0.42)';
+      ctx.fillRect(
+        bannerLeft + 14 * scaleRatio,
+        bannerH / 2 - 4 * scaleRatio,
+        bannerW - 28 * scaleRatio,
+        Math.max(1, 2 * scaleRatio)
+      );
+    }
+
+    ctx.font = `900 ${fontSize}px ${fontOpt.cssFamily}`;
+    ctx.textAlign = metrics.align;
     ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = Math.max(1.5, layer.strokeWidth * scaleRatio * 1.6);
-    ctx.strokeStyle = '#000000';
-    ctx.strokeText(layer.text, tx, ty);
 
-    const grad = ctx.createLinearGradient(0, ty - fontSize * 0.5, 0, ty + fontSize * 0.5);
-    grad.addColorStop(0, '#FFF089');
-    grad.addColorStop(0.5, '#FFB800');
-    grad.addColorStop(1, '#FF7A00');
+    const strokeW =
+      (layer.strokeWidth ?? 6) > 0
+        ? Math.max(1.5, (layer.strokeWidth ?? 6) * scaleRatio * 1.8)
+        : 0;
+    const dropShadowPx = (layer.dropShadow ?? 6) * scaleRatio;
+
+    // 1. Hard Black Drop Shadow pass
+    if (dropShadowPx > 0) {
+      const shadowOffset = Math.max(1, Math.round(dropShadowPx));
+      ctx.fillStyle = '#000000';
+      ctx.strokeStyle = '#000000';
+      if (strokeW > 0) {
+        ctx.lineWidth = strokeW;
+        ctx.strokeText(layer.text, shadowOffset, shadowOffset);
+      }
+      ctx.fillText(layer.text, shadowOffset, shadowOffset);
+    }
+
+    // 2. Thick Black Pixel Stroke (#000000)
+    if (strokeW > 0) {
+      ctx.lineWidth = strokeW;
+      ctx.strokeStyle = '#000000';
+      ctx.strokeText(layer.text, 0, 0);
+    }
+
+    // 3. Vertical Linear Gradient Swatch Fill
+    const grad = ctx.createLinearGradient(
+      0,
+      -fontSize * 0.55,
+      0,
+      fontSize * 0.55
+    );
+    grad.addColorStop(0, swatch.topColor);
+    grad.addColorStop(0.5, swatch.midColor);
+    grad.addColorStop(1, swatch.bottomColor);
     ctx.fillStyle = grad;
-    ctx.fillText(layer.text, tx, ty);
+    ctx.fillText(layer.text, 0, 0);
+
+    ctx.restore();
   }
 
   ctx.restore();
@@ -400,9 +672,11 @@ function renderPass3Typography(
 function renderPass4EditorOverlays(
   ctx: CanvasRenderingContext2D,
   scene: SceneState,
+  resolvedNodes: ResolvedSceneNode[],
   width: number,
   height: number,
-  scaleRatio: number
+  scaleRatio: number,
+  selectedNodeId?: string | null
 ): void {
   ctx.save();
 
@@ -416,6 +690,60 @@ function renderPass4EditorOverlays(
     }
     for (let y = step; y < height; y += step) {
       ctx.strokeRect(0, y, width, 1);
+    }
+  }
+
+  // Interactive Cyan Transform Gizmo (#22D3EE) around selected canvas node
+  if (selectedNodeId) {
+    const bounds = getNodeGizmoBounds(scene, resolvedNodes, selectedNodeId);
+    if (bounds) {
+      ctx.save();
+      ctx.translate(bounds.anchorX * scaleRatio, bounds.anchorY * scaleRatio);
+      if (bounds.rotationDeg !== 0) {
+        ctx.rotate((bounds.rotationDeg * Math.PI) / 180);
+      }
+
+      const boxX = bounds.localLeft * scaleRatio;
+      const boxY = bounds.localTop * scaleRatio;
+      const boxW = (bounds.localRight - bounds.localLeft) * scaleRatio;
+      const boxH = (bounds.localBottom - bounds.localTop) * scaleRatio;
+      const centerX = boxX + boxW / 2;
+      const handleY = boxY - 28 * scaleRatio;
+
+      // Bounding Box (#22D3EE)
+      ctx.strokeStyle = '#22D3EE';
+      ctx.lineWidth = Math.max(1.5, 2 * scaleRatio);
+      ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+      // Rotation stem & top handle knob
+      ctx.beginPath();
+      ctx.moveTo(centerX, boxY);
+      ctx.lineTo(centerX, handleY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0D0B0E';
+      ctx.beginPath();
+      ctx.arc(centerX, handleY, Math.max(4, 6 * scaleRatio), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // 4 Corner Control Handles
+      const handleSize = Math.max(5, 8 * scaleRatio);
+      const halfH = handleSize / 2;
+      const corners = [
+        [boxX, boxY],
+        [boxX + boxW, boxY],
+        [boxX, boxY + boxH],
+        [boxX + boxW, boxY + boxH],
+      ];
+      for (const [cx, cy] of corners) {
+        ctx.fillStyle = '#0D0B0E';
+        ctx.fillRect(cx - halfH, cy - halfH, handleSize, handleSize);
+        ctx.strokeStyle = '#22D3EE';
+        ctx.strokeRect(cx - halfH, cy - halfH, handleSize, handleSize);
+      }
+
+      ctx.restore();
     }
   }
 
@@ -469,7 +797,15 @@ export function renderThumbnail(
 
   // Pass 4: Editor Overlays (strictly excluded for 180x101 feed preview & PNG/Clipboard exports)
   if (options.includeEditorOverlays) {
-    renderPass4EditorOverlays(ctx, scene, width, height, scaleRatio);
+    renderPass4EditorOverlays(
+      ctx,
+      scene,
+      resolvedNodes,
+      width,
+      height,
+      scaleRatio,
+      options.selectedNodeId
+    );
   }
 }
 

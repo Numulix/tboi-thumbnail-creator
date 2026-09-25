@@ -46,17 +46,92 @@ export interface PedestalSlotNode {
   priceTag: 'none' | '1-heart' | '2-hearts' | '15c' | 'blind';
   highlightFx: 'none' | 'outline' | 'q4-glow';
   manualOffset?: Vec2;
+  rotationDeg?: number;
 }
+
+export type TextFontFamilyId = 'upheaval' | 'team-meat' | 'space-grotesk';
+export type TextAlignMode = 'left' | 'center' | 'right';
+export type TextGradientSwatchId =
+  | 'gold-orange'
+  | 'bone-white'
+  | 'brimstone-red'
+  | 'soul-blue';
+
+export interface TextFontOption {
+  id: TextFontFamilyId;
+  label: string;
+  cssFamily: string;
+}
+
+export interface TextGradientSwatch {
+  id: TextGradientSwatchId;
+  label: string;
+  topColor: string;
+  midColor: string;
+  bottomColor: string;
+}
+
+export const TEXT_FONT_OPTIONS: TextFontOption[] = [
+  {
+    id: 'upheaval',
+    label: 'Upheaval TT',
+    cssFamily: '"Upheaval TT", "Space Grotesk", Impact, sans-serif',
+  },
+  {
+    id: 'team-meat',
+    label: 'Team Meat',
+    cssFamily: '"Team Meat", "Space Grotesk", Impact, sans-serif',
+  },
+  {
+    id: 'space-grotesk',
+    label: 'Space Grotesk / Impact',
+    cssFamily: '"Space Grotesk", Impact, "Arial Black", sans-serif',
+  },
+];
+
+export const TEXT_GRADIENT_SWATCHES: Record<TextGradientSwatchId, TextGradientSwatch> = {
+  'gold-orange': {
+    id: 'gold-orange',
+    label: 'Gold-to-Orange',
+    topColor: '#FFF089',
+    midColor: '#FFB800',
+    bottomColor: '#FF7A00',
+  },
+  'bone-white': {
+    id: 'bone-white',
+    label: 'Bone White',
+    topColor: '#FFFFFF',
+    midColor: '#F4EFEA',
+    bottomColor: '#C6B8A8',
+  },
+  'brimstone-red': {
+    id: 'brimstone-red',
+    label: 'Brimstone Red',
+    topColor: '#FF8585',
+    midColor: '#E03E3E',
+    bottomColor: '#8F1515',
+  },
+  'soul-blue': {
+    id: 'soul-blue',
+    label: 'Soul Blue',
+    topColor: '#B8E8FF',
+    midColor: '#5CA8E6',
+    bottomColor: '#255C99',
+  },
+};
 
 export interface TextLayerNode {
   id: string;
   text: string;
   x: number;
   y: number;
+  fontFamily: TextFontFamilyId;
   fontSize: number;
   rotationDeg: number;
-  swatch: 'gold-orange' | 'bone-white' | 'brimstone-red' | 'soul-blue';
+  align: TextAlignMode;
+  swatch: TextGradientSwatchId;
   strokeWidth: number;
+  dropShadow: number;
   inkBanner: boolean;
 }
 
@@ -77,6 +152,7 @@ export interface SceneState {
     scale: number;
     x: number;
     y: number;
+    rotationDeg?: number;
   };
   pedestals: PedestalSlotNode[];
   textLayers: TextLayerNode[];
@@ -194,10 +270,13 @@ export function createDefaultSceneState(): SceneState {
         text: 'GOD TIER EDEN START?!',
         x: 640,
         y: 96,
+        fontFamily: 'upheaval',
         fontSize: 64,
         rotationDeg: 0,
+        align: 'center',
         swatch: 'gold-orange',
-        strokeWidth: 4,
+        strokeWidth: 6,
+        dropShadow: 6,
         inkBanner: true,
       },
     ],
@@ -337,10 +416,12 @@ export function resetNodePositions(scene: SceneState): SceneState {
       ...scene.character,
       x: DEFAULT_CHARACTER_POSITION.x,
       y: DEFAULT_CHARACTER_POSITION.y,
+      rotationDeg: 0,
     },
     pedestals: scene.pedestals.map((slot) => ({
       ...slot,
       manualOffset: undefined,
+      rotationDeg: 0,
     })),
   };
 }
@@ -396,6 +477,150 @@ export function assignCollectibleToPedestal(
   };
 }
 
+export function clampRotationDeg(rotationDeg: number): number {
+  return Math.max(-45, Math.min(45, Math.round(rotationDeg)));
+}
+
+function clampTextStageCoords(x: number, y: number): Vec2 {
+  return {
+    x: Math.max(40, Math.min(1240, Math.round(x))),
+    y: Math.max(40, Math.min(680, Math.round(y))),
+  };
+}
+
+export function addTextLayer(
+  scene: SceneState,
+  partial?: Partial<Omit<TextLayerNode, 'id'>>
+): SceneState {
+  const existingIds = new Set(scene.textLayers.map((l) => l.id));
+  let nextNum = scene.textLayers.length + 1;
+  while (existingIds.has(`text-layer-${nextNum}`)) {
+    nextNum++;
+  }
+  const id = `text-layer-${nextNum}`;
+  const defaultY = Math.min(225, 96 + scene.textLayers.length * 84);
+
+  const newLayer: TextLayerNode = {
+    id,
+    text: partial?.text ?? `STREAK #${40 + nextNum}`,
+    x: partial?.x ?? 640,
+    y: partial?.y ?? defaultY,
+    fontFamily: partial?.fontFamily ?? 'upheaval',
+    fontSize: partial?.fontSize ?? 56,
+    rotationDeg: clampRotationDeg(partial?.rotationDeg ?? 0),
+    align: partial?.align ?? 'center',
+    swatch: partial?.swatch ?? 'gold-orange',
+    strokeWidth: partial?.strokeWidth ?? 6,
+    dropShadow: partial?.dropShadow ?? 6,
+    inkBanner: partial?.inkBanner ?? true,
+  };
+
+  return {
+    ...scene,
+    textLayers: [...scene.textLayers, newLayer],
+  };
+}
+
+export function updateTextLayer(
+  scene: SceneState,
+  layerId: string,
+  patch: Partial<Omit<TextLayerNode, 'id'>>
+): SceneState {
+  return {
+    ...scene,
+    textLayers: scene.textLayers.map((layer) => {
+      if (layer.id !== layerId) {
+        return layer;
+      }
+      const nextPos = clampTextStageCoords(
+        patch.x ?? layer.x,
+        patch.y ?? layer.y
+      );
+      const nextFontSize =
+        patch.fontSize !== undefined
+          ? Math.max(24, Math.min(120, Math.round(patch.fontSize)))
+          : layer.fontSize;
+      const nextRotation =
+        patch.rotationDeg !== undefined
+          ? clampRotationDeg(patch.rotationDeg)
+          : layer.rotationDeg;
+      const nextStroke =
+        patch.strokeWidth !== undefined
+          ? Math.max(0, Math.min(16, Number(patch.strokeWidth)))
+          : layer.strokeWidth;
+      const nextShadow =
+        patch.dropShadow !== undefined
+          ? Math.max(0, Math.min(20, Math.round(patch.dropShadow)))
+          : layer.dropShadow;
+
+      return {
+        ...layer,
+        ...patch,
+        x: nextPos.x,
+        y: nextPos.y,
+        fontSize: nextFontSize,
+        rotationDeg: nextRotation,
+        strokeWidth: nextStroke,
+        dropShadow: nextShadow,
+      };
+    }),
+  };
+}
+
+export function deleteTextLayer(scene: SceneState, layerId: string): SceneState {
+  return {
+    ...scene,
+    textLayers: scene.textLayers.filter((layer) => layer.id !== layerId),
+  };
+}
+
+export function updateNodeRotation(
+  scene: SceneState,
+  nodeId: string,
+  rotationDeg: number
+): SceneState {
+  const clamped = clampRotationDeg(rotationDeg);
+  if (scene.textLayers.some((l) => l.id === nodeId)) {
+    return updateTextLayer(scene, nodeId, { rotationDeg: clamped });
+  }
+  if (nodeId === 'character' || nodeId === scene.character.id) {
+    return {
+      ...scene,
+      character: {
+        ...scene.character,
+        rotationDeg: clamped,
+      },
+    };
+  }
+  return {
+    ...scene,
+    pedestals: scene.pedestals.map((slot) =>
+      slot.id === nodeId ? { ...slot, rotationDeg: clamped } : slot
+    ),
+  };
+}
+
+export function updateNodeScaleFromGizmo(
+  scene: SceneState,
+  nodeId: string,
+  scaleRatio: number
+): SceneState {
+  const safeRatio = Math.max(0.5, Math.min(2.0, scaleRatio));
+  const textLayer = scene.textLayers.find((l) => l.id === nodeId);
+  if (textLayer) {
+    return updateTextLayer(scene, nodeId, {
+      fontSize: Math.round(textLayer.fontSize * safeRatio),
+    });
+  }
+  if (nodeId === 'character' || nodeId === scene.character.id) {
+    return updateCharacterScale(scene, scene.character.scale * safeRatio);
+  }
+  if (scene.pedestals.some((p) => p.id === nodeId)) {
+    return updatePedestalScale(scene, (scene.pedestalScale ?? 1.5) * safeRatio);
+  }
+  return scene;
+}
+
 export function updateNodeDragOffset(
   scene: SceneState,
   nodeId: string,
@@ -413,6 +638,23 @@ export function updateNodeDragOffset(
         x: clamped.x,
         y: clamped.y,
       },
+    };
+  }
+
+  if (scene.textLayers.some((layer) => layer.id === nodeId)) {
+    return {
+      ...scene,
+      textLayers: scene.textLayers.map((layer) => {
+        if (layer.id !== nodeId) {
+          return layer;
+        }
+        const clamped = clampTextStageCoords(layer.x + delta.x, layer.y + delta.y);
+        return {
+          ...layer,
+          x: clamped.x,
+          y: clamped.y,
+        };
+      }),
     };
   }
 
@@ -574,7 +816,7 @@ export function resolveSceneLayout(scene: SceneState): ResolvedSceneNode[] {
       x: scene.character.x,
       y: scene.character.y,
       scale: scene.character.scale,
-      rotationDeg: 0,
+      rotationDeg: scene.character.rotationDeg ?? 0,
       zIndex: Math.round(scene.character.y),
     },
     ...scene.pedestals.map((slot, idx) => {
@@ -591,7 +833,7 @@ export function resolveSceneLayout(scene: SceneState): ResolvedSceneNode[] {
         x,
         y,
         scale: pedestalScale,
-        rotationDeg: 0,
+        rotationDeg: slot.rotationDeg ?? 0,
         zIndex: Math.round(y),
       };
     }),

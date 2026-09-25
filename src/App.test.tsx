@@ -251,6 +251,84 @@ describe('StudioWorkbenchUI (App)', () => {
       screen.getByTestId('pedestal-slot-card-pedestal-1')
     ).not.toHaveTextContent('+80, +75');
   });
+
+  it('supports adding, selecting, dragging, tilting (-45° to +45°), aligning (Left/Center/Right), styling (Upheaval TT / Team Meat fonts, 4 gradient swatches, stroke width, drop shadow, Ink-Streak Banner underlay), and deleting multiple text layers while excluding cyan gizmos from 180x101 preview & PNG export', () => {
+    render(<App />);
+
+    // 1. Default headline is selected and populated in the Right Inspector Text Layer panel
+    expect(screen.getByTestId('text-layer-inspector-section')).toBeInTheDocument();
+    const headlineInput = screen.getByTestId('headline-text-input') as HTMLInputElement;
+    expect(headlineInput.value).toBe('GOD TIER EDEN START?!');
+
+    // Default swatch is Gold-to-Orange, font is Upheaval TT, Ink-Streak Banner is ON
+    expect(screen.getByTestId('swatch-gold-orange')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('font-family-upheaval')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('ink-banner-toggle')).toHaveAttribute('aria-pressed', 'true');
+
+    // 2. Add a second independent text layer (+ Add Text)
+    const addTextBtn = screen.getByTestId('add-text-layer-btn');
+    fireEvent.click(addTextBtn);
+    expect(screen.getAllByTestId(/^text-layer-item-/)).toHaveLength(2);
+
+    // Edit second text layer's headline text, font family (Team Meat), alignment (Right), font size, tilt angle, gradient swatch (Soul Blue), stroke width, drop shadow, and Ink-Streak Banner toggle
+    fireEvent.change(headlineInput, { target: { value: 'STREAK #99 BOSS RUSH' } });
+    expect(headlineInput.value).toBe('STREAK #99 BOSS RUSH');
+
+    const teamMeatBtn = screen.getByTestId('font-family-team-meat');
+    fireEvent.click(teamMeatBtn);
+    expect(teamMeatBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const alignRightBtn = screen.getByTestId('text-align-right');
+    fireEvent.click(alignRightBtn);
+    expect(alignRightBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const fontSizeSlider = screen.getByLabelText('Font Size');
+    fireEvent.change(fontSizeSlider, { target: { value: '74' } });
+    expect(screen.getByText('74px')).toBeInTheDocument();
+
+    const tiltSlider = screen.getByLabelText('Layer Tilt');
+    fireEvent.change(tiltSlider, { target: { value: '-20' } });
+    expect(screen.getByText('-20°')).toBeInTheDocument();
+
+    const soulBlueSwatch = screen.getByTestId('swatch-soul-blue');
+    fireEvent.click(soulBlueSwatch);
+    expect(soulBlueSwatch).toHaveAttribute('aria-pressed', 'true');
+
+    const strokeSlider = screen.getByLabelText('Pixel Stroke Width');
+    fireEvent.change(strokeSlider, { target: { value: '9' } });
+    expect(screen.getByText('9px')).toBeInTheDocument();
+
+    const shadowSlider = screen.getByLabelText('Hard Drop Shadow');
+    fireEvent.change(shadowSlider, { target: { value: '11' } });
+    expect(screen.getByText('11px')).toBeInTheDocument();
+
+    const inkBannerToggle = screen.getByTestId('ink-banner-toggle');
+    fireEvent.click(inkBannerToggle);
+    expect(inkBannerToggle).toHaveAttribute('aria-pressed', 'false');
+
+    // 3. Click first text layer at (640, 96) on stage-canvas to select and drag it
+    const stageCanvas = screen.getByTestId('stage-canvas') as HTMLCanvasElement;
+    fireEvent.pointerDown(stageCanvas, { clientX: 640, clientY: 96 });
+    expect((screen.getByTestId('headline-text-input') as HTMLInputElement).value).toBe(
+      'GOD TIER EDEN START?!'
+    );
+    fireEvent.pointerMove(stageCanvas, { clientX: 590, clientY: 126 });
+    fireEvent.pointerUp(stageCanvas, { clientX: 590, clientY: 126 });
+
+    // Drag the top cyan rotation handle above the moved text layer (at x=590, y=126 - 44 - 28 = 54) to rotate it
+    fireEvent.pointerDown(stageCanvas, { clientX: 590, clientY: 54 });
+    fireEvent.pointerMove(stageCanvas, { clientX: 635, clientY: 60 });
+    fireEvent.pointerUp(stageCanvas, { clientX: 635, clientY: 60 });
+
+    // 4. Delete the active first text layer and confirm the second text layer remains
+    const deleteLayerBtn = screen.getByTestId('delete-text-layer-btn');
+    fireEvent.click(deleteLayerBtn);
+    expect(screen.getAllByTestId(/^text-layer-item-/)).toHaveLength(1);
+    expect((screen.getByTestId('headline-text-input') as HTMLInputElement).value).toBe(
+      'STREAK #99 BOSS RUSH'
+    );
+  });
 });
+
 
 

@@ -200,5 +200,100 @@ describe('thumbnailRenderer', () => {
     expect(isaacCharDraws).toHaveLength(2);
     expect(isaacHairDraws).toHaveLength(0);
   });
+
+  it('renders multi-layer typography with Upheaval TT / Team Meat fonts, vertical gradient swatches, rotation, alignment, drop shadow, ink-streak banner underlay, and draws the cyan transform gizmo ONLY when includeEditorOverlays is true', () => {
+    const baseScene = createDefaultSceneState();
+    const sceneWithTwoTexts = {
+      ...baseScene,
+      textLayers: [
+        baseScene.textLayers[0], // Upheaval TT, gold-orange (#FFF089 -> #FF7A00), center, inkBanner: true
+        {
+          id: 'text-layer-2',
+          text: 'BOSS RUSH STREAK!',
+          x: 640,
+          y: 175,
+          fontFamily: 'team-meat' as const,
+          fontSize: 54,
+          rotationDeg: -18,
+          align: 'right' as const,
+          swatch: 'soul-blue' as const,
+          strokeWidth: 7,
+          dropShadow: 8,
+          inkBanner: false,
+        },
+      ],
+    };
+    const resolved = resolveSceneLayout(sceneWithTwoTexts);
+
+    // 1. Render Interactive Stage Canvas (includeEditorOverlays: true, selectedNodeId: 'text-layer-2')
+    const stageCanvas = document.createElement('canvas');
+    stageCanvas.width = 1280;
+    stageCanvas.height = 720;
+    const stageCtx = stageCanvas.getContext('2d') as MockCtxWithOps;
+
+    renderThumbnail(stageCtx, sceneWithTwoTexts, resolved, new Map(), {
+      includeEditorOverlays: true,
+      selectedNodeId: 'text-layer-2',
+    });
+
+    // Verify both text layers were rendered with their respective fonts & alignments
+    const fillTextOps = stageCtx.__ops.filter(
+      (op) => op.type === 'fillText'
+    ) as Array<{ args: unknown[]; font?: string; textAlign?: string }>;
+    const upheavalOp = fillTextOps.find(
+      (op) => op.args[0] === 'GOD TIER EDEN START?!'
+    );
+    const teamMeatOp = fillTextOps.find(
+      (op) => op.args[0] === 'BOSS RUSH STREAK!'
+    );
+    expect(upheavalOp?.font).toContain('Upheaval TT');
+    expect(upheavalOp?.textAlign).toBe('center');
+    expect(teamMeatOp?.font).toContain('Team Meat');
+    expect(teamMeatOp?.textAlign).toBe('right');
+
+    // Verify vertical gradient stops for gold-orange (#FFF089 -> #FF7A00) and soul-blue (#B8E8FF -> #255C99)
+    const gradientStopColors = stageCtx.__ops
+      .filter((op) => op.type === 'linearGradientStop')
+      .map((op) => String(op.args[1]));
+    expect(gradientStopColors).toContain('#FFF089');
+    expect(gradientStopColors).toContain('#FF7A00');
+    expect(gradientStopColors).toContain('#B8E8FF');
+    expect(gradientStopColors).toContain('#255C99');
+
+    // Verify canvas rotation was applied for the -18 deg tilted text layer
+    const rotateAngles = stageCtx.__ops
+      .filter((op) => op.type === 'rotate')
+      .map((op) => Number(op.args[0]));
+    expect(
+      rotateAngles.some((r) => Math.abs(r - (-18 * Math.PI) / 180) < 0.001)
+    ).toBe(true);
+
+    // Verify cyan transform gizmo (#22D3EE) is drawn on the interactive stage canvas
+    const stageCyanGizmoOps = stageCtx.__ops.filter(
+      (op) =>
+        (op.type === 'strokeRect' || op.type === 'stroke') &&
+        op.args.includes('#22D3EE')
+    );
+    expect(stageCyanGizmoOps.length).toBeGreaterThan(0);
+
+    // 2. Render 180x101 YouTube Feed Preview / Export Canvas (includeEditorOverlays: false)
+    const previewCanvas = document.createElement('canvas');
+    previewCanvas.width = 180;
+    previewCanvas.height = 101;
+    const previewCtx = previewCanvas.getContext('2d') as MockCtxWithOps;
+
+    renderThumbnail(previewCtx, sceneWithTwoTexts, resolved, new Map(), {
+      includeEditorOverlays: false,
+      selectedNodeId: 'text-layer-2',
+    });
+
+    const previewCyanGizmoOps = previewCtx.__ops.filter(
+      (op) =>
+        (op.type === 'strokeRect' || op.type === 'stroke') &&
+        op.args.includes('#22D3EE')
+    );
+    expect(previewCyanGizmoOps).toHaveLength(0);
+  });
 });
+
 

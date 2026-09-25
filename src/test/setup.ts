@@ -58,16 +58,40 @@ function createMockContext2D(canvas: HTMLCanvasElement): CanvasRenderingContext2
       ops.push({ type: 'drawImage', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
     }),
     fillText: vi.fn((...args: unknown[]) => {
-      ops.push({ type: 'fillText', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
+      ops.push({
+        type: 'fillText',
+        args,
+        smoothing: ctx.imageSmoothingEnabled,
+        filter: ctx.filter,
+        font: ctx.font,
+        textAlign: ctx.textAlign,
+        fillStyle: ctx.fillStyle,
+      } as (typeof ops)[number]);
     }),
     strokeText: vi.fn((...args: unknown[]) => {
-      ops.push({ type: 'strokeText', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
+      ops.push({
+        type: 'strokeText',
+        args,
+        smoothing: ctx.imageSmoothingEnabled,
+        filter: ctx.filter,
+        font: ctx.font,
+        textAlign: ctx.textAlign,
+        strokeStyle: ctx.strokeStyle,
+        lineWidth: ctx.lineWidth,
+      } as (typeof ops)[number]);
     }),
     beginPath: vi.fn(),
     closePath: vi.fn(),
     moveTo: vi.fn(),
     lineTo: vi.fn(),
-    arc: vi.fn(),
+    arc: vi.fn((...args: unknown[]) => {
+      ops.push({
+        type: 'arc',
+        args,
+        smoothing: ctx.imageSmoothingEnabled,
+        filter: ctx.filter,
+      });
+    }),
     ellipse: vi.fn(),
     rect: vi.fn(),
     roundRect: vi.fn(),
@@ -75,20 +99,41 @@ function createMockContext2D(canvas: HTMLCanvasElement): CanvasRenderingContext2
       ops.push({ type: 'fill', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
     }),
     stroke: vi.fn((...args: unknown[]) => {
-      ops.push({ type: 'stroke', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
+      ops.push({
+        type: 'stroke',
+        args: [...args, ctx.strokeStyle],
+        smoothing: ctx.imageSmoothingEnabled,
+        filter: ctx.filter,
+      });
     }),
     setLineDash: vi.fn((...args: unknown[]) => {
       ops.push({ type: 'setLineDash', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
     }),
-    translate: vi.fn(),
+    translate: vi.fn((...args: unknown[]) => {
+      ops.push({ type: 'translate', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
+    }),
     scale: vi.fn(),
-    rotate: vi.fn(),
+    rotate: vi.fn((...args: unknown[]) => {
+      ops.push({ type: 'rotate', args, smoothing: ctx.imageSmoothingEnabled, filter: ctx.filter });
+    }),
     createRadialGradient: vi.fn(() => ({
       addColorStop: vi.fn(),
     })),
-    createLinearGradient: vi.fn(() => ({
-      addColorStop: vi.fn(),
-    })),
+    createLinearGradient: vi.fn(() => {
+      const stops: Array<[number, string]> = [];
+      return {
+        stops,
+        addColorStop: vi.fn((offset: number, color: string) => {
+          stops.push([offset, color]);
+          ops.push({
+            type: 'linearGradientStop',
+            args: [offset, color],
+            smoothing: ctx.imageSmoothingEnabled,
+            filter: ctx.filter,
+          });
+        }),
+      };
+    }),
     measureText: vi.fn((text: string) => ({
       width: text.length * 10,
     })),

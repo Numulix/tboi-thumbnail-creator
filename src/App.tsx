@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Check,
   Copy,
   Dices,
@@ -9,10 +12,13 @@ import {
   Layers,
   Move,
   Package,
+  Plus,
   RotateCcw,
   Search,
   Skull,
+  Trash2,
   Tv,
+  Type,
   User,
 } from 'lucide-react';
 import {
@@ -35,14 +41,19 @@ import {
 import {
   copyCanvasToClipboard,
   exportCanvasToPngBlob,
+  getNodeGizmoBounds,
+  hitTestTextLayer,
   preloadSceneAssets,
   renderThumbnail,
   type AssetBitmapCache,
 } from './canvas/thumbnailRenderer';
 import {
+  addTextLayer,
   applyFormationPreset,
   assignCollectibleToPedestal,
+  clampRotationDeg,
   createDefaultSceneState,
+  deleteTextLayer,
   randomizeEdenHair,
   resetCameraAndBackdrop,
   resetCharacterScale,
@@ -50,18 +61,25 @@ import {
   resolveSceneLayout,
   selectCharacter,
   selectEdenHair,
+  TEXT_FONT_OPTIONS,
+  TEXT_GRADIENT_SWATCHES,
   toggleEditorOverlay,
   updateBackdropFilters,
   updateCameraFraming,
   updateCharacterPose,
   updateCharacterScale,
   updateNodeDragOffset,
+  updateNodeRotation,
+  updateNodeScaleFromGizmo,
   updatePedestalCount,
   updatePedestalScale,
   updateRoomStage,
+  updateTextLayer,
   type CharacterPoseId,
   type FormationPreset,
   type SceneState,
+  type TextAlignMode,
+  type TextGradientSwatchId,
   type Vec2,
 } from './domain/sceneDocument';
 
@@ -172,6 +190,18 @@ function clientToCanvasCoords(
   };
 }
 
+function capturePointerSafely(
+  e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
+): void {
+  if ('pointerId' in e && typeof e.currentTarget.setPointerCapture === 'function') {
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Ignore pointer capture errors in synthetic test environments
+    }
+  }
+}
+
 export function App(): React.ReactElement {
   const [scene, setScene] = useState<SceneState>(() => createDefaultSceneState());
   const [activeDrawerTab, setActiveDrawerTab] = useState<
@@ -182,6 +212,11 @@ export function App(): React.ReactElement {
   );
   const [activeCategory, setActiveCategory] = useState<RoomCategory>('main');
   const [selectedPedestalId, setSelectedPedestalId] = useState<string>('pedestal-1');
+  const [selectedTextLayerId, setSelectedTextLayerId] =
+    useState<string>('text-headline');
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(
+    'text-headline'
+  );
   const [collectibleSearchQuery, setCollectibleSearchQuery] = useState<string>('');
   const [exportStatus, setExportStatus] = useState<string | null>(null);
   const [assetRevision, setAssetRevision] = useState(0);
@@ -189,7 +224,12 @@ export function App(): React.ReactElement {
   const stageCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const assetBitmapsRef = useRef<AssetBitmapCache>(new Map());
-  const activeDragRef = useRef<{ nodeId: string; lastCanvasPos: Vec2 } | null>(null);
+  const activeDragRef = useRef<{
+    mode: 'move' | 'rotate' | 'resize';
+    nodeId: string;
+    lastCanvasPos: Vec2;
+    anchor?: Vec2;
+  } | null>(null);
 
   const activeRoom = useMemo(() => getRoomBackdropById(scene.stageId), [scene.stageId]);
   const categoryRooms = useMemo(
@@ -239,6 +279,13 @@ export function App(): React.ReactElement {
     const exists = scene.pedestals.some((p) => p.id === selectedPedestalId);
     return exists ? selectedPedestalId : (scene.pedestals[0]?.id ?? 'pedestal-1');
   }, [scene.pedestals, selectedPedestalId]);
+  const activeTextLayer = useMemo(() => {
+    return (
+      scene.textLayers.find((l) => l.id === selectedTextLayerId) ??
+      scene.textLayers[0] ??
+      null
+    );
+  }, [scene.textLayers, selectedTextLayerId]);
   const resolvedNodes = useMemo(() => resolveSceneLayout(scene), [scene]);
 
   // Preload authentic room backdrop, collectibles atlas, altar sheet, and character/Eden hair atlases
@@ -256,6 +303,7 @@ export function App(): React.ReactElement {
       if (ctx) {
         renderThumbnail(ctx, scene, resolvedNodes, assetBitmapsRef.current, {
           includeEditorOverlays: true,
+          selectedNodeId,
         });
       }
     }
@@ -269,7 +317,7 @@ export function App(): React.ReactElement {
         });
       }
     }
-  }, [scene, resolvedNodes, assetRevision]);
+  }, [scene, resolvedNodes, assetRevision, selectedNodeId]);
 
   const buildCleanExportCanvas = useCallback((): HTMLCanvasElement => {
     const offscreen = document.createElement('canvas');
@@ -616,6 +664,61 @@ export function App(): React.ReactElement {
       return;
     }
     const pt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
+
+    // 1. Check if pointer hits the active node's cyan rotation handle knob or 4 corner resize handles
+    if (selectedNodeId) {
+      const activeBounds = getNodeGizmoBounds(
+        scene,
+        resolvedNodes,
+        selectedNodeId
+      );
+      if (activeBounds) {
+        if (
+          Math.hypot(pt.x - activeBounds.handleX, pt.y - activeBounds.handleY) <=
+          28
+        ) {
+          activeDragRef.current = {
+            mode: 'rotate',
+            nodeId: activeBounds.nodeId,
+            lastCanvasPos: pt,
+            anchor: { x: activeBounds.anchorX, y: activeBounds.anchorY },
+          };
+          capturePointerSafely(e);
+          return;
+        }
+
+        if (
+          activeBounds.corners.some(
+            (corner) => Math.hypot(pt.x - corner.x, pt.y - corner.y) <= 18
+          )
+        ) {
+          activeDragRef.current = {
+            mode: 'resize',
+            nodeId: activeBounds.nodeId,
+            lastCanvasPos: pt,
+            anchor: { x: activeBounds.anchorX, y: activeBounds.anchorY },
+          };
+          capturePointerSafely(e);
+          return;
+        }
+      }
+    }
+
+    // 2. Check if pointer hits any Text Layer node (topmost first)
+    const hitText = hitTestTextLayer(scene, pt);
+    if (hitText) {
+      setSelectedTextLayerId(hitText.id);
+      setSelectedNodeId(hitText.id);
+      activeDragRef.current = {
+        mode: 'move',
+        nodeId: hitText.id,
+        lastCanvasPos: pt,
+      };
+      capturePointerSafely(e);
+      return;
+    }
+
+    // 3. Check if pointer hits Character or Pedestal sprite nodes
     const spriteNodesDesc = [...resolvedNodes]
       .filter((n) => n.kind === 'character' || n.kind === 'pedestal')
       .reverse();
@@ -646,7 +749,9 @@ export function App(): React.ReactElement {
     }
 
     const nodeId = hitNode.kind === 'character' ? 'character' : hitNode.id;
+    setSelectedNodeId(nodeId);
     activeDragRef.current = {
+      mode: 'move',
       nodeId,
       lastCanvasPos: pt,
     };
@@ -655,13 +760,7 @@ export function App(): React.ReactElement {
       setSelectedPedestalId(hitNode.id);
     }
 
-    if ('pointerId' in e && typeof e.currentTarget.setPointerCapture === 'function') {
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        // Ignore pointer capture errors in synthetic test environments
-      }
-    }
+    capturePointerSafely(e);
   };
 
   const handleCanvasPointerMove = (
@@ -674,6 +773,47 @@ export function App(): React.ReactElement {
     }
 
     const nextPt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
+
+    if (dragState.mode === 'rotate' && dragState.anchor) {
+      const angleRad = Math.atan2(
+        nextPt.x - dragState.anchor.x,
+        -(nextPt.y - dragState.anchor.y)
+      );
+      const deg = clampRotationDeg((angleRad * 180) / Math.PI);
+      activeDragRef.current = {
+        ...dragState,
+        lastCanvasPos: nextPt,
+      };
+      setScene((prev) => updateNodeRotation(prev, dragState.nodeId, deg));
+      return;
+    }
+
+    if (dragState.mode === 'resize' && dragState.anchor) {
+      const prevDist = Math.max(
+        24,
+        Math.hypot(
+          dragState.lastCanvasPos.x - dragState.anchor.x,
+          dragState.lastCanvasPos.y - dragState.anchor.y
+        )
+      );
+      const nextDist = Math.max(
+        24,
+        Math.hypot(
+          nextPt.x - dragState.anchor.x,
+          nextPt.y - dragState.anchor.y
+        )
+      );
+      const scaleRatio = nextDist / prevDist;
+      activeDragRef.current = {
+        ...dragState,
+        lastCanvasPos: nextPt,
+      };
+      setScene((prev) =>
+        updateNodeScaleFromGizmo(prev, dragState.nodeId, scaleRatio)
+      );
+      return;
+    }
+
     const dx = Math.round(nextPt.x - dragState.lastCanvasPos.x);
     const dy = Math.round(nextPt.y - dragState.lastCanvasPos.y);
     if (dx === 0 && dy === 0) {
@@ -682,7 +822,7 @@ export function App(): React.ReactElement {
 
     const { nodeId } = dragState;
     activeDragRef.current = {
-      nodeId,
+      ...dragState,
       lastCanvasPos: {
         x: dragState.lastCanvasPos.x + dx,
         y: dragState.lastCanvasPos.y + dy,
@@ -1345,6 +1485,345 @@ export function App(): React.ReactElement {
           </div>
 
           <div className="p-3.5 space-y-5">
+            {/* SECTION 0: MULTI-LAYER ISAAC TYPOGRAPHY ENGINE & INK-STREAK BANNERS */}
+            <section
+              data-testid="text-layer-inspector-section"
+              className="space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Type className="w-3.5 h-3.5 text-[#E5A93C]" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#E5A93C]">
+                    Text Layers ({scene.textLayers.length})
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  data-testid="add-text-layer-btn"
+                  aria-label="Add Text"
+                  onClick={() => {
+                    const nextScene = addTextLayer(scene);
+                    const created =
+                      nextScene.textLayers[nextScene.textLayers.length - 1];
+                    setScene(nextScene);
+                    if (created) {
+                      setSelectedTextLayerId(created.id);
+                      setSelectedNodeId(created.id);
+                    }
+                  }}
+                  className="px-2 py-1 rounded text-[11px] font-bold bg-[#C83A3A] hover:brightness-110 text-white border border-[#F06E6E]/60 flex items-center gap-1 transition-all cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>+ Add Text</span>
+                </button>
+              </div>
+
+              {/* Multi-Textbox Layer Selector List */}
+              {scene.textLayers.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <div className="flex-1 flex flex-wrap gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D]">
+                    {scene.textLayers.map((layer, idx) => {
+                      const isLayerSelected = activeTextLayer?.id === layer.id;
+                      return (
+                        <button
+                          key={layer.id}
+                          type="button"
+                          data-testid={`text-layer-item-${layer.id}`}
+                          aria-pressed={isLayerSelected}
+                          onClick={() => {
+                            setSelectedTextLayerId(layer.id);
+                            setSelectedNodeId(layer.id);
+                          }}
+                          className={`px-2 py-1 rounded text-[10px] font-mono-tabular font-semibold truncate max-w-[120px] transition-colors cursor-pointer ${
+                            isLayerSelected
+                              ? 'bg-[#231F28] border border-[#22D3EE] text-[#22D3EE]'
+                              : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+                          }`}
+                        >
+                          #{idx + 1} {layer.text || 'Empty'}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {activeTextLayer && (
+                    <button
+                      type="button"
+                      data-testid="delete-text-layer-btn"
+                      aria-label="Delete Text Layer"
+                      title="Delete Active Text Layer"
+                      onClick={() => {
+                        const targetId = activeTextLayer.id;
+                        const nextScene = deleteTextLayer(scene, targetId);
+                        setScene(nextScene);
+                        const nextFallback = nextScene.textLayers[0]?.id ?? '';
+                        setSelectedTextLayerId(nextFallback);
+                        setSelectedNodeId(nextFallback || null);
+                      }}
+                      className="p-1.5 rounded bg-[#231F28] hover:bg-[#C83A3A]/30 text-[#9E95A8] hover:text-[#F87171] border border-[#2A252D] transition-colors cursor-pointer shrink-0"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {activeTextLayer && (
+                <div className="space-y-3 pt-1">
+                  {/* Headline Text Content Input */}
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="input-headline-text"
+                      className="block text-[11px] font-semibold text-[#9E95A8]"
+                    >
+                      Headline Text
+                    </label>
+                    <input
+                      id="input-headline-text"
+                      data-testid="headline-text-input"
+                      aria-label="Headline Text"
+                      type="text"
+                      value={activeTextLayer.text}
+                      onChange={(e) =>
+                        setScene((prev) =>
+                          updateTextLayer(prev, activeTextLayer.id, {
+                            text: e.target.value,
+                          })
+                        )
+                      }
+                      placeholder="Enter headline text..."
+                      className="w-full bg-[#0D0B0E] border border-[#2A252D] focus:border-[#E5A93C] rounded px-2.5 py-1.5 text-xs font-bold text-[#F4EFEA] outline-none"
+                    />
+                  </div>
+
+                  {/* Font Family Switcher (Upheaval TT, Team Meat, Space Grotesk / Impact) */}
+                  <div className="space-y-1">
+                    <span className="block text-[11px] font-semibold text-[#9E95A8]">
+                      Isaac Font Family
+                    </span>
+                    <div className="grid grid-cols-3 gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D] text-[10px]">
+                      {TEXT_FONT_OPTIONS.map((fontOpt) => {
+                        const isSelected =
+                          activeTextLayer.fontFamily === fontOpt.id;
+                        return (
+                          <button
+                            key={fontOpt.id}
+                            type="button"
+                            data-testid={`font-family-${fontOpt.id}`}
+                            aria-pressed={isSelected}
+                            onClick={() =>
+                              setScene((prev) =>
+                                updateTextLayer(prev, activeTextLayer.id, {
+                                  fontFamily: fontOpt.id,
+                                })
+                              )
+                            }
+                            className={`py-1 px-1 rounded font-semibold truncate transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C] font-bold'
+                                : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+                            }`}
+                          >
+                            {fontOpt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Text Alignment (Left, Center, Right) */}
+                  <div className="space-y-1">
+                    <span className="block text-[11px] font-semibold text-[#9E95A8]">
+                      Text Alignment
+                    </span>
+                    <div className="grid grid-cols-3 gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D] text-[11px]">
+                      {(
+                        [
+                          { id: 'left', label: 'Left', Icon: AlignLeft },
+                          { id: 'center', label: 'Center', Icon: AlignCenter },
+                          { id: 'right', label: 'Right', Icon: AlignRight },
+                        ] as Array<{
+                          id: TextAlignMode;
+                          label: string;
+                          Icon: typeof AlignLeft;
+                        }>
+                      ).map(({ id, label, Icon }) => {
+                        const isSelected = activeTextLayer.align === id;
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            data-testid={`text-align-${id}`}
+                            aria-label={`Align ${label}`}
+                            aria-pressed={isSelected}
+                            onClick={() =>
+                              setScene((prev) =>
+                                updateTextLayer(prev, activeTextLayer.id, {
+                                  align: id,
+                                })
+                              )
+                            }
+                            className={`py-1 px-1.5 rounded font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C]'
+                                : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+                            }`}
+                          >
+                            <Icon className="w-3 h-3" />
+                            <span>{label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 1-Click Vertical Color Gradient Swatches */}
+                  <div className="space-y-1">
+                    <span className="block text-[11px] font-semibold text-[#9E95A8]">
+                      Vertical Gradient Swatch
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {(
+                        Object.values(TEXT_GRADIENT_SWATCHES) as Array<
+                          (typeof TEXT_GRADIENT_SWATCHES)[TextGradientSwatchId]
+                        >
+                      ).map((swatch) => {
+                        const isSelected = activeTextLayer.swatch === swatch.id;
+                        return (
+                          <button
+                            key={swatch.id}
+                            type="button"
+                            data-testid={`swatch-${swatch.id}`}
+                            aria-pressed={isSelected}
+                            onClick={() =>
+                              setScene((prev) =>
+                                updateTextLayer(prev, activeTextLayer.id, {
+                                  swatch: swatch.id,
+                                })
+                              )
+                            }
+                            className={`p-1.5 rounded border text-left flex items-center gap-2 transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#231F28] border-[#E5A93C] ring-1 ring-[#E5A93C]'
+                                : 'bg-[#0D0B0E] border-[#2A252D] hover:border-[#9E95A8]'
+                            }`}
+                          >
+                            <span
+                              className="w-4 h-4 rounded-xs border border-black/60 shrink-0"
+                              style={{
+                                background: `linear-gradient(180deg, ${swatch.topColor} 0%, ${swatch.midColor} 50%, ${swatch.bottomColor} 100%)`,
+                              }}
+                            />
+                            <span className="text-[10px] font-semibold text-[#F4EFEA] truncate">
+                              {swatch.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Font Size & Layer Tilt (-45° to +45°) */}
+                  <InspectorSlider
+                    id="slider-font-size"
+                    label="Font Size"
+                    displayValue={`${activeTextLayer.fontSize}px`}
+                    min={24}
+                    max={120}
+                    step={2}
+                    value={activeTextLayer.fontSize}
+                    highlightReadout
+                    onChange={(fontSize) =>
+                      setScene((prev) =>
+                        updateTextLayer(prev, activeTextLayer.id, { fontSize })
+                      )
+                    }
+                  />
+
+                  <InspectorSlider
+                    id="slider-layer-tilt"
+                    label="Layer Tilt"
+                    displayValue={`${
+                      activeTextLayer.rotationDeg > 0 ? '+' : ''
+                    }${activeTextLayer.rotationDeg}°`}
+                    min={-45}
+                    max={45}
+                    step={1}
+                    value={activeTextLayer.rotationDeg}
+                    onChange={(rotationDeg) =>
+                      setScene((prev) =>
+                        updateTextLayer(prev, activeTextLayer.id, {
+                          rotationDeg,
+                        })
+                      )
+                    }
+                  />
+
+                  {/* Pixel Stroke Width & Hard Drop Shadow */}
+                  <InspectorSlider
+                    id="slider-stroke-width"
+                    label="Pixel Stroke Width"
+                    displayValue={`${activeTextLayer.strokeWidth}px`}
+                    min={0}
+                    max={16}
+                    step={1}
+                    value={activeTextLayer.strokeWidth}
+                    onChange={(strokeWidth) =>
+                      setScene((prev) =>
+                        updateTextLayer(prev, activeTextLayer.id, {
+                          strokeWidth,
+                        })
+                      )
+                    }
+                  />
+
+                  <InspectorSlider
+                    id="slider-drop-shadow"
+                    label="Hard Drop Shadow"
+                    displayValue={`${activeTextLayer.dropShadow}px`}
+                    min={0}
+                    max={20}
+                    step={1}
+                    value={activeTextLayer.dropShadow}
+                    onChange={(dropShadow) =>
+                      setScene((prev) =>
+                        updateTextLayer(prev, activeTextLayer.id, {
+                          dropShadow,
+                        })
+                      )
+                    }
+                  />
+
+                  {/* Isaac Ink-Streak Banner Underlay Toggle */}
+                  <button
+                    type="button"
+                    data-testid="ink-banner-toggle"
+                    aria-label="Ink-Streak Banner Underlay"
+                    aria-pressed={activeTextLayer.inkBanner}
+                    onClick={() =>
+                      setScene((prev) =>
+                        updateTextLayer(prev, activeTextLayer.id, {
+                          inkBanner: !activeTextLayer.inkBanner,
+                        })
+                      )
+                    }
+                    className={`w-full py-1.5 px-2.5 rounded border text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
+                      activeTextLayer.inkBanner
+                        ? 'bg-[#231F28] border-[#E5A93C] text-[#E5A93C]'
+                        : 'bg-[#0D0B0E] border-[#2A252D] text-[#9E95A8] hover:text-[#F4EFEA]'
+                    }`}
+                  >
+                    <span>Isaac Ink-Streak Banner</span>
+                    <span className="font-mono-tabular font-bold">
+                      {activeTextLayer.inkBanner ? 'ON' : 'OFF'}
+                    </span>
+                  </button>
+                </div>
+              )}
+            </section>
+
+            <div className="h-px bg-[#2A252D]" />
+
             {/* SECTION 1: ROOM & CAMERA FRAMING */}
             <section className="space-y-3">
               <div className="flex items-center justify-between">
