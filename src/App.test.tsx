@@ -24,7 +24,8 @@ describe('StudioWorkbenchUI (App)', () => {
     expect(previewCanvas.width).toBe(180);
     expect(previewCanvas.height).toBe(101);
 
-    // 2. Selecting Special Rooms -> Planetarium updates stage readout
+    // 2. Switching Left Drawer to Rooms tab and selecting Special Rooms -> Planetarium updates stage readout
+    fireEvent.click(screen.getByRole('button', { name: /^Rooms$/i }));
     fireEvent.click(screen.getByRole('button', { name: /Special Rooms/i }));
     fireEvent.click(screen.getByRole('button', { name: /Planetarium/i }));
     expect(screen.getAllByText('Planetarium').length).toBeGreaterThanOrEqual(1);
@@ -102,4 +103,76 @@ describe('StudioWorkbenchUI (App)', () => {
     createObjectURLSpy.mockRestore();
     revokeObjectURLSpy.mockRestore();
   });
+
+  it('supports switching between 17 Normal and 17 Tainted characters (34 total), toggling poses (Front Idle, ★ Happy Pickup, Crying), scrubbing/resetting Character Scale (1.0x-2.5x), and conditionally revealing the 6-column Eden Hairstyle grid & 🎲 Randomize Hair button', () => {
+    render(<App />);
+
+    // Default active character is Eden (Normal variant), so Eden Hairstyle panel & Randomize Hair button are visible
+    expect(screen.getByTestId('active-character-preview')).toBeInTheDocument();
+    expect(screen.getByTestId('eden-hair-grid')).toBeInTheDocument();
+    const randomizeHairBtn = screen.getByRole('button', {
+      name: /Randomize Hair/i,
+    });
+    expect(randomizeHairBtn).toBeInTheDocument();
+
+    // Verify 17 Normal characters are rendered under the Normal toggle
+    const normalToggle = screen.getByRole('button', { name: /Normal \(17\)/i });
+    const taintedToggle = screen.getByRole('button', { name: /Tainted \(17\)/i });
+    expect(normalToggle).toBeInTheDocument();
+    expect(taintedToggle).toBeInTheDocument();
+
+    const normalCharButtons = screen.getAllByTestId(/^character-option-/);
+    expect(normalCharButtons).toHaveLength(17);
+
+    // Switch pose between Front Idle, ★ Happy Pickup, and Crying
+    const idlePoseBtn = screen.getByRole('button', { name: /Front Idle/i });
+    const pickupPoseBtn = screen.getByRole('button', { name: /Happy Pickup/i });
+    const cryingPoseBtn = screen.getByRole('button', { name: /Crying/i });
+
+    fireEvent.click(idlePoseBtn);
+    expect(idlePoseBtn).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(cryingPoseBtn);
+    expect(cryingPoseBtn).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(pickupPoseBtn);
+    expect(pickupPoseBtn).toHaveAttribute('aria-pressed', 'true');
+
+    // Scrub Character Scale (1.0x - 2.5x) and click Reset
+    const charScaleSlider = screen.getByLabelText('Character Scale');
+    fireEvent.change(charScaleSlider, { target: { value: '2.25' } });
+    expect(screen.getByText('2.25x')).toBeInTheDocument();
+
+    const resetScaleBtn = screen.getByRole('button', { name: /Reset Scale/i });
+    fireEvent.click(resetScaleBtn);
+    expect(screen.getByText('1.85x')).toBeInTheDocument();
+
+    // Click an Eden hairstyle in the 6-column grid and click 🎲 Randomize Hair
+    const hairOption5 = screen.getByTestId('eden-hair-option-5');
+    fireEvent.click(hairOption5);
+    expect(hairOption5).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(randomizeHairBtn);
+    expect(hairOption5).toHaveAttribute('aria-pressed', 'false');
+
+    // Selecting a non-Eden Normal character (e.g. Isaac) hides the Eden Hairstyle panel & Randomize button
+    fireEvent.click(screen.getByTestId('character-option-isaac'));
+    expect(screen.queryByTestId('eden-hair-grid')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /Randomize Hair/i })
+    ).not.toBeInTheDocument();
+
+    // Switching to Tainted (17) displays all 17 Tainted characters
+    fireEvent.click(taintedToggle);
+    const taintedCharButtons = screen.getAllByTestId(/^character-option-/);
+    expect(taintedCharButtons).toHaveLength(17);
+
+    // Selecting Tainted Eden unlocks the Eden Hairstyle grid and Randomize Hair button again
+    fireEvent.click(screen.getByTestId('character-option-tainted-eden'));
+    expect(screen.getByTestId('eden-hair-grid')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Randomize Hair/i })
+    ).toBeInTheDocument();
+  });
 });
+

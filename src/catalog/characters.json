@@ -117,14 +117,6 @@
       "defaultEdenHair": null
     },
     {
-      "id": "lazarus-risen",
-      "name": "Lazarus Risen",
-      "variant": "normal",
-      "atlasRow": 9,
-      "supportsEdenHair": false,
-      "defaultEdenHair": null
-    },
-    {
       "id": "eden",
       "name": "Eden",
       "variant": "normal",
@@ -173,14 +165,6 @@
       "defaultEdenHair": null
     },
     {
-      "id": "the-soul",
-      "name": "The Soul",
-      "variant": "normal",
-      "atlasRow": 16,
-      "supportsEdenHair": false,
-      "defaultEdenHair": null
-    },
-    {
       "id": "bethany",
       "name": "Bethany",
       "variant": "normal",
@@ -190,17 +174,9 @@
     },
     {
       "id": "jacob",
-      "name": "Jacob",
+      "name": "Jacob & Esau",
       "variant": "normal",
       "atlasRow": 18,
-      "supportsEdenHair": false,
-      "defaultEdenHair": null
-    },
-    {
-      "id": "esau",
-      "name": "Esau",
-      "variant": "normal",
-      "atlasRow": 19,
       "supportsEdenHair": false,
       "defaultEdenHair": null
     },
@@ -321,14 +297,6 @@
       "name": "Tainted Forgotten",
       "variant": "tainted",
       "atlasRow": 34,
-      "supportsEdenHair": false,
-      "defaultEdenHair": null
-    },
-    {
-      "id": "tainted-soul",
-      "name": "Tainted Soul",
-      "variant": "tainted",
-      "atlasRow": 35,
       "supportsEdenHair": false,
       "defaultEdenHair": null
     },

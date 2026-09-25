@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
   createDefaultSceneState,
+  DEFAULT_CHARACTER_SCALE,
+  randomizeEdenHair,
+  resetCharacterScale,
   resolveSceneLayout,
+  selectCharacter,
+  selectEdenHair,
   toggleEditorOverlay,
   updateBackdropFilters,
   updateCameraFraming,
+  updateCharacterPose,
+  updateCharacterScale,
   updateRoomStage,
 } from './sceneDocument';
 
@@ -60,4 +67,45 @@ describe('sceneDocument', () => {
       expect(node.y).toBeLessThanOrEqual(720);
     }
   });
+
+  it('updates character identity, pose, scale (1.0x-2.5x with reset), and Eden hairstyle selection/randomization', () => {
+    const initial = createDefaultSceneState();
+    expect(initial.character.id).toBe('eden');
+    expect(initial.character.edenHairId).toBe(12);
+    expect(initial.character.scale).toBe(DEFAULT_CHARACTER_SCALE);
+
+    // Switch to non-Eden character omits edenHairId
+    const asIsaac = selectCharacter(initial, 'isaac');
+    expect(asIsaac.character.id).toBe('isaac');
+    expect(asIsaac.character.name).toBe('Isaac');
+    expect(asIsaac.character.edenHairId).toBeUndefined();
+
+    // Switch to Tainted Eden restores default Eden hair
+    const asTaintedEden = selectCharacter(asIsaac, 'tainted-eden');
+    expect(asTaintedEden.character.id).toBe('tainted-eden');
+    expect(asTaintedEden.character.edenHairId).toBe(21);
+
+    // Switch poses across Front Idle, Happy Pickup, and Crying
+    const inCrying = updateCharacterPose(asTaintedEden, 'crying');
+    expect(inCrying.character.pose).toBe('crying');
+
+    // Scrub character scale between 1.0x and 2.5x and reset
+    const scaledUp = updateCharacterScale(inCrying, 2.35);
+    expect(scaledUp.character.scale).toBe(2.35);
+    const clampedHigh = updateCharacterScale(scaledUp, 5.0);
+    expect(clampedHigh.character.scale).toBe(2.5);
+    const clampedLow = updateCharacterScale(scaledUp, 0.4);
+    expect(clampedLow.character.scale).toBe(1.0);
+    const resetScaled = resetCharacterScale(clampedLow);
+    expect(resetScaled.character.scale).toBe(DEFAULT_CHARACTER_SCALE);
+
+    // Select & randomize Eden hairstyle
+    const withHair7 = selectEdenHair(resetScaled, 7);
+    expect(withHair7.character.edenHairId).toBe(7);
+    const randomized = randomizeEdenHair(withHair7, () => 0.5);
+    expect(randomized.character.edenHairId).not.toBe(7);
+    expect(randomized.character.edenHairId).toBeGreaterThanOrEqual(1);
+    expect(randomized.character.edenHairId).toBeLessThanOrEqual(54);
+  });
 });
+

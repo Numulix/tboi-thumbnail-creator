@@ -1,9 +1,7 @@
 import {
   ALTAR_SPRITE_CELLS,
-  getCharacterById,
-  getCharacterPoseById,
+  composeCharacterStack,
   getCollectibleById,
-  getEdenHairById,
 } from '../catalog/gameAssetsCatalog';
 import { getRoomBackdropById, type RoomBackdropRecord } from '../catalog/roomCatalog';
 import type { ResolvedSceneNode, SceneState } from '../domain/sceneDocument';
@@ -199,8 +197,6 @@ function renderPass2Sprites(
 
   const collectiblesAtlas = assetBitmaps.get(ASSET_URLS.collectiblesAtlas);
   const altarSheet = assetBitmaps.get(ASSET_URLS.altarSheet);
-  const charactersAtlas = assetBitmaps.get(ASSET_URLS.charactersAtlas);
-  const edenHairsAtlas = assetBitmaps.get(ASSET_URLS.edenHairsAtlas);
 
   const spriteNodes = resolvedNodes.filter(
     (node) => node.kind === 'character' || node.kind === 'pedestal'
@@ -211,71 +207,49 @@ function renderPass2Sprites(
     const ny = Math.round(node.y * scaleRatio);
 
     if (node.kind === 'character') {
-      const charEntry = getCharacterById(scene.character.id);
-      const poseEntry = getCharacterPoseById(scene.character.pose);
       const charPixelScale = 3.2 * (node.scale / 1.85) * scaleRatio;
-      const destSize = Math.round(64 * charPixelScale);
+      const stack = composeCharacterStack(scene.character);
 
-      // Authentic ground shadow beneath character feet
-      const shadowW = Math.round(28 * charPixelScale);
-      const shadowH = Math.round(10 * charPixelScale);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
-      ctx.fillRect(
-        Math.round(nx - shadowW / 2),
-        Math.round(ny - shadowH / 2),
-        shadowW,
-        shadowH
-      );
-
-      if (charactersAtlas) {
-        // In the 64x64 reaction cell, feet rest at y = 56 and horizontal center is x = 32
-        const dx = Math.round(nx - 32 * charPixelScale);
-        const dy = Math.round(ny - 56 * charPixelScale);
-        const sx = poseEntry.atlasCol * 64;
-        const sy = charEntry.atlasRow * 64;
-
-        ctx.drawImage(charactersAtlas, sx, sy, 64, 64, dx, dy, destSize, destSize);
-
-        // Layer Eden hairstyle if character is Eden or Tainted Eden
-        if (charEntry.supportsEdenHair && edenHairsAtlas) {
-          const hairEntry = getEdenHairById(
-            scene.character.edenHairId ?? charEntry.defaultEdenHair ?? 1
-          );
-          const hairDx = Math.round(dx + poseEntry.hairDx * charPixelScale);
-          const hairDy = Math.round(dy + poseEntry.hairDy * charPixelScale);
-          ctx.drawImage(
-            edenHairsAtlas,
-            hairEntry.col * 64,
-            hairEntry.row * 64,
-            64,
-            64,
-            hairDx,
-            hairDy,
-            destSize,
-            destSize
-          );
-
-          // Keep raised right thumb in front of long side locks in thumbsUp pose
-          if (poseEntry.id === 'thumbsUp') {
-            ctx.drawImage(
-              charactersAtlas,
-              sx + 39,
-              sy + 30,
-              14,
-              18,
-              Math.round(dx + 39 * charPixelScale),
-              Math.round(dy + 30 * charPixelScale),
-              Math.round(14 * charPixelScale),
-              Math.round(18 * charPixelScale)
+      for (const layer of stack) {
+        if (layer.kind === 'shadow') {
+          const shadowW = Math.round(layer.dw * charPixelScale);
+          const shadowH = Math.round(layer.dh * charPixelScale);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+          if (typeof ctx.ellipse === 'function') {
+            ctx.beginPath();
+            ctx.ellipse(nx, ny, shadowW / 2, shadowH / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.fillRect(
+              Math.round(nx - shadowW / 2),
+              Math.round(ny - shadowH / 2),
+              shadowW,
+              shadowH
             );
           }
+          continue;
         }
-      } else {
-        // Synchronous fallback when HTMLImageElement is still decoding
-        const charW = 86 * scaleRatio * (node.scale / 1.85);
-        const charH = 112 * scaleRatio * (node.scale / 1.85);
-        ctx.fillStyle = '#F7D8B5';
-        ctx.fillRect(nx - charW * 0.46, ny - charH, charW * 0.92, charH);
+
+        const atlasBitmap = layer.atlasUrl ? assetBitmaps.get(layer.atlasUrl) : undefined;
+        if (atlasBitmap) {
+          ctx.drawImage(
+            atlasBitmap,
+            layer.sx,
+            layer.sy,
+            layer.sw,
+            layer.sh,
+            Math.round(nx + layer.dx * charPixelScale),
+            Math.round(ny + layer.dy * charPixelScale),
+            Math.round(layer.dw * charPixelScale),
+            Math.round(layer.dh * charPixelScale)
+          );
+        } else if (layer.kind === 'body') {
+          // Synchronous fallback when HTMLImageElement is still decoding
+          const charW = 86 * scaleRatio * (node.scale / 1.85);
+          const charH = 112 * scaleRatio * (node.scale / 1.85);
+          ctx.fillStyle = '#F7D8B5';
+          ctx.fillRect(nx - charW * 0.46, ny - charH, charW * 0.92, charH);
+        }
       }
     } else {
       const slot = scene.pedestals.find((p) => p.id === node.id);

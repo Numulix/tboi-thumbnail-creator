@@ -152,7 +152,7 @@ const CHARACTERS = [
   { id: 'samson', name: 'Samson', variant: 'normal', sheet: 'character_007_samson.png' },
   { id: 'azazel', name: 'Azazel', variant: 'normal', sheet: 'character_008_azazel.png' },
   { id: 'lazarus', name: 'Lazarus', variant: 'normal', sheet: 'character_009_lazarus.png' },
-  { id: 'lazarus-risen', name: 'Lazarus Risen', variant: 'normal', sheet: 'character_010_lazarus2.png' },
+  { id: 'lazarus-risen', name: 'Lazarus Risen', variant: 'normal', sheet: 'character_010_lazarus2.png', includeInCatalog: false },
   // Eden uses bald base poses from character_001_isaac.png so any of the 54 Eden hairstyles layers cleanly
   { id: 'eden', name: 'Eden', variant: 'normal', sheet: 'character_001_isaac.png', supportsEdenHair: true, defaultEdenHair: 1 },
   { id: 'the-lost', name: 'The Lost', variant: 'normal', sheet: 'character_012_thelost.png' },
@@ -160,10 +160,10 @@ const CHARACTERS = [
   { id: 'keeper', name: 'Keeper', variant: 'normal', sheet: 'character_015_keeper.png' },
   { id: 'apollyon', name: 'Apollyon', variant: 'normal', sheet: 'character_016_apollyon.png' },
   { id: 'the-forgotten', name: 'The Forgotten', variant: 'normal', sheet: 'character_017_theforgotten.png' },
-  { id: 'the-soul', name: 'The Soul', variant: 'normal', sheet: 'character_018_thesoul.png' },
+  { id: 'the-soul', name: 'The Soul', variant: 'normal', sheet: 'character_018_thesoul.png', includeInCatalog: false },
   { id: 'bethany', name: 'Bethany', variant: 'normal', sheet: 'character_001x_bethany.png' },
-  { id: 'jacob', name: 'Jacob', variant: 'normal', sheet: 'character_002x_jacob.png' },
-  { id: 'esau', name: 'Esau', variant: 'normal', sheet: 'character_003x_esau.png' },
+  { id: 'jacob', name: 'Jacob & Esau', variant: 'normal', sheet: 'character_002x_jacob.png' },
+  { id: 'esau', name: 'Esau', variant: 'normal', sheet: 'character_003x_esau.png', includeInCatalog: false },
 
   // Tainted Playable Roster
   { id: 'tainted-isaac', name: 'Tainted Isaac', variant: 'tainted', sheet: 'character_001b_isaac.png' },
@@ -181,7 +181,7 @@ const CHARACTERS = [
   { id: 'tainted-keeper', name: 'Tainted Keeper', variant: 'tainted', sheet: 'character_015b_keeper.png' },
   { id: 'tainted-apollyon', name: 'Tainted Apollyon', variant: 'tainted', sheet: 'character_016b_apollyon.png' },
   { id: 'tainted-forgotten', name: 'Tainted Forgotten', variant: 'tainted', sheet: 'character_016b_theforgotten.png' },
-  { id: 'tainted-soul', name: 'Tainted Soul', variant: 'tainted', sheet: 'character_017b_thesoul.png' },
+  { id: 'tainted-soul', name: 'Tainted Soul', variant: 'tainted', sheet: 'character_017b_thesoul.png', includeInCatalog: false },
   { id: 'tainted-bethany', name: 'Tainted Bethany', variant: 'tainted', sheet: 'character_018b_bethany.png' },
   { id: 'tainted-jacob', name: 'Tainted Jacob', variant: 'tainted', sheet: 'character_019b_jacob.png' },
 ];
@@ -218,14 +218,16 @@ for (let row = 0; row < CHARACTERS.length; row++) {
     }
   }
 
-  catalogCharacters.push({
-    id: ch.id,
-    name: ch.name,
-    variant: ch.variant,
-    atlasRow: row,
-    supportsEdenHair: Boolean(ch.supportsEdenHair),
-    defaultEdenHair: ch.defaultEdenHair ?? null,
-  });
+  if (ch.includeInCatalog !== false) {
+    catalogCharacters.push({
+      id: ch.id,
+      name: ch.name,
+      variant: ch.variant,
+      atlasRow: row,
+      supportsEdenHair: Boolean(ch.supportsEdenHair),
+      defaultEdenHair: ch.defaultEdenHair ?? null,
+    });
+  }
 }
 
 fs.writeFileSync(

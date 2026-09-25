@@ -1,4 +1,18 @@
+import {
+  getCharacterById,
+  listEdenHairs,
+  resolveCharacterEdenHairId,
+} from '../catalog/gameAssetsCatalog';
+
 export type FormationPreset = 'arc' | 'row' | 'grid-2x2' | 'flank';
+export type CharacterPoseId =
+  | 'idle'
+  | 'pickup'
+  | 'thumbsUp'
+  | 'shocked'
+  | 'agony'
+  | 'cheer'
+  | 'crying';
 
 export interface Vec2 {
   x: number;
@@ -56,7 +70,7 @@ export interface SceneState {
   character: {
     id: string;
     name: string;
-    pose: 'idle' | 'pickup' | 'thumbsUp' | 'shocked' | 'agony' | 'cheer' | 'crying';
+    pose: CharacterPoseId;
     edenHairId?: number;
     scale: number;
     x: number;
@@ -88,6 +102,8 @@ export const DEFAULT_BACKDROP_FILTERS: BackdropFilterConfig = {
   depthBlur: 1.5,
 };
 
+export const DEFAULT_CHARACTER_SCALE = 1.85;
+
 export function createDefaultSceneState(): SceneState {
   return {
     projectName: 'Eden Run - Burning Basement',
@@ -105,7 +121,7 @@ export function createDefaultSceneState(): SceneState {
       name: '09. Eden',
       pose: 'pickup',
       edenHairId: 12,
-      scale: 1.85,
+      scale: DEFAULT_CHARACTER_SCALE,
       x: 280,
       y: 505,
     },
@@ -160,6 +176,87 @@ export function createDefaultSceneState(): SceneState {
         inkBanner: true,
       },
     ],
+  };
+}
+
+export function selectCharacter(scene: SceneState, characterId: string): SceneState {
+  const entry = getCharacterById(characterId);
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      id: entry.id,
+      name: entry.name,
+      edenHairId: entry.supportsEdenHair
+        ? resolveCharacterEdenHairId(entry, scene.character.edenHairId)
+        : undefined,
+    },
+  };
+}
+
+export function updateCharacterPose(
+  scene: SceneState,
+  pose: CharacterPoseId
+): SceneState {
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      pose,
+    },
+  };
+}
+
+export function updateCharacterScale(scene: SceneState, scale: number): SceneState {
+  const clamped = Math.max(1.0, Math.min(2.5, Number(scale.toFixed(2))));
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      scale: clamped,
+    },
+  };
+}
+
+export function resetCharacterScale(scene: SceneState): SceneState {
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      scale: DEFAULT_CHARACTER_SCALE,
+    },
+  };
+}
+
+export function selectEdenHair(scene: SceneState, edenHairId: number): SceneState {
+  const clamped = Math.max(1, Math.min(54, Math.round(edenHairId || 1)));
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      edenHairId: clamped,
+    },
+  };
+}
+
+export function randomizeEdenHair(
+  scene: SceneState,
+  randomFn: () => number = Math.random
+): SceneState {
+  const hairs = listEdenHairs();
+  const currentId = scene.character.edenHairId ?? 1;
+  const candidates = hairs.filter((h) => h.id !== currentId);
+  const pool = candidates.length > 0 ? candidates : hairs;
+  const index = Math.min(
+    pool.length - 1,
+    Math.max(0, Math.floor(randomFn() * pool.length))
+  );
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      edenHairId: pool[index].id,
+    },
   };
 }
 

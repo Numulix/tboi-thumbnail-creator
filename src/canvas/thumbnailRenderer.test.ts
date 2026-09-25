@@ -111,10 +111,94 @@ describe('thumbnailRenderer', () => {
     });
 
     const drawImageOps = ctx.__ops.filter((op) => op.type === 'drawImage');
-    // 1 room backdrop + (1 character base + 1 Eden hair) + 4 pedestals * (1 shadow + 1 altar + 1 collectible) = 15 drawImage calls
+    // 1 room backdrop + (1 character body + 1 character head + 1 Eden hair) + 4 pedestals * (1 shadow + 1 altar + 1 collectible) = 16 drawImage calls
     expect(drawImageOps.length).toBeGreaterThanOrEqual(14);
     for (const op of drawImageOps) {
       expect(op.smoothing).toBe(false);
     }
   });
+
+  it('renders character via composeCharacterStack with pose-aligned Eden hair and omits hair drawImage when a non-Eden character is selected', () => {
+    const edenIdle = {
+      ...createDefaultSceneState(),
+      character: {
+        id: 'eden',
+        name: 'Eden',
+        pose: 'idle' as const,
+        edenHairId: 12,
+        scale: 1.85,
+        x: 280,
+        y: 505,
+      },
+      pedestals: [],
+    };
+    const edenPickup = {
+      ...edenIdle,
+      character: { ...edenIdle.character, pose: 'pickup' as const },
+    };
+    const isaacPickup = {
+      ...edenIdle,
+      character: {
+        ...edenIdle.character,
+        id: 'isaac',
+        name: 'Isaac',
+        pose: 'pickup' as const,
+        edenHairId: undefined,
+      },
+    };
+
+    const cache = new Map<string, CanvasImageSource>();
+    const roomSurface = document.createElement('canvas');
+    const charAtlasSurface = document.createElement('canvas');
+    const hairAtlasSurface = document.createElement('canvas');
+    cache.set('/assets/rooms/burning-basement.png', roomSurface);
+    cache.set('/assets/characters/characters-atlas.png', charAtlasSurface);
+    cache.set('/assets/characters/eden-hairs-atlas.png', hairAtlasSurface);
+
+    const runRender = (sceneState: ReturnType<typeof createDefaultSceneState>) => {
+      const c = document.createElement('canvas');
+      c.width = 1280;
+      c.height = 720;
+      const context = c.getContext('2d') as MockCtxWithOps;
+      renderThumbnail(context, sceneState, resolveSceneLayout(sceneState), cache, {
+        includeEditorOverlays: false,
+      });
+      return context.__ops;
+    };
+
+    const idleOps = runRender(edenIdle);
+    const pickupOps = runRender(edenPickup);
+    const isaacOps = runRender(isaacPickup);
+
+    // Eden draws body + head from charactersAtlas and hair from edenHairsAtlas
+    const idleCharDraws = idleOps.filter(
+      (op) => op.type === 'drawImage' && op.args[0] === charAtlasSurface
+    );
+    const idleHairDraws = idleOps.filter(
+      (op) => op.type === 'drawImage' && op.args[0] === hairAtlasSurface
+    );
+    expect(idleCharDraws).toHaveLength(2); // body + head
+    expect(idleHairDraws).toHaveLength(1); // edenHair
+
+    const pickupHairDraws = pickupOps.filter(
+      (op) => op.type === 'drawImage' && op.args[0] === hairAtlasSurface
+    );
+    expect(pickupHairDraws).toHaveLength(1);
+
+    // Switching from Idle to Pickup shifts the drawn Y coordinate of Eden's hair downward
+    const idleHairDy = Number(idleHairDraws[0].args[6]);
+    const pickupHairDy = Number(pickupHairDraws[0].args[6]);
+    expect(pickupHairDy).toBeGreaterThan(idleHairDy);
+
+    // Non-Eden character draws body + head (2 draws) and 0 draws from edenHairsAtlas
+    const isaacCharDraws = isaacOps.filter(
+      (op) => op.type === 'drawImage' && op.args[0] === charAtlasSurface
+    );
+    const isaacHairDraws = isaacOps.filter(
+      (op) => op.type === 'drawImage' && op.args[0] === hairAtlasSurface
+    );
+    expect(isaacCharDraws).toHaveLength(2);
+    expect(isaacHairDraws).toHaveLength(0);
+  });
 });
+
