@@ -1,3 +1,10 @@
+import {
+  ALTAR_SPRITE_CELLS,
+  getCharacterById,
+  getCharacterPoseById,
+  getCollectibleById,
+  getEdenHairById,
+} from '../catalog/gameAssetsCatalog';
 import { getRoomBackdropById, type RoomBackdropRecord } from '../catalog/roomCatalog';
 import type { ResolvedSceneNode, SceneState } from '../domain/sceneDocument';
 
@@ -7,7 +14,52 @@ export interface RenderOptions {
   includeEditorOverlays: boolean;
 }
 
+export const ASSET_URLS = {
+  collectiblesAtlas: '/assets/collectibles/collectibles-atlas.png',
+  altarSheet: '/assets/altars/levelitem_001_itemaltar.png',
+  charactersAtlas: '/assets/characters/characters-atlas.png',
+  edenHairsAtlas: '/assets/characters/eden-hairs-atlas.png',
+} as const;
+
+const pendingLoads = new Set<string>();
 const roomPixelTileCache = new Map<string, HTMLCanvasElement>();
+
+export function preloadSceneAssets(
+  scene: SceneState,
+  cache: AssetBitmapCache,
+  onLoaded?: () => void
+): void {
+  if (typeof Image === 'undefined') {
+    return;
+  }
+
+  const room = getRoomBackdropById(scene.stageId);
+  const urlsToLoad = [
+    room.textureUrl,
+    ASSET_URLS.collectiblesAtlas,
+    ASSET_URLS.altarSheet,
+    ASSET_URLS.charactersAtlas,
+    ASSET_URLS.edenHairsAtlas,
+  ];
+
+  for (const url of urlsToLoad) {
+    if (cache.has(url) || pendingLoads.has(url)) {
+      continue;
+    }
+    pendingLoads.add(url);
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      pendingLoads.delete(url);
+      cache.set(url, img);
+      onLoaded?.();
+    };
+    img.onerror = () => {
+      pendingLoads.delete(url);
+    };
+    img.src = url;
+  }
+}
 
 function getOrCreateRoomPixelSurface(room: RoomBackdropRecord): HTMLCanvasElement {
   const existing = roomPixelTileCache.get(room.id);
@@ -16,8 +68,8 @@ function getOrCreateRoomPixelSurface(room: RoomBackdropRecord): HTMLCanvasElemen
   }
 
   const tileCanvas = document.createElement('canvas');
-  tileCanvas.width = 320;
-  tileCanvas.height = 180;
+  tileCanvas.width = 468;
+  tileCanvas.height = 312;
   const tctx = tileCanvas.getContext('2d');
   if (!tctx) {
     return tileCanvas;
@@ -26,29 +78,19 @@ function getOrCreateRoomPixelSurface(room: RoomBackdropRecord): HTMLCanvasElemen
   tctx.imageSmoothingEnabled = false;
   const { palette } = room;
 
-  // Outer stone walls
   tctx.fillStyle = palette.wallColor;
-  tctx.fillRect(0, 0, 320, 180);
+  tctx.fillRect(0, 0, 468, 312);
 
-  // Wall brick courses
-  tctx.fillStyle = palette.wallBrickColor;
-  for (let bx = 8; bx < 312; bx += 24) {
-    tctx.fillRect(bx, 6, 20, 10);
-    tctx.fillRect(bx + 6, 18, 18, 10);
-  }
-
-  // Inner dungeon floor area
-  const floorX = 24;
-  const floorY = 36;
-  const floorW = 272;
-  const floorH = 128;
+  const floorX = 52;
+  const floorY = 52;
+  const floorW = 364;
+  const floorH = 208;
 
   tctx.fillStyle = palette.floorPrimary;
   tctx.fillRect(floorX, floorY, floorW, floorH);
 
-  // Checkerboard pixel floor planks / tiles
-  const cellW = 16;
-  const cellH = 16;
+  const cellW = 26;
+  const cellH = 26;
   for (let gy = 0; gy < floorH / cellH; gy++) {
     for (let gx = 0; gx < floorW / cellW; gx++) {
       const px = floorX + gx * cellW;
@@ -57,38 +99,10 @@ function getOrCreateRoomPixelSurface(room: RoomBackdropRecord): HTMLCanvasElemen
         tctx.fillStyle = palette.floorSecondary;
         tctx.fillRect(px, py, cellW - 1, cellH - 1);
       }
-      // Grout line
       tctx.fillStyle = palette.groutColor;
       tctx.fillRect(px, py + cellH - 1, cellW, 1);
       tctx.fillRect(px + cellW - 1, py, 1, cellH);
     }
-  }
-
-  // Inner wall bevel border
-  tctx.fillStyle = palette.groutColor;
-  tctx.fillRect(floorX - 2, floorY - 2, floorW + 4, 2);
-  tctx.fillRect(floorX - 2, floorY + floorH, floorW + 4, 2);
-  tctx.fillRect(floorX - 2, floorY, 2, floorH);
-  tctx.fillRect(floorX + floorW, floorY, 2, floorH);
-
-  // Top North Doorway arch
-  tctx.fillStyle = palette.doorFrameColor;
-  tctx.fillRect(140, 8, 40, 28);
-  tctx.fillStyle = palette.doorInnerColor;
-  tctx.fillRect(146, 14, 28, 22);
-
-  // Pixel particles / room embers
-  tctx.fillStyle = palette.particleColor;
-  const particleCoords = [
-    [62, 64],
-    [118, 92],
-    [198, 74],
-    [248, 118],
-    [94, 138],
-    [215, 142],
-  ];
-  for (const [px, py] of particleCoords) {
-    tctx.fillRect(px, py, 2, 2);
   }
 
   roomPixelTileCache.set(room.id, tileCanvas);
@@ -98,14 +112,16 @@ function getOrCreateRoomPixelSurface(room: RoomBackdropRecord): HTMLCanvasElemen
 function renderPass1RoomBackdrop(
   ctx: CanvasRenderingContext2D,
   scene: SceneState,
+  assetBitmaps: AssetBitmapCache,
   width: number,
   height: number
 ): void {
   const room = getRoomBackdropById(scene.stageId);
-  const pixelSurface = getOrCreateRoomPixelSurface(room);
+  const loadedRoomBitmap = assetBitmaps.get(room.textureUrl);
+  const pixelSurface = loadedRoomBitmap ?? getOrCreateRoomPixelSurface(room);
 
   ctx.save();
-  // Strict nearest-neighbor pixel scaling for floor tiles
+  // Strict nearest-neighbor pixel scaling for authentic Repentance+ room tiles
   ctx.imageSmoothingEnabled = false;
 
   if (scene.backdrop.depthBlur > 0) {
@@ -114,20 +130,23 @@ function renderPass1RoomBackdrop(
     ctx.filter = 'none';
   }
 
+  // Authentic room stitched dimensions are 468x312 (18x12 tiles of 26x26 px = 3:2 aspect).
+  // At default camera.zoom = 2.1, drawW matches the full 1280px stage width while keeping 1:1 square pixels.
   const zoom = Math.max(1, scene.camera.zoom);
-  const drawW = width * zoom;
-  const drawH = height * zoom;
+  const baseUnitScale = width / (468 * 2.1);
+  const drawW = Math.round(468 * baseUnitScale * zoom);
+  const drawH = Math.round(312 * baseUnitScale * zoom);
   const scaleRatio = width / 1280;
-  const offsetX = (width - drawW) / 2 + scene.camera.panX * scaleRatio * 2;
-  const offsetY = (height - drawH) / 2 + scene.camera.panY * scaleRatio * 2;
+  const offsetX = Math.round((width - drawW) / 2 + scene.camera.panX * scaleRatio * 2);
+  const offsetY = Math.round((height - drawH) / 2 + scene.camera.panY * scaleRatio * 2);
 
-  ctx.fillStyle = room.palette.wallColor;
+  ctx.fillStyle = '#08060A';
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(pixelSurface, offsetX, offsetY, drawW, drawH);
 
   ctx.filter = 'none';
 
-  // Ambient center stage glow
+  // Subtle ambient center stage glow
   const ambientGrad = ctx.createRadialGradient(
     width * 0.5,
     height * 0.62,
@@ -172,74 +191,192 @@ function renderPass2Sprites(
   ctx: CanvasRenderingContext2D,
   scene: SceneState,
   resolvedNodes: ResolvedSceneNode[],
+  assetBitmaps: AssetBitmapCache,
   scaleRatio: number
 ): void {
   ctx.save();
   ctx.imageSmoothingEnabled = false;
+
+  const collectiblesAtlas = assetBitmaps.get(ASSET_URLS.collectiblesAtlas);
+  const altarSheet = assetBitmaps.get(ASSET_URLS.altarSheet);
+  const charactersAtlas = assetBitmaps.get(ASSET_URLS.charactersAtlas);
+  const edenHairsAtlas = assetBitmaps.get(ASSET_URLS.edenHairsAtlas);
 
   const spriteNodes = resolvedNodes.filter(
     (node) => node.kind === 'character' || node.kind === 'pedestal'
   );
 
   for (const node of spriteNodes) {
-    const nx = node.x * scaleRatio;
-    const ny = node.y * scaleRatio;
-
-    // Ground oval drop shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
-    const shadowW = (node.kind === 'character' ? 116 : 76) * scaleRatio;
-    const shadowH = (node.kind === 'character' ? 22 : 16) * scaleRatio;
-    ctx.fillRect(nx - shadowW / 2, ny - shadowH / 2, shadowW, shadowH);
+    const nx = Math.round(node.x * scaleRatio);
+    const ny = Math.round(node.y * scaleRatio);
 
     if (node.kind === 'character') {
-      const charW = 86 * scaleRatio * (node.scale / 1.85);
-      const charH = 112 * scaleRatio * (node.scale / 1.85);
-      // Body
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(nx - charW * 0.28 - 2, ny - charH * 0.48 - 2, charW * 0.56 + 4, charH * 0.46 + 4);
-      ctx.fillStyle = '#F7D8B5';
-      ctx.fillRect(nx - charW * 0.28, ny - charH * 0.48, charW * 0.56, charH * 0.46);
+      const charEntry = getCharacterById(scene.character.id);
+      const poseEntry = getCharacterPoseById(scene.character.pose);
+      const charPixelScale = 3.2 * (node.scale / 1.85) * scaleRatio;
+      const destSize = Math.round(64 * charPixelScale);
 
-      // Head
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(nx - charW * 0.46 - 3, ny - charH - 3, charW * 0.92 + 6, charH * 0.58 + 6);
-      ctx.fillStyle = '#F7D8B5';
-      ctx.fillRect(nx - charW * 0.46, ny - charH, charW * 0.92, charH * 0.58);
+      // Authentic ground shadow beneath character feet
+      const shadowW = Math.round(28 * charPixelScale);
+      const shadowH = Math.round(10 * charPixelScale);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+      ctx.fillRect(
+        Math.round(nx - shadowW / 2),
+        Math.round(ny - shadowH / 2),
+        shadowW,
+        shadowH
+      );
 
-      // Eden Hair (Spiky)
-      ctx.fillStyle = '#FBF7EE';
-      ctx.fillRect(nx - charW * 0.48, ny - charH * 1.18, charW * 0.96, charH * 0.26);
+      if (charactersAtlas) {
+        // In the 64x64 reaction cell, feet rest at y = 56 and horizontal center is x = 32
+        const dx = Math.round(nx - 32 * charPixelScale);
+        const dy = Math.round(ny - 56 * charPixelScale);
+        const sx = poseEntry.atlasCol * 64;
+        const sy = charEntry.atlasRow * 64;
+
+        ctx.drawImage(charactersAtlas, sx, sy, 64, 64, dx, dy, destSize, destSize);
+
+        // Layer Eden hairstyle if character is Eden or Tainted Eden
+        if (charEntry.supportsEdenHair && edenHairsAtlas) {
+          const hairEntry = getEdenHairById(
+            scene.character.edenHairId ?? charEntry.defaultEdenHair ?? 1
+          );
+          const hairDx = Math.round(dx + poseEntry.hairDx * charPixelScale);
+          const hairDy = Math.round(dy + poseEntry.hairDy * charPixelScale);
+          ctx.drawImage(
+            edenHairsAtlas,
+            hairEntry.col * 64,
+            hairEntry.row * 64,
+            64,
+            64,
+            hairDx,
+            hairDy,
+            destSize,
+            destSize
+          );
+
+          // Keep raised right thumb in front of long side locks in thumbsUp pose
+          if (poseEntry.id === 'thumbsUp') {
+            ctx.drawImage(
+              charactersAtlas,
+              sx + 39,
+              sy + 30,
+              14,
+              18,
+              Math.round(dx + 39 * charPixelScale),
+              Math.round(dy + 30 * charPixelScale),
+              Math.round(14 * charPixelScale),
+              Math.round(18 * charPixelScale)
+            );
+          }
+        }
+      } else {
+        // Synchronous fallback when HTMLImageElement is still decoding
+        const charW = 86 * scaleRatio * (node.scale / 1.85);
+        const charH = 112 * scaleRatio * (node.scale / 1.85);
+        ctx.fillStyle = '#F7D8B5';
+        ctx.fillRect(nx - charW * 0.46, ny - charH, charW * 0.92, charH);
+      }
     } else {
       const slot = scene.pedestals.find((p) => p.id === node.id);
-      const pedW = 68 * scaleRatio;
-      const pedH = 52 * scaleRatio;
+      const pedPixelScale = 3.4 * scaleRatio;
+      const cellDestSize = Math.round(32 * pedPixelScale);
 
-      // Altar base
-      const altarColor =
-        slot?.altarStyle === 'gold'
-          ? '#E5A93C'
-          : slot?.altarStyle === 'devil'
-            ? '#2A1822'
-            : '#4A4152';
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(nx - pedW / 2 - 2, ny - pedH - 2, pedW + 4, pedH + 4);
-      ctx.fillStyle = altarColor;
-      ctx.fillRect(nx - pedW / 2, ny - pedH, pedW, pedH);
+      // 1. Draw Altar Pedestal & Shadow from levelitem_001_itemaltar.png
+      if (altarSheet && slot?.altarStyle !== 'hidden') {
+        const styleKey =
+          slot?.altarStyle === 'gold' ||
+          slot?.altarStyle === 'devil' ||
+          slot?.altarStyle === 'angel'
+            ? slot.altarStyle
+            : 'stone';
+        const altarCell = ALTAR_SPRITE_CELLS[styleKey];
+        const shadowCell = ALTAR_SPRITE_CELLS.shadow;
 
-      // Floating collectible icon above altar
-      const itemSize = 44 * scaleRatio;
-      const itemY = ny - pedH - itemSize - 14 * scaleRatio;
+        // In the 32x32 altar cell, the base rests at y = 27, x = 16
+        const altarDx = Math.round(nx - 16 * pedPixelScale);
+        const altarDy = Math.round(ny - 27 * pedPixelScale);
 
-      if (slot?.highlightFx === 'q4-glow') {
-        ctx.fillStyle = 'rgba(229, 169, 60, 0.35)';
-        ctx.fillRect(nx - itemSize * 0.8, itemY - itemSize * 0.3, itemSize * 1.6, itemSize * 1.6);
-      } else if (slot?.highlightFx === 'outline') {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(nx - itemSize / 2 - 3, itemY - 3, itemSize + 6, itemSize + 6);
+        // 1. Authentic stone pedestal altar (col=0, row=0)
+        ctx.drawImage(
+          altarSheet,
+          altarCell.col * 32,
+          altarCell.row * 32,
+          32,
+          32,
+          altarDx,
+          altarDy,
+          cellDestSize,
+          cellDestSize
+        );
+
+        // 2. Authentic floating-item oval shadow on the top face of the stone altar (col=1, row=0)
+        ctx.drawImage(
+          altarSheet,
+          shadowCell.col * 32,
+          shadowCell.row * 32,
+          32,
+          32,
+          altarDx,
+          altarDy,
+          cellDestSize,
+          cellDestSize
+        );
+      } else if (!altarSheet && slot?.altarStyle !== 'hidden') {
+        const pedW = 68 * scaleRatio;
+        const pedH = 52 * scaleRatio;
+        ctx.fillStyle = '#4A4152';
+        ctx.fillRect(nx - pedW / 2, ny - pedH, pedW, pedH);
       }
 
-      ctx.fillStyle = slot?.priceTag === 'blind' ? '#C83A3A' : '#E5A93C';
-      ctx.fillRect(nx - itemSize / 2, itemY, itemSize, itemSize);
+      // 2. Draw Floating Collectible Sprite from collectibles-atlas.png
+      const effectiveItemId = slot?.priceTag === 'blind' ? 0 : (slot?.itemId ?? 182);
+      const itemEntry = getCollectibleById(effectiveItemId);
+      const itemDx = Math.round(nx - 16 * pedPixelScale);
+      const itemDy = Math.round(ny - 51 * pedPixelScale);
+
+      if (slot?.highlightFx === 'q4-glow') {
+        const glowRadius = cellDestSize * 0.72;
+        const glowCenterY = itemDy + cellDestSize * 0.5;
+        const glowGrad = ctx.createRadialGradient(
+          nx,
+          glowCenterY,
+          glowRadius * 0.1,
+          nx,
+          glowCenterY,
+          glowRadius
+        );
+        glowGrad.addColorStop(0, 'rgba(255, 215, 90, 0.55)');
+        glowGrad.addColorStop(0.6, 'rgba(229, 169, 60, 0.22)');
+        glowGrad.addColorStop(1, 'rgba(229, 169, 60, 0)');
+        ctx.fillStyle = glowGrad;
+        ctx.fillRect(
+          nx - glowRadius,
+          glowCenterY - glowRadius,
+          glowRadius * 2,
+          glowRadius * 2
+        );
+      }
+
+      if (collectiblesAtlas) {
+        const sx = itemEntry.atlasCol * 32;
+        const sy = itemEntry.atlasRow * 32;
+        ctx.drawImage(
+          collectiblesAtlas,
+          sx,
+          sy,
+          32,
+          32,
+          itemDx,
+          itemDy,
+          cellDestSize,
+          cellDestSize
+        );
+      } else {
+        const itemSize = 44 * scaleRatio;
+        ctx.fillStyle = '#E5A93C';
+        ctx.fillRect(nx - itemSize / 2, itemDy, itemSize, itemSize);
+      }
     }
   }
 
@@ -337,7 +474,7 @@ export function renderThumbnail(
   ctx: CanvasRenderingContext2D,
   scene: SceneState,
   resolvedNodes: ResolvedSceneNode[],
-  _assetBitmaps: AssetBitmapCache,
+  assetBitmaps: AssetBitmapCache,
   options: RenderOptions
 ): void {
   const width = ctx.canvas?.width || 1280;
@@ -347,10 +484,10 @@ export function renderThumbnail(
   ctx.clearRect(0, 0, width, height);
 
   // Pass 1: Room Backdrop & Camera with nearest-neighbor scaling
-  renderPass1RoomBackdrop(ctx, scene, width, height);
+  renderPass1RoomBackdrop(ctx, scene, assetBitmaps, width, height);
 
-  // Pass 2: Nearest-neighbor pixel-art sprites
-  renderPass2Sprites(ctx, scene, resolvedNodes, scaleRatio);
+  // Pass 2: Nearest-neighbor pixel-art sprites (Characters, Eden Hair, Altars, Collectibles)
+  renderPass2Sprites(ctx, scene, resolvedNodes, assetBitmaps, scaleRatio);
 
   // Pass 3: High-DPI vector typography
   renderPass3Typography(ctx, scene, scaleRatio);

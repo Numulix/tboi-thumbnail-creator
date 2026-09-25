@@ -1,0 +1,678 @@
+{
+  "poses": [
+    {
+      "id": "idle",
+      "label": "Standing Idle",
+      "atlasCol": 0,
+      "hairDx": 0,
+      "hairDy": 6
+    },
+    {
+      "id": "pickup",
+      "label": "Item Pickup (Overhead)",
+      "atlasCol": 1,
+      "hairDx": 0,
+      "hairDy": 8
+    },
+    {
+      "id": "thumbsUp",
+      "label": "Thumbs-Up Approval",
+      "atlasCol": 2,
+      "hairDx": 0,
+      "hairDy": 6
+    },
+    {
+      "id": "shocked",
+      "label": "Shocked / Gasping",
+      "atlasCol": 3,
+      "hairDx": 0,
+      "hairDy": 6
+    },
+    {
+      "id": "agony",
+      "label": "Crying / Despair",
+      "atlasCol": 4,
+      "hairDx": 2,
+      "hairDy": 5
+    },
+    {
+      "id": "cheer",
+      "label": "Happy Jump",
+      "atlasCol": 5,
+      "hairDx": 0,
+      "hairDy": 8
+    }
+  ],
+  "characters": [
+    {
+      "id": "isaac",
+      "name": "Isaac",
+      "variant": "normal",
+      "atlasRow": 0,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "magdalene",
+      "name": "Magdalene",
+      "variant": "normal",
+      "atlasRow": 1,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "cain",
+      "name": "Cain",
+      "variant": "normal",
+      "atlasRow": 2,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "judas",
+      "name": "Judas",
+      "variant": "normal",
+      "atlasRow": 3,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "blue-baby",
+      "name": "??? (Blue Baby)",
+      "variant": "normal",
+      "atlasRow": 4,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "eve",
+      "name": "Eve",
+      "variant": "normal",
+      "atlasRow": 5,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "samson",
+      "name": "Samson",
+      "variant": "normal",
+      "atlasRow": 6,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "azazel",
+      "name": "Azazel",
+      "variant": "normal",
+      "atlasRow": 7,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "lazarus",
+      "name": "Lazarus",
+      "variant": "normal",
+      "atlasRow": 8,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "lazarus-risen",
+      "name": "Lazarus Risen",
+      "variant": "normal",
+      "atlasRow": 9,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "eden",
+      "name": "Eden",
+      "variant": "normal",
+      "atlasRow": 10,
+      "supportsEdenHair": true,
+      "defaultEdenHair": 1
+    },
+    {
+      "id": "the-lost",
+      "name": "The Lost",
+      "variant": "normal",
+      "atlasRow": 11,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "lilith",
+      "name": "Lilith",
+      "variant": "normal",
+      "atlasRow": 12,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "keeper",
+      "name": "Keeper",
+      "variant": "normal",
+      "atlasRow": 13,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "apollyon",
+      "name": "Apollyon",
+      "variant": "normal",
+      "atlasRow": 14,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "the-forgotten",
+      "name": "The Forgotten",
+      "variant": "normal",
+      "atlasRow": 15,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "the-soul",
+      "name": "The Soul",
+      "variant": "normal",
+      "atlasRow": 16,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "bethany",
+      "name": "Bethany",
+      "variant": "normal",
+      "atlasRow": 17,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "jacob",
+      "name": "Jacob",
+      "variant": "normal",
+      "atlasRow": 18,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "esau",
+      "name": "Esau",
+      "variant": "normal",
+      "atlasRow": 19,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-isaac",
+      "name": "Tainted Isaac",
+      "variant": "tainted",
+      "atlasRow": 20,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-magdalene",
+      "name": "Tainted Magdalene",
+      "variant": "tainted",
+      "atlasRow": 21,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-cain",
+      "name": "Tainted Cain",
+      "variant": "tainted",
+      "atlasRow": 22,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-judas",
+      "name": "Tainted Judas",
+      "variant": "tainted",
+      "atlasRow": 23,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-blue-baby",
+      "name": "Tainted ???",
+      "variant": "tainted",
+      "atlasRow": 24,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-eve",
+      "name": "Tainted Eve",
+      "variant": "tainted",
+      "atlasRow": 25,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-samson",
+      "name": "Tainted Samson",
+      "variant": "tainted",
+      "atlasRow": 26,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-azazel",
+      "name": "Tainted Azazel",
+      "variant": "tainted",
+      "atlasRow": 27,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-lazarus",
+      "name": "Tainted Lazarus",
+      "variant": "tainted",
+      "atlasRow": 28,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-eden",
+      "name": "Tainted Eden",
+      "variant": "tainted",
+      "atlasRow": 29,
+      "supportsEdenHair": true,
+      "defaultEdenHair": 21
+    },
+    {
+      "id": "tainted-lost",
+      "name": "Tainted Lost",
+      "variant": "tainted",
+      "atlasRow": 30,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-lilith",
+      "name": "Tainted Lilith",
+      "variant": "tainted",
+      "atlasRow": 31,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-keeper",
+      "name": "Tainted Keeper",
+      "variant": "tainted",
+      "atlasRow": 32,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-apollyon",
+      "name": "Tainted Apollyon",
+      "variant": "tainted",
+      "atlasRow": 33,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-forgotten",
+      "name": "Tainted Forgotten",
+      "variant": "tainted",
+      "atlasRow": 34,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-soul",
+      "name": "Tainted Soul",
+      "variant": "tainted",
+      "atlasRow": 35,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-bethany",
+      "name": "Tainted Bethany",
+      "variant": "tainted",
+      "atlasRow": 36,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    },
+    {
+      "id": "tainted-jacob",
+      "name": "Tainted Jacob",
+      "variant": "tainted",
+      "atlasRow": 37,
+      "supportsEdenHair": false,
+      "defaultEdenHair": null
+    }
+  ],
+  "edenHairs": [
+    {
+      "id": 1,
+      "label": "Eden Hair #1",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "id": 2,
+      "label": "Eden Hair #2",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": 3,
+      "label": "Eden Hair #3",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": 4,
+      "label": "Eden Hair #4",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": 5,
+      "label": "Eden Hair #5",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "id": 6,
+      "label": "Eden Hair #6",
+      "col": 5,
+      "row": 0
+    },
+    {
+      "id": 7,
+      "label": "Eden Hair #7",
+      "col": 6,
+      "row": 0
+    },
+    {
+      "id": 8,
+      "label": "Eden Hair #8",
+      "col": 7,
+      "row": 0
+    },
+    {
+      "id": 9,
+      "label": "Eden Hair #9",
+      "col": 8,
+      "row": 0
+    },
+    {
+      "id": 10,
+      "label": "Eden Hair #10",
+      "col": 0,
+      "row": 1
+    },
+    {
+      "id": 11,
+      "label": "Eden Hair #11",
+      "col": 1,
+      "row": 1
+    },
+    {
+      "id": 12,
+      "label": "Eden Hair #12",
+      "col": 2,
+      "row": 1
+    },
+    {
+      "id": 13,
+      "label": "Eden Hair #13",
+      "col": 3,
+      "row": 1
+    },
+    {
+      "id": 14,
+      "label": "Eden Hair #14",
+      "col": 4,
+      "row": 1
+    },
+    {
+      "id": 15,
+      "label": "Eden Hair #15",
+      "col": 5,
+      "row": 1
+    },
+    {
+      "id": 16,
+      "label": "Eden Hair #16",
+      "col": 6,
+      "row": 1
+    },
+    {
+      "id": 17,
+      "label": "Eden Hair #17",
+      "col": 7,
+      "row": 1
+    },
+    {
+      "id": 18,
+      "label": "Eden Hair #18",
+      "col": 8,
+      "row": 1
+    },
+    {
+      "id": 19,
+      "label": "Eden Hair #19",
+      "col": 0,
+      "row": 2
+    },
+    {
+      "id": 20,
+      "label": "Eden Hair #20",
+      "col": 1,
+      "row": 2
+    },
+    {
+      "id": 21,
+      "label": "Eden Hair #21",
+      "col": 2,
+      "row": 2
+    },
+    {
+      "id": 22,
+      "label": "Eden Hair #22",
+      "col": 3,
+      "row": 2
+    },
+    {
+      "id": 23,
+      "label": "Eden Hair #23",
+      "col": 4,
+      "row": 2
+    },
+    {
+      "id": 24,
+      "label": "Eden Hair #24",
+      "col": 5,
+      "row": 2
+    },
+    {
+      "id": 25,
+      "label": "Eden Hair #25",
+      "col": 6,
+      "row": 2
+    },
+    {
+      "id": 26,
+      "label": "Eden Hair #26",
+      "col": 7,
+      "row": 2
+    },
+    {
+      "id": 27,
+      "label": "Eden Hair #27",
+      "col": 8,
+      "row": 2
+    },
+    {
+      "id": 28,
+      "label": "Eden Hair #28",
+      "col": 0,
+      "row": 3
+    },
+    {
+      "id": 29,
+      "label": "Eden Hair #29",
+      "col": 1,
+      "row": 3
+    },
+    {
+      "id": 30,
+      "label": "Eden Hair #30",
+      "col": 2,
+      "row": 3
+    },
+    {
+      "id": 31,
+      "label": "Eden Hair #31",
+      "col": 3,
+      "row": 3
+    },
+    {
+      "id": 32,
+      "label": "Eden Hair #32",
+      "col": 4,
+      "row": 3
+    },
+    {
+      "id": 33,
+      "label": "Eden Hair #33",
+      "col": 5,
+      "row": 3
+    },
+    {
+      "id": 34,
+      "label": "Eden Hair #34",
+      "col": 6,
+      "row": 3
+    },
+    {
+      "id": 35,
+      "label": "Eden Hair #35",
+      "col": 7,
+      "row": 3
+    },
+    {
+      "id": 36,
+      "label": "Eden Hair #36",
+      "col": 8,
+      "row": 3
+    },
+    {
+      "id": 37,
+      "label": "Eden Hair #37",
+      "col": 0,
+      "row": 4
+    },
+    {
+      "id": 38,
+      "label": "Eden Hair #38",
+      "col": 1,
+      "row": 4
+    },
+    {
+      "id": 39,
+      "label": "Eden Hair #39",
+      "col": 2,
+      "row": 4
+    },
+    {
+      "id": 40,
+      "label": "Eden Hair #40",
+      "col": 3,
+      "row": 4
+    },
+    {
+      "id": 41,
+      "label": "Eden Hair #41",
+      "col": 4,
+      "row": 4
+    },
+    {
+      "id": 42,
+      "label": "Eden Hair #42",
+      "col": 5,
+      "row": 4
+    },
+    {
+      "id": 43,
+      "label": "Eden Hair #43",
+      "col": 6,
+      "row": 4
+    },
+    {
+      "id": 44,
+      "label": "Eden Hair #44",
+      "col": 7,
+      "row": 4
+    },
+    {
+      "id": 45,
+      "label": "Eden Hair #45",
+      "col": 8,
+      "row": 4
+    },
+    {
+      "id": 46,
+      "label": "Eden Hair #46",
+      "col": 0,
+      "row": 5
+    },
+    {
+      "id": 47,
+      "label": "Eden Hair #47",
+      "col": 1,
+      "row": 5
+    },
+    {
+      "id": 48,
+      "label": "Eden Hair #48",
+      "col": 2,
+      "row": 5
+    },
+    {
+      "id": 49,
+      "label": "Eden Hair #49",
+      "col": 3,
+      "row": 5
+    },
+    {
+      "id": 50,
+      "label": "Eden Hair #50",
+      "col": 4,
+      "row": 5
+    },
+    {
+      "id": 51,
+      "label": "Eden Hair #51",
+      "col": 5,
+      "row": 5
+    },
+    {
+      "id": 52,
+      "label": "Eden Hair #52",
+      "col": 6,
+      "row": 5
+    },
+    {
+      "id": 53,
+      "label": "Eden Hair #53",
+      "col": 7,
+      "row": 5
+    },
+    {
+      "id": 54,
+      "label": "Eden Hair #54",
+      "col": 8,
+      "row": 5
+    }
+  ]
+}

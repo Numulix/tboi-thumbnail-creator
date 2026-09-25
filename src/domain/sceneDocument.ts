@@ -56,7 +56,8 @@ export interface SceneState {
   character: {
     id: string;
     name: string;
-    pose: 'idle' | 'pickup' | 'crying';
+    pose: 'idle' | 'pickup' | 'thumbsUp' | 'shocked' | 'agony' | 'cheer' | 'crying';
+    edenHairId?: number;
     scale: number;
     x: number;
     y: number;
@@ -103,9 +104,10 @@ export function createDefaultSceneState(): SceneState {
       id: 'eden',
       name: '09. Eden',
       pose: 'pickup',
+      edenHairId: 12,
       scale: 1.85,
-      x: 248,
-      y: 590,
+      x: 280,
+      y: 505,
     },
     pedestals: [
       {
@@ -230,8 +232,8 @@ function getFormationCoordinates(index: number, count: number, preset: Formation
 
   if (preset === 'row') {
     return {
-      x: Math.round(520 + t * 560),
-      y: 580,
+      x: Math.round(520 + t * 520),
+      y: 505,
     };
   }
 
@@ -239,8 +241,8 @@ function getFormationCoordinates(index: number, count: number, preset: Formation
     const col = index % 2;
     const row = Math.floor(index / 2);
     return {
-      x: 640 + col * 240,
-      y: 480 + row * 120,
+      x: 620 + col * 220,
+      y: 420 + row * 110,
     };
   }
 
@@ -248,15 +250,15 @@ function getFormationCoordinates(index: number, count: number, preset: Formation
     const isLeft = index < Math.ceil(safeCount / 2);
     const sideIndex = isLeft ? index : index - Math.ceil(safeCount / 2);
     return {
-      x: isLeft ? 160 + sideIndex * 110 : 880 + sideIndex * 110,
-      y: 560 + (sideIndex % 2) * 35,
+      x: isLeft ? 200 + sideIndex * 110 : 860 + sideIndex * 110,
+      y: 490 + (sideIndex % 2) * 35,
     };
   }
 
   // Default 'arc'
-  const arcY = Math.round(590 - Math.sin(t * Math.PI) * 55);
+  const arcY = Math.round(515 - Math.sin(t * Math.PI) * 55);
   return {
-    x: Math.round(530 + t * 550),
+    x: Math.round(530 + t * 500),
     y: arcY,
   };
 }

@@ -88,4 +88,33 @@ describe('thumbnailRenderer', () => {
     await copyCanvasToClipboard(canvas);
     expect(writeSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('draws authentic room backdrop, character pose, Eden hairstyle, pedestal altar, and collectible atlas frames when loaded in AssetBitmapCache', () => {
+    const scene = createDefaultSceneState();
+    const resolvedNodes = resolveSceneLayout(scene);
+
+    const cache = new Map<string, CanvasImageSource>();
+    const mockSurface = document.createElement('canvas');
+    cache.set('/assets/rooms/burning-basement.png', mockSurface);
+    cache.set('/assets/collectibles/collectibles-atlas.png', mockSurface);
+    cache.set('/assets/altars/levelitem_001_itemaltar.png', mockSurface);
+    cache.set('/assets/characters/characters-atlas.png', mockSurface);
+    cache.set('/assets/characters/eden-hairs-atlas.png', mockSurface);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1280;
+    canvas.height = 720;
+    const ctx = canvas.getContext('2d') as MockCtxWithOps;
+
+    renderThumbnail(ctx, scene, resolvedNodes, cache, {
+      includeEditorOverlays: false,
+    });
+
+    const drawImageOps = ctx.__ops.filter((op) => op.type === 'drawImage');
+    // 1 room backdrop + (1 character base + 1 Eden hair) + 4 pedestals * (1 shadow + 1 altar + 1 collectible) = 15 drawImage calls
+    expect(drawImageOps.length).toBeGreaterThanOrEqual(14);
+    for (const op of drawImageOps) {
+      expect(op.smoothing).toBe(false);
+    }
+  });
 });

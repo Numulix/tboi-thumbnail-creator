@@ -1,0 +1,5770 @@
+[
+  {
+    "id": 1,
+    "name": "The Sad Onion",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 1,
+    "atlasRow": 0
+  },
+  {
+    "id": 2,
+    "name": "The Inner Eye",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 0
+  },
+  {
+    "id": 3,
+    "name": "Spoon Bender",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 3,
+    "atlasRow": 0
+  },
+  {
+    "id": 4,
+    "name": "Cricket's Head",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 4,
+    "atlasRow": 0
+  },
+  {
+    "id": 5,
+    "name": "My Reflection",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 5,
+    "atlasRow": 0
+  },
+  {
+    "id": 6,
+    "name": "Number One",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 0
+  },
+  {
+    "id": 7,
+    "name": "Blood of the Martyr",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 7,
+    "atlasRow": 0
+  },
+  {
+    "id": 8,
+    "name": "Brother Bobby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 0
+  },
+  {
+    "id": 9,
+    "name": "Skatole",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 9,
+    "atlasRow": 0
+  },
+  {
+    "id": 10,
+    "name": "Halo of Flies",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 0
+  },
+  {
+    "id": 11,
+    "name": "1up",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 0
+  },
+  {
+    "id": 12,
+    "name": "Magic Mushroom",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 12,
+    "atlasRow": 0
+  },
+  {
+    "id": 13,
+    "name": "The Virus",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 0
+  },
+  {
+    "id": 14,
+    "name": "Roid Rage",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 0
+  },
+  {
+    "id": 15,
+    "name": "Heart",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 0
+  },
+  {
+    "id": 16,
+    "name": "Raw Liver",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 0
+  },
+  {
+    "id": 17,
+    "name": "Skeleton Key",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 0
+  },
+  {
+    "id": 18,
+    "name": "A Dollar",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 0
+  },
+  {
+    "id": 19,
+    "name": "Boom",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 19,
+    "atlasRow": 0
+  },
+  {
+    "id": 20,
+    "name": "Transcendence",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 0
+  },
+  {
+    "id": 21,
+    "name": "The Compass",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 0
+  },
+  {
+    "id": 22,
+    "name": "Lunch",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 0
+  },
+  {
+    "id": 23,
+    "name": "Dinner",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 0
+  },
+  {
+    "id": 24,
+    "name": "Dessert",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 0
+  },
+  {
+    "id": 25,
+    "name": "Breakfast",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 0
+  },
+  {
+    "id": 26,
+    "name": "Rotten Meat",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 0
+  },
+  {
+    "id": 27,
+    "name": "Wooden Spoon",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 0
+  },
+  {
+    "id": 28,
+    "name": "The Belt",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 1
+  },
+  {
+    "id": 29,
+    "name": "Mom's Underwear",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 1
+  },
+  {
+    "id": 30,
+    "name": "Mom's Heels",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 1
+  },
+  {
+    "id": 31,
+    "name": "Mom's Lipstick",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 1
+  },
+  {
+    "id": 32,
+    "name": "Wire Coat Hanger",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 1
+  },
+  {
+    "id": 33,
+    "name": "The Bible",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 1
+  },
+  {
+    "id": 34,
+    "name": "The Book of Belial",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 1
+  },
+  {
+    "id": 35,
+    "name": "The Necronomicon",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 1
+  },
+  {
+    "id": 36,
+    "name": "The Poop",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 8,
+    "atlasRow": 1
+  },
+  {
+    "id": 37,
+    "name": "Mr Boom",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 1
+  },
+  {
+    "id": 38,
+    "name": "Tammy's Head",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 1
+  },
+  {
+    "id": 39,
+    "name": "Mom's Bra",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 11,
+    "atlasRow": 1
+  },
+  {
+    "id": 40,
+    "name": "Kamikaze",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 12,
+    "atlasRow": 1
+  },
+  {
+    "id": 41,
+    "name": "Mom's Pad",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 13,
+    "atlasRow": 1
+  },
+  {
+    "id": 42,
+    "name": "Bob's Rotten Head",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 1
+  },
+  {
+    "id": 44,
+    "name": "Teleport",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 15,
+    "atlasRow": 1
+  },
+  {
+    "id": 45,
+    "name": "Yum Heart",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 1
+  },
+  {
+    "id": 46,
+    "name": "Lucky Foot",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 1
+  },
+  {
+    "id": 47,
+    "name": "Doctor's Remote",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 1
+  },
+  {
+    "id": 48,
+    "name": "Cupids Arrow",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 1
+  },
+  {
+    "id": 49,
+    "name": "Shoop Da Whoop",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 1
+  },
+  {
+    "id": 50,
+    "name": "Steven",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 1
+  },
+  {
+    "id": 51,
+    "name": "Pentagram",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 1
+  },
+  {
+    "id": 52,
+    "name": "Dr. Fetus",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 23,
+    "atlasRow": 1
+  },
+  {
+    "id": 53,
+    "name": "Magneto",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 1
+  },
+  {
+    "id": 54,
+    "name": "Treasure Map",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 1
+  },
+  {
+    "id": 55,
+    "name": "Mom's Eye",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 1
+  },
+  {
+    "id": 56,
+    "name": "Lemon Mishap",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 27,
+    "atlasRow": 1
+  },
+  {
+    "id": 57,
+    "name": "Distant Admiration",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 2
+  },
+  {
+    "id": 58,
+    "name": "Book of Shadows",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 2
+  },
+  {
+    "id": 59,
+    "name": "The Book of Belial",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 2,
+    "atlasRow": 2
+  },
+  {
+    "id": 60,
+    "name": "The Ladder",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 2
+  },
+  {
+    "id": 62,
+    "name": "Charm of the Vampire",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 2
+  },
+  {
+    "id": 63,
+    "name": "The Battery",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 2
+  },
+  {
+    "id": 64,
+    "name": "Steam Sale",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 2
+  },
+  {
+    "id": 65,
+    "name": "Anarchist Cookbook",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 2
+  },
+  {
+    "id": 66,
+    "name": "The Hourglass",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 8,
+    "atlasRow": 2
+  },
+  {
+    "id": 67,
+    "name": "Sister Maggy's",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 2
+  },
+  {
+    "id": 68,
+    "name": "Technology",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 2
+  },
+  {
+    "id": 69,
+    "name": "Chocolate Milk",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 2
+  },
+  {
+    "id": 70,
+    "name": "Growth Hormones",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 12,
+    "atlasRow": 2
+  },
+  {
+    "id": 71,
+    "name": "Mini Mush",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 2
+  },
+  {
+    "id": 72,
+    "name": "Rosary",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 2
+  },
+  {
+    "id": 73,
+    "name": "Cube of Meat",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 2
+  },
+  {
+    "id": 74,
+    "name": "A Quarter",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 16,
+    "atlasRow": 2
+  },
+  {
+    "id": 75,
+    "name": "PHD",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 2
+  },
+  {
+    "id": 76,
+    "name": "Xray Vision",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 18,
+    "atlasRow": 2
+  },
+  {
+    "id": 77,
+    "name": "My Little Unicorn",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 2
+  },
+  {
+    "id": 78,
+    "name": "Book of Revelations",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 2
+  },
+  {
+    "id": 79,
+    "name": "The Mark",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 2
+  },
+  {
+    "id": 80,
+    "name": "The Pact",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 2
+  },
+  {
+    "id": 81,
+    "name": "Dead Cat",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 23,
+    "atlasRow": 2
+  },
+  {
+    "id": 82,
+    "name": "Lord of the Pit",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 2
+  },
+  {
+    "id": 83,
+    "name": "The Nail",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 2
+  },
+  {
+    "id": 84,
+    "name": "We Need to Go Deeper",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 2
+  },
+  {
+    "id": 85,
+    "name": "Deck of Cards",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 2
+  },
+  {
+    "id": 86,
+    "name": "Monstros Tooth",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 0,
+    "atlasRow": 3
+  },
+  {
+    "id": 87,
+    "name": "Lokis Horns",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 3
+  },
+  {
+    "id": 88,
+    "name": "Little Chubby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 3
+  },
+  {
+    "id": 89,
+    "name": "Spider Bite",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 3
+  },
+  {
+    "id": 90,
+    "name": "The Small Rock",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 3
+  },
+  {
+    "id": 91,
+    "name": "Spelunker Hat",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 3
+  },
+  {
+    "id": 92,
+    "name": "Super Bandage",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 3
+  },
+  {
+    "id": 93,
+    "name": "The Gamekid",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 3
+  },
+  {
+    "id": 94,
+    "name": "Sack of Pennies",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 3
+  },
+  {
+    "id": 95,
+    "name": "Robobaby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 3
+  },
+  {
+    "id": 96,
+    "name": "Little Chad",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 3
+  },
+  {
+    "id": 97,
+    "name": "The Book of Sin",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 3
+  },
+  {
+    "id": 98,
+    "name": "The Relic",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 12,
+    "atlasRow": 3
+  },
+  {
+    "id": 99,
+    "name": "Little Gish",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 3
+  },
+  {
+    "id": 100,
+    "name": "Little Steven",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 3
+  },
+  {
+    "id": 101,
+    "name": "The Halo",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 15,
+    "atlasRow": 3
+  },
+  {
+    "id": 102,
+    "name": "Mom's Bottle of Pills",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 3
+  },
+  {
+    "id": 103,
+    "name": "The Common Cold",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 3
+  },
+  {
+    "id": 104,
+    "name": "The Parasite",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 3
+  },
+  {
+    "id": 105,
+    "name": "The D6",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 19,
+    "atlasRow": 3
+  },
+  {
+    "id": 106,
+    "name": "Mr Mega",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 3
+  },
+  {
+    "id": 107,
+    "name": "The Pinking Shears",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 3
+  },
+  {
+    "id": 108,
+    "name": "The Wafer",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 22,
+    "atlasRow": 3
+  },
+  {
+    "id": 109,
+    "name": "Money Power",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 3
+  },
+  {
+    "id": 110,
+    "name": "Mom's Contacts",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 3
+  },
+  {
+    "id": 111,
+    "name": "The Bean",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 25,
+    "atlasRow": 3
+  },
+  {
+    "id": 112,
+    "name": "Guardian Angel",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 3
+  },
+  {
+    "id": 113,
+    "name": "Demon Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 3
+  },
+  {
+    "id": 114,
+    "name": "Mom's Knife",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 0,
+    "atlasRow": 4
+  },
+  {
+    "id": 115,
+    "name": "Ouija Board",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 4
+  },
+  {
+    "id": 116,
+    "name": "9 Volt",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 4
+  },
+  {
+    "id": 117,
+    "name": "Dead Bird",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 3,
+    "atlasRow": 4
+  },
+  {
+    "id": 118,
+    "name": "Brimstone",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 4,
+    "atlasRow": 4
+  },
+  {
+    "id": 119,
+    "name": "Blood Bag",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 4
+  },
+  {
+    "id": 120,
+    "name": "Odd Mushroom Thin",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 4
+  },
+  {
+    "id": 121,
+    "name": "Odd Mushroom Large",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 4
+  },
+  {
+    "id": 122,
+    "name": "Whore of Babylon",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 4
+  },
+  {
+    "id": 123,
+    "name": "Monster Manual",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 4
+  },
+  {
+    "id": 124,
+    "name": "Dead Sea Scrolls",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 4
+  },
+  {
+    "id": 125,
+    "name": "Bobbybomb",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 4
+  },
+  {
+    "id": 126,
+    "name": "Razor Blade",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 12,
+    "atlasRow": 4
+  },
+  {
+    "id": 127,
+    "name": "Forget Me Now",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 13,
+    "atlasRow": 4
+  },
+  {
+    "id": 128,
+    "name": "Forever Alone",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 4
+  },
+  {
+    "id": 129,
+    "name": "Bucket of Lard",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 4
+  },
+  {
+    "id": 130,
+    "name": "A Pony",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 4
+  },
+  {
+    "id": 131,
+    "name": "Bomb Bag",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 4
+  },
+  {
+    "id": 132,
+    "name": "A Lump of Coal",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 4
+  },
+  {
+    "id": 133,
+    "name": "Guppy's Paw",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 4
+  },
+  {
+    "id": 134,
+    "name": "Guppy's Tail",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 4
+  },
+  {
+    "id": 135,
+    "name": "Iv Bag",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 4
+  },
+  {
+    "id": 136,
+    "name": "Best Friend",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 22,
+    "atlasRow": 4
+  },
+  {
+    "id": 137,
+    "name": "Remote Detonator",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 23,
+    "atlasRow": 4
+  },
+  {
+    "id": 138,
+    "name": "Stigmata",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 4
+  },
+  {
+    "id": 139,
+    "name": "Mom's Purse",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 4
+  },
+  {
+    "id": 140,
+    "name": "Bob's Curse",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 4
+  },
+  {
+    "id": 141,
+    "name": "Pageant Boy",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 27,
+    "atlasRow": 4
+  },
+  {
+    "id": 142,
+    "name": "Scapular",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 5
+  },
+  {
+    "id": 143,
+    "name": "Speed Ball",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 5
+  },
+  {
+    "id": 144,
+    "name": "Bum Friend",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 5
+  },
+  {
+    "id": 145,
+    "name": "Guppy's Head",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 5
+  },
+  {
+    "id": 146,
+    "name": "Prayer Card",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 5
+  },
+  {
+    "id": 147,
+    "name": "Notched Axe",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 5
+  },
+  {
+    "id": 148,
+    "name": "Infestation",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 6,
+    "atlasRow": 5
+  },
+  {
+    "id": 149,
+    "name": "Ipecac",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 7,
+    "atlasRow": 5
+  },
+  {
+    "id": 150,
+    "name": "Tough Love",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 5
+  },
+  {
+    "id": 151,
+    "name": "The Mulligan",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 9,
+    "atlasRow": 5
+  },
+  {
+    "id": 152,
+    "name": "Technology 2",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 5
+  },
+  {
+    "id": 153,
+    "name": "Mutant Spider",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 5
+  },
+  {
+    "id": 154,
+    "name": "Chemical Peel",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 5
+  },
+  {
+    "id": 155,
+    "name": "The Peeper",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 5
+  },
+  {
+    "id": 156,
+    "name": "Habit",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 5
+  },
+  {
+    "id": 157,
+    "name": "Bloody Lust",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 5
+  },
+  {
+    "id": 158,
+    "name": "Crystal Ball",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 16,
+    "atlasRow": 5
+  },
+  {
+    "id": 159,
+    "name": "Spirit of the Night",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 5
+  },
+  {
+    "id": 160,
+    "name": "Crack the Sky",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 5
+  },
+  {
+    "id": 161,
+    "name": "Ankh",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 19,
+    "atlasRow": 5
+  },
+  {
+    "id": 162,
+    "name": "Celtic Cross",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 20,
+    "atlasRow": 5
+  },
+  {
+    "id": 163,
+    "name": "Ghost Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 5
+  },
+  {
+    "id": 164,
+    "name": "The Candle",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 22,
+    "atlasRow": 5
+  },
+  {
+    "id": 165,
+    "name": "Catoninetails",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 5
+  },
+  {
+    "id": 166,
+    "name": "D20",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 5
+  },
+  {
+    "id": 167,
+    "name": "Harlequin Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 5
+  },
+  {
+    "id": 168,
+    "name": "Epic Fetus",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 26,
+    "atlasRow": 5
+  },
+  {
+    "id": 169,
+    "name": "Polyphemus",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 27,
+    "atlasRow": 5
+  },
+  {
+    "id": 170,
+    "name": "Daddy Longlegs",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 6
+  },
+  {
+    "id": 171,
+    "name": "Spider Butt",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 6
+  },
+  {
+    "id": 172,
+    "name": "Sacrificial Dagger",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 6
+  },
+  {
+    "id": 173,
+    "name": "Mitre",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 3,
+    "atlasRow": 6
+  },
+  {
+    "id": 174,
+    "name": "Rainbow Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 4,
+    "atlasRow": 6
+  },
+  {
+    "id": 175,
+    "name": "Dad's Key",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 6
+  },
+  {
+    "id": 176,
+    "name": "Stem Cells",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 6
+  },
+  {
+    "id": 177,
+    "name": "Portable Slot",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 6
+  },
+  {
+    "id": 178,
+    "name": "Holy Water",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 6
+  },
+  {
+    "id": 179,
+    "name": "Fate",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 9,
+    "atlasRow": 6
+  },
+  {
+    "id": 180,
+    "name": "The Black Bean",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 10,
+    "atlasRow": 6
+  },
+  {
+    "id": 181,
+    "name": "White Pony",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 6
+  },
+  {
+    "id": 182,
+    "name": "Sacred Heart",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 12,
+    "atlasRow": 6
+  },
+  {
+    "id": 183,
+    "name": "Tooth Picks",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 13,
+    "atlasRow": 6
+  },
+  {
+    "id": 184,
+    "name": "Holy Grail",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 14,
+    "atlasRow": 6
+  },
+  {
+    "id": 185,
+    "name": "Dead Dove",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 15,
+    "atlasRow": 6
+  },
+  {
+    "id": 186,
+    "name": "Blood Rights",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 16,
+    "atlasRow": 6
+  },
+  {
+    "id": 187,
+    "name": "Guppy's Hairball",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 6
+  },
+  {
+    "id": 188,
+    "name": "Abel",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 18,
+    "atlasRow": 6
+  },
+  {
+    "id": 189,
+    "name": "Smb Super Fan",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 19,
+    "atlasRow": 6
+  },
+  {
+    "id": 190,
+    "name": "Pyro",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 6
+  },
+  {
+    "id": 191,
+    "name": "3 Dollar Bill",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 6
+  },
+  {
+    "id": 192,
+    "name": "Telepathy for Dummies",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 6
+  },
+  {
+    "id": 193,
+    "name": "Meat",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 23,
+    "atlasRow": 6
+  },
+  {
+    "id": 194,
+    "name": "Magic 8 Ball",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 6
+  },
+  {
+    "id": 195,
+    "name": "Mom's Coin Purse",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 25,
+    "atlasRow": 6
+  },
+  {
+    "id": 196,
+    "name": "Squeezy",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 6
+  },
+  {
+    "id": 197,
+    "name": "Jesus Juice",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 6
+  },
+  {
+    "id": 198,
+    "name": "Box",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 0,
+    "atlasRow": 7
+  },
+  {
+    "id": 199,
+    "name": "Mom's Key",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 1,
+    "atlasRow": 7
+  },
+  {
+    "id": 200,
+    "name": "Mom's Eyeshadow",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 7
+  },
+  {
+    "id": 201,
+    "name": "Iron Bar",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 7
+  },
+  {
+    "id": 202,
+    "name": "Midas Touch",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 4,
+    "atlasRow": 7
+  },
+  {
+    "id": 203,
+    "name": "Humbleing Bundle",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 5,
+    "atlasRow": 7
+  },
+  {
+    "id": 204,
+    "name": "Fanny Pack",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 7
+  },
+  {
+    "id": 205,
+    "name": "Sharp Plug",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 7
+  },
+  {
+    "id": 206,
+    "name": "Guillotine",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 7
+  },
+  {
+    "id": 207,
+    "name": "Ball of Bandages",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 7
+  },
+  {
+    "id": 208,
+    "name": "Champion Belt",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 7
+  },
+  {
+    "id": 209,
+    "name": "Butt Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 7
+  },
+  {
+    "id": 210,
+    "name": "Gnawed Leaf",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 7
+  },
+  {
+    "id": 211,
+    "name": "Spiderbaby",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 13,
+    "atlasRow": 7
+  },
+  {
+    "id": 212,
+    "name": "Guppy's Collar",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 7
+  },
+  {
+    "id": 213,
+    "name": "Lost Contact",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 7
+  },
+  {
+    "id": 214,
+    "name": "Anemic",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 7
+  },
+  {
+    "id": 215,
+    "name": "Goat Head",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 7
+  },
+  {
+    "id": 216,
+    "name": "Ceremonial Robes",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 7
+  },
+  {
+    "id": 217,
+    "name": "Mom's Wig",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 7
+  },
+  {
+    "id": 218,
+    "name": "Placenta",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 7
+  },
+  {
+    "id": 219,
+    "name": "Old Bandage",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 7
+  },
+  {
+    "id": 220,
+    "name": "Sad Bombs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 22,
+    "atlasRow": 7
+  },
+  {
+    "id": 221,
+    "name": "Rubber Cement",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 7
+  },
+  {
+    "id": 222,
+    "name": "Antigravity",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 7
+  },
+  {
+    "id": 223,
+    "name": "Pyromaniac",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 25,
+    "atlasRow": 7
+  },
+  {
+    "id": 224,
+    "name": "Cricket's Body",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 7
+  },
+  {
+    "id": 225,
+    "name": "Gimpy",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 7
+  },
+  {
+    "id": 226,
+    "name": "Black Lotus",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 8
+  },
+  {
+    "id": 227,
+    "name": "Piggy Bank",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 8
+  },
+  {
+    "id": 228,
+    "name": "Mom's Perfume",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 8
+  },
+  {
+    "id": 229,
+    "name": "Monstros Lung",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 8
+  },
+  {
+    "id": 230,
+    "name": "Abaddon",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 8
+  },
+  {
+    "id": 231,
+    "name": "Ball of Tar",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 8
+  },
+  {
+    "id": 232,
+    "name": "Stop Watch",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 6,
+    "atlasRow": 8
+  },
+  {
+    "id": 233,
+    "name": "Tiny Planet",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 8
+  },
+  {
+    "id": 234,
+    "name": "Infestation 2",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 8
+  },
+  {
+    "id": 236,
+    "name": "E. Coli",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 9,
+    "atlasRow": 8
+  },
+  {
+    "id": 237,
+    "name": "Deaths Touch",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 8
+  },
+  {
+    "id": 238,
+    "name": "Key Piece 1",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 11,
+    "atlasRow": 8
+  },
+  {
+    "id": 239,
+    "name": "Key Piece 2",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 12,
+    "atlasRow": 8
+  },
+  {
+    "id": 240,
+    "name": "Experimental Treatment",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 8
+  },
+  {
+    "id": 241,
+    "name": "Contract From Below",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 8
+  },
+  {
+    "id": 242,
+    "name": "Infamy",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 8
+  },
+  {
+    "id": 243,
+    "name": "Trinity Shield",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 8
+  },
+  {
+    "id": 244,
+    "name": "Tech5",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 8
+  },
+  {
+    "id": 245,
+    "name": "2020",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 18,
+    "atlasRow": 8
+  },
+  {
+    "id": 246,
+    "name": "Blue Map",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 8
+  },
+  {
+    "id": 247,
+    "name": "Bffs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 8
+  },
+  {
+    "id": 248,
+    "name": "Hive Mind",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 8
+  },
+  {
+    "id": 249,
+    "name": "Theres Options",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 8
+  },
+  {
+    "id": 250,
+    "name": "Bogo Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 8
+  },
+  {
+    "id": 251,
+    "name": "Starter Deck",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 8
+  },
+  {
+    "id": 252,
+    "name": "Little Baggy",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 25,
+    "atlasRow": 8
+  },
+  {
+    "id": 253,
+    "name": "Magic Scab",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 8
+  },
+  {
+    "id": 254,
+    "name": "Blood Clot",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 8
+  },
+  {
+    "id": 255,
+    "name": "Screw",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 9
+  },
+  {
+    "id": 256,
+    "name": "Hot Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 9
+  },
+  {
+    "id": 257,
+    "name": "Fire Mind",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 9
+  },
+  {
+    "id": 258,
+    "name": "Missing No",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 3,
+    "atlasRow": 9
+  },
+  {
+    "id": 259,
+    "name": "Dark Matter",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 9
+  },
+  {
+    "id": 260,
+    "name": "Black Candle",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 5,
+    "atlasRow": 9
+  },
+  {
+    "id": 261,
+    "name": "Proptosis",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 9
+  },
+  {
+    "id": 262,
+    "name": "Missing Page 2",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 9
+  },
+  {
+    "id": 263,
+    "name": "Clear Rune",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 9
+  },
+  {
+    "id": 264,
+    "name": "Smart Fly",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 9
+  },
+  {
+    "id": 265,
+    "name": "Dry Baby",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 9
+  },
+  {
+    "id": 266,
+    "name": "Juicy Sack",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 9
+  },
+  {
+    "id": 267,
+    "name": "Robobaby 20",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 9
+  },
+  {
+    "id": 268,
+    "name": "Rotten Baby",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 13,
+    "atlasRow": 9
+  },
+  {
+    "id": 269,
+    "name": "Headless Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 9
+  },
+  {
+    "id": 270,
+    "name": "Leech",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 9
+  },
+  {
+    "id": 271,
+    "name": "Mystery Sack",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 9
+  },
+  {
+    "id": 272,
+    "name": "Bbf",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 17,
+    "atlasRow": 9
+  },
+  {
+    "id": 273,
+    "name": "Bob's Brain",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 18,
+    "atlasRow": 9
+  },
+  {
+    "id": 274,
+    "name": "Best Bud",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 19,
+    "atlasRow": 9
+  },
+  {
+    "id": 275,
+    "name": "Lil Brimstone",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 9
+  },
+  {
+    "id": 276,
+    "name": "Isaac's Heart",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 21,
+    "atlasRow": 9
+  },
+  {
+    "id": 277,
+    "name": "Lil Haunt",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 9
+  },
+  {
+    "id": 278,
+    "name": "Dark Bum",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 9
+  },
+  {
+    "id": 279,
+    "name": "Big Fan",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 9
+  },
+  {
+    "id": 280,
+    "name": "Sissy Longlegs",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 9
+  },
+  {
+    "id": 281,
+    "name": "Punching Bag",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 9
+  },
+  {
+    "id": 282,
+    "name": "How to Jump",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 9
+  },
+  {
+    "id": 283,
+    "name": "D100",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 10
+  },
+  {
+    "id": 284,
+    "name": "D4",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 10
+  },
+  {
+    "id": 285,
+    "name": "D10",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 10
+  },
+  {
+    "id": 286,
+    "name": "Blank Card",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 10
+  },
+  {
+    "id": 287,
+    "name": "Book of Secrets",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 10
+  },
+  {
+    "id": 288,
+    "name": "Box of Spider's",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 10
+  },
+  {
+    "id": 289,
+    "name": "Red Candle",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 10
+  },
+  {
+    "id": 290,
+    "name": "The Jar",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 10
+  },
+  {
+    "id": 291,
+    "name": "Flush",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 10
+  },
+  {
+    "id": 292,
+    "name": "Satanic Bible",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 9,
+    "atlasRow": 10
+  },
+  {
+    "id": 293,
+    "name": "Head of Krampus",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 10
+  },
+  {
+    "id": 294,
+    "name": "Butter Bean",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 11,
+    "atlasRow": 10
+  },
+  {
+    "id": 295,
+    "name": "Magic Fingers",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 12,
+    "atlasRow": 10
+  },
+  {
+    "id": 296,
+    "name": "Converter",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 10
+  },
+  {
+    "id": 297,
+    "name": "Pandoras Box",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 10
+  },
+  {
+    "id": 298,
+    "name": "Unicorn Stump",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 10
+  },
+  {
+    "id": 299,
+    "name": "Taurus",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 10
+  },
+  {
+    "id": 300,
+    "name": "Aries",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 10
+  },
+  {
+    "id": 301,
+    "name": "Cancer",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 10
+  },
+  {
+    "id": 302,
+    "name": "Leo",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 10
+  },
+  {
+    "id": 303,
+    "name": "Virgo",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 10
+  },
+  {
+    "id": 304,
+    "name": "Libra",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 10
+  },
+  {
+    "id": 305,
+    "name": "Scorpio",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 10
+  },
+  {
+    "id": 306,
+    "name": "Sagittarius",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 10
+  },
+  {
+    "id": 307,
+    "name": "Capricorn",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 10
+  },
+  {
+    "id": 308,
+    "name": "Aquarius",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 10
+  },
+  {
+    "id": 309,
+    "name": "Pisces",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 10
+  },
+  {
+    "id": 310,
+    "name": "Eve's Mascara",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 27,
+    "atlasRow": 10
+  },
+  {
+    "id": 311,
+    "name": "Judas Shadow",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 11
+  },
+  {
+    "id": 312,
+    "name": "Maggy's Bow",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 11
+  },
+  {
+    "id": 313,
+    "name": "Holy Mantle",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 2,
+    "atlasRow": 11
+  },
+  {
+    "id": 314,
+    "name": "Thunder Thighs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 11
+  },
+  {
+    "id": 315,
+    "name": "Strange Attractor",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 11
+  },
+  {
+    "id": 316,
+    "name": "Cursed Eye",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 5,
+    "atlasRow": 11
+  },
+  {
+    "id": 317,
+    "name": "Mysterious Liquid",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 11
+  },
+  {
+    "id": 318,
+    "name": "Gemini",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 11
+  },
+  {
+    "id": 319,
+    "name": "Cain's Other Eye",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 11
+  },
+  {
+    "id": 320,
+    "name": "S Only Friend",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 11
+  },
+  {
+    "id": 321,
+    "name": "Samson's Chains",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 11
+  },
+  {
+    "id": 322,
+    "name": "Mongo Baby",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 11
+  },
+  {
+    "id": 323,
+    "name": "Isaac's Tears",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 11
+  },
+  {
+    "id": 324,
+    "name": "Undefined",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 11
+  },
+  {
+    "id": 325,
+    "name": "Scissors",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 14,
+    "atlasRow": 11
+  },
+  {
+    "id": 326,
+    "name": "Breath of Life",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 11
+  },
+  {
+    "id": 327,
+    "name": "The Polaroid",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 11
+  },
+  {
+    "id": 328,
+    "name": "The Negative",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 11
+  },
+  {
+    "id": 329,
+    "name": "The Ludovico Technique",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 11
+  },
+  {
+    "id": 330,
+    "name": "Soy Milk",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 11
+  },
+  {
+    "id": 331,
+    "name": "Godhead",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 20,
+    "atlasRow": 11
+  },
+  {
+    "id": 332,
+    "name": "Lazarus Rags",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 11
+  },
+  {
+    "id": 333,
+    "name": "The Mind",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 11
+  },
+  {
+    "id": 334,
+    "name": "The Body",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 11
+  },
+  {
+    "id": 335,
+    "name": "The Soul",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 11
+  },
+  {
+    "id": 336,
+    "name": "Dead Onion",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 11
+  },
+  {
+    "id": 337,
+    "name": "Broken Watch",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 11
+  },
+  {
+    "id": 338,
+    "name": "The Boomerang",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 11
+  },
+  {
+    "id": 339,
+    "name": "Safety Pin",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 12
+  },
+  {
+    "id": 340,
+    "name": "Caffeine Pill",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 12
+  },
+  {
+    "id": 341,
+    "name": "Torn Photo",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 2,
+    "atlasRow": 12
+  },
+  {
+    "id": 342,
+    "name": "Blue Cap",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 3,
+    "atlasRow": 12
+  },
+  {
+    "id": 343,
+    "name": "Latch Key",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 12
+  },
+  {
+    "id": 344,
+    "name": "Match Book",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 12
+  },
+  {
+    "id": 345,
+    "name": "Synthoil",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 12
+  },
+  {
+    "id": 346,
+    "name": "A Snack",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 12
+  },
+  {
+    "id": 347,
+    "name": "Diplopia",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 12
+  },
+  {
+    "id": 348,
+    "name": "Placebo",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 12
+  },
+  {
+    "id": 349,
+    "name": "Wooden Nickel",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 12
+  },
+  {
+    "id": 350,
+    "name": "Toxic Shock",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 12
+  },
+  {
+    "id": 351,
+    "name": "Mega Bean",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 12
+  },
+  {
+    "id": 352,
+    "name": "Glass Cannon",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 12
+  },
+  {
+    "id": 353,
+    "name": "Bomber Boy",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 12
+  },
+  {
+    "id": 354,
+    "name": "Crack Jacks",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 12
+  },
+  {
+    "id": 355,
+    "name": "Mom's Pearls",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 12
+  },
+  {
+    "id": 356,
+    "name": "Car Battery",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 12
+  },
+  {
+    "id": 357,
+    "name": "Box of Friends",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 12
+  },
+  {
+    "id": 358,
+    "name": "The Wiz",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 12
+  },
+  {
+    "id": 359,
+    "name": "8 Inch Nails",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 12
+  },
+  {
+    "id": 360,
+    "name": "Incubus",
+    "kind": "familiar",
+    "quality": 4,
+    "atlasCol": 21,
+    "atlasRow": 12
+  },
+  {
+    "id": 361,
+    "name": "Fates Reward",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 22,
+    "atlasRow": 12
+  },
+  {
+    "id": 362,
+    "name": "Lil Chest",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 23,
+    "atlasRow": 12
+  },
+  {
+    "id": 363,
+    "name": "Sworn Protector",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 12
+  },
+  {
+    "id": 364,
+    "name": "Friend Zone",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 12
+  },
+  {
+    "id": 365,
+    "name": "Lost Fly",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 12
+  },
+  {
+    "id": 366,
+    "name": "Scatter Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 12
+  },
+  {
+    "id": 367,
+    "name": "Sticky Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 13
+  },
+  {
+    "id": 368,
+    "name": "Epiphora",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 13
+  },
+  {
+    "id": 369,
+    "name": "Continuum",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 13
+  },
+  {
+    "id": 370,
+    "name": "Mr Dolly",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 3,
+    "atlasRow": 13
+  },
+  {
+    "id": 371,
+    "name": "Curse of the Tower",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 13
+  },
+  {
+    "id": 372,
+    "name": "Charged Baby",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 13
+  },
+  {
+    "id": 373,
+    "name": "Dead Eye",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 13
+  },
+  {
+    "id": 374,
+    "name": "Holy Light",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 7,
+    "atlasRow": 13
+  },
+  {
+    "id": 375,
+    "name": "Host Hat",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 13
+  },
+  {
+    "id": 376,
+    "name": "Restock",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 9,
+    "atlasRow": 13
+  },
+  {
+    "id": 377,
+    "name": "Bursting Sack",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 13
+  },
+  {
+    "id": 378,
+    "name": "Number Two",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 13
+  },
+  {
+    "id": 379,
+    "name": "Pupula Duplex",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 13
+  },
+  {
+    "id": 380,
+    "name": "Pay to Play",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 13
+  },
+  {
+    "id": 381,
+    "name": "Eden's Blessing",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 14,
+    "atlasRow": 13
+  },
+  {
+    "id": 382,
+    "name": "Friendly Ball",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 13
+  },
+  {
+    "id": 383,
+    "name": "Tear Detonator",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 13
+  },
+  {
+    "id": 384,
+    "name": "Lil Gurdy",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 13
+  },
+  {
+    "id": 385,
+    "name": "Bumbo",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 13
+  },
+  {
+    "id": 386,
+    "name": "D12",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 13
+  },
+  {
+    "id": 387,
+    "name": "Censer",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 13
+  },
+  {
+    "id": 388,
+    "name": "Key Bum",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 21,
+    "atlasRow": 13
+  },
+  {
+    "id": 389,
+    "name": "Rune Bag",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 13
+  },
+  {
+    "id": 390,
+    "name": "Seraphim",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 13
+  },
+  {
+    "id": 391,
+    "name": "Betrayal",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 24,
+    "atlasRow": 13
+  },
+  {
+    "id": 392,
+    "name": "Zodiac",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 13
+  },
+  {
+    "id": 393,
+    "name": "Serpents Kiss",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 13
+  },
+  {
+    "id": 394,
+    "name": "Marked",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 13
+  },
+  {
+    "id": 395,
+    "name": "Tech X",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 0,
+    "atlasRow": 14
+  },
+  {
+    "id": 396,
+    "name": "Ventricle Razor",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 1,
+    "atlasRow": 14
+  },
+  {
+    "id": 397,
+    "name": "Tractor Beam",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 2,
+    "atlasRow": 14
+  },
+  {
+    "id": 398,
+    "name": "Gods Flesh",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 14
+  },
+  {
+    "id": 399,
+    "name": "Maw of the Void",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 14
+  },
+  {
+    "id": 400,
+    "name": "Spear of Destiny",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 14
+  },
+  {
+    "id": 401,
+    "name": "Explosivo",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 14
+  },
+  {
+    "id": 402,
+    "name": "Chaos",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 7,
+    "atlasRow": 14
+  },
+  {
+    "id": 403,
+    "name": "Spider Mod",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 14
+  },
+  {
+    "id": 404,
+    "name": "Farting Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 14
+  },
+  {
+    "id": 405,
+    "name": "Gb Bug",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 14
+  },
+  {
+    "id": 406,
+    "name": "D8",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 14
+  },
+  {
+    "id": 407,
+    "name": "Purity",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 12,
+    "atlasRow": 14
+  },
+  {
+    "id": 408,
+    "name": "Athame",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 13,
+    "atlasRow": 14
+  },
+  {
+    "id": 409,
+    "name": "Empty Vessel",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 14
+  },
+  {
+    "id": 410,
+    "name": "Evil Eye",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 14
+  },
+  {
+    "id": 411,
+    "name": "Lusty Blood",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 16,
+    "atlasRow": 14
+  },
+  {
+    "id": 412,
+    "name": "Cambion Conception",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 14
+  },
+  {
+    "id": 413,
+    "name": "Immaculate Conception",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 14
+  },
+  {
+    "id": 414,
+    "name": "More Options",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 19,
+    "atlasRow": 14
+  },
+  {
+    "id": 415,
+    "name": "Crown of Light",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 20,
+    "atlasRow": 14
+  },
+  {
+    "id": 416,
+    "name": "Deep Pockets",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 14
+  },
+  {
+    "id": 417,
+    "name": "Succubus",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 14
+  },
+  {
+    "id": 418,
+    "name": "Fruit Cake",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 23,
+    "atlasRow": 14
+  },
+  {
+    "id": 419,
+    "name": "Teleport 20",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 14
+  },
+  {
+    "id": 420,
+    "name": "Black Powder",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 25,
+    "atlasRow": 14
+  },
+  {
+    "id": 421,
+    "name": "Kidney Bean",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 26,
+    "atlasRow": 14
+  },
+  {
+    "id": 422,
+    "name": "Glowing Hour Glass",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 27,
+    "atlasRow": 14
+  },
+  {
+    "id": 423,
+    "name": "Circle of Protection",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 15
+  },
+  {
+    "id": 424,
+    "name": "Sack Head",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 1,
+    "atlasRow": 15
+  },
+  {
+    "id": 425,
+    "name": "Night Light",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 15
+  },
+  {
+    "id": 426,
+    "name": "Obsessed Fan",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 3,
+    "atlasRow": 15
+  },
+  {
+    "id": 427,
+    "name": "Mine Crafter",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 4,
+    "atlasRow": 15
+  },
+  {
+    "id": 428,
+    "name": "Pjs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 15
+  },
+  {
+    "id": 429,
+    "name": "Head of the Keeper",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 15
+  },
+  {
+    "id": 430,
+    "name": "Papa Fly",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 15
+  },
+  {
+    "id": 431,
+    "name": "Multidimensional Baby",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 15
+  },
+  {
+    "id": 432,
+    "name": "Glitter Bombs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 9,
+    "atlasRow": 15
+  },
+  {
+    "id": 433,
+    "name": "My Shadow",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 15
+  },
+  {
+    "id": 434,
+    "name": "Jar of Flies",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 15
+  },
+  {
+    "id": 435,
+    "name": "Lil Loki",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 15
+  },
+  {
+    "id": 436,
+    "name": "Milk",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 15
+  },
+  {
+    "id": 437,
+    "name": "D7",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 15
+  },
+  {
+    "id": 438,
+    "name": "Binky",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 15,
+    "atlasRow": 15
+  },
+  {
+    "id": 439,
+    "name": "Mom's Box",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 15
+  },
+  {
+    "id": 440,
+    "name": "Kidney Stone",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 15
+  },
+  {
+    "id": 441,
+    "name": "Mega Blast",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 18,
+    "atlasRow": 15
+  },
+  {
+    "id": 442,
+    "name": "Dark Princes Crown",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 15
+  },
+  {
+    "id": 443,
+    "name": "Apple",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 15
+  },
+  {
+    "id": 444,
+    "name": "Lead Pencil",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 15
+  },
+  {
+    "id": 445,
+    "name": "Dog Tooth",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 22,
+    "atlasRow": 15
+  },
+  {
+    "id": 446,
+    "name": "Dead Tooth",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 15
+  },
+  {
+    "id": 447,
+    "name": "Linger Bean",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 24,
+    "atlasRow": 15
+  },
+  {
+    "id": 448,
+    "name": "Shard of Glass",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 15
+  },
+  {
+    "id": 449,
+    "name": "Metal Plate",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 15
+  },
+  {
+    "id": 450,
+    "name": "Eye of Greed",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 15
+  },
+  {
+    "id": 451,
+    "name": "Tarot Cloth",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 16
+  },
+  {
+    "id": 452,
+    "name": "Varicose Veins",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 1,
+    "atlasRow": 16
+  },
+  {
+    "id": 453,
+    "name": "Compound Fracture",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 2,
+    "atlasRow": 16
+  },
+  {
+    "id": 454,
+    "name": "Polydactyly",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 16
+  },
+  {
+    "id": 455,
+    "name": "Dad's Lost Coin",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 16
+  },
+  {
+    "id": 456,
+    "name": "Midnight Snack",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 16
+  },
+  {
+    "id": 457,
+    "name": "Cone Head",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 16
+  },
+  {
+    "id": 458,
+    "name": "Belly Button",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 16
+  },
+  {
+    "id": 459,
+    "name": "Sinus Infection",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 16
+  },
+  {
+    "id": 460,
+    "name": "Glaucoma",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 16
+  },
+  {
+    "id": 461,
+    "name": "Parasitoid",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 16
+  },
+  {
+    "id": 462,
+    "name": "Eye of Belial",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 16
+  },
+  {
+    "id": 463,
+    "name": "Sulfuric Acid",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 16
+  },
+  {
+    "id": 464,
+    "name": "Glyph of Balance",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 16
+  },
+  {
+    "id": 465,
+    "name": "Analog Stick",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 16
+  },
+  {
+    "id": 466,
+    "name": "Contagion",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 15,
+    "atlasRow": 16
+  },
+  {
+    "id": 467,
+    "name": "Finger",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 16
+  },
+  {
+    "id": 468,
+    "name": "Shade",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 17,
+    "atlasRow": 16
+  },
+  {
+    "id": 469,
+    "name": "Depression",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 16
+  },
+  {
+    "id": 470,
+    "name": "Hushy",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 19,
+    "atlasRow": 16
+  },
+  {
+    "id": 471,
+    "name": "Lil Monstro",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 16
+  },
+  {
+    "id": 472,
+    "name": "King Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 16
+  },
+  {
+    "id": 473,
+    "name": "Big Chubby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 16
+  },
+  {
+    "id": 474,
+    "name": "Broken Glass Cannon",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 23,
+    "atlasRow": 16
+  },
+  {
+    "id": 475,
+    "name": "Plan C",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 24,
+    "atlasRow": 16
+  },
+  {
+    "id": 476,
+    "name": "D1",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 16
+  },
+  {
+    "id": 477,
+    "name": "Void",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 16
+  },
+  {
+    "id": 478,
+    "name": "Pause",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 27,
+    "atlasRow": 16
+  },
+  {
+    "id": 479,
+    "name": "Smelter",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 17
+  },
+  {
+    "id": 480,
+    "name": "Compost",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 1,
+    "atlasRow": 17
+  },
+  {
+    "id": 481,
+    "name": "Dataminer",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 2,
+    "atlasRow": 17
+  },
+  {
+    "id": 482,
+    "name": "Clicker",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 3,
+    "atlasRow": 17
+  },
+  {
+    "id": 483,
+    "name": "Mama Mega",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 17
+  },
+  {
+    "id": 484,
+    "name": "Wait What",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 17
+  },
+  {
+    "id": 485,
+    "name": "Crooked Penny",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 17
+  },
+  {
+    "id": 486,
+    "name": "Dull Razor",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 7,
+    "atlasRow": 17
+  },
+  {
+    "id": 487,
+    "name": "Potato Peeler",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 17
+  },
+  {
+    "id": 488,
+    "name": "Metronome",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 17
+  },
+  {
+    "id": 489,
+    "name": "D Infinity",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 10,
+    "atlasRow": 17
+  },
+  {
+    "id": 490,
+    "name": "Eden's Soul",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 17
+  },
+  {
+    "id": 491,
+    "name": "Acid Baby",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 17
+  },
+  {
+    "id": 492,
+    "name": "Yo Listen",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 17
+  },
+  {
+    "id": 493,
+    "name": "Adrenaline",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 14,
+    "atlasRow": 17
+  },
+  {
+    "id": 494,
+    "name": "Jacob's Ladder",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 15,
+    "atlasRow": 17
+  },
+  {
+    "id": 495,
+    "name": "Ghost Pepper",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 16,
+    "atlasRow": 17
+  },
+  {
+    "id": 496,
+    "name": "Euthanasia",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 17
+  },
+  {
+    "id": 497,
+    "name": "Camo Undies",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 17
+  },
+  {
+    "id": 498,
+    "name": "Duality",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 17
+  },
+  {
+    "id": 499,
+    "name": "Eucharist",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 17
+  },
+  {
+    "id": 500,
+    "name": "Sack of Sacks",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 17
+  },
+  {
+    "id": 501,
+    "name": "Greeds Gullet",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 17
+  },
+  {
+    "id": 502,
+    "name": "Large Zit",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 17
+  },
+  {
+    "id": 503,
+    "name": "Little Horn",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 17
+  },
+  {
+    "id": 504,
+    "name": "Brown Nugget",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 25,
+    "atlasRow": 17
+  },
+  {
+    "id": 505,
+    "name": "Poke Go",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 17
+  },
+  {
+    "id": 506,
+    "name": "Backstabber",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 27,
+    "atlasRow": 17
+  },
+  {
+    "id": 507,
+    "name": "Sharp Straw",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 18
+  },
+  {
+    "id": 508,
+    "name": "Mom's Razor",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 18
+  },
+  {
+    "id": 509,
+    "name": "Bloodshot Eye",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 18
+  },
+  {
+    "id": 510,
+    "name": "Delirious",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 18
+  },
+  {
+    "id": 511,
+    "name": "Angry Fly",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 4,
+    "atlasRow": 18
+  },
+  {
+    "id": 512,
+    "name": "Black Hole",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 18
+  },
+  {
+    "id": 513,
+    "name": "Bozo",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 18
+  },
+  {
+    "id": 514,
+    "name": "Broken Modem",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 7,
+    "atlasRow": 18
+  },
+  {
+    "id": 515,
+    "name": "Mystery Gift",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 18
+  },
+  {
+    "id": 516,
+    "name": "Sprinkler",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 18
+  },
+  {
+    "id": 517,
+    "name": "Fast Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 18
+  },
+  {
+    "id": 518,
+    "name": "Buddy in a Box",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 18
+  },
+  {
+    "id": 519,
+    "name": "Lil Delirium",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 18
+  },
+  {
+    "id": 520,
+    "name": "Jumper Cables",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 18
+  },
+  {
+    "id": 521,
+    "name": "Coupon",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 18
+  },
+  {
+    "id": 522,
+    "name": "Telekinesis",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 18
+  },
+  {
+    "id": 523,
+    "name": "Moving Box",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 18
+  },
+  {
+    "id": 524,
+    "name": "Technology Zero",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 18
+  },
+  {
+    "id": 525,
+    "name": "Leprosy",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 18,
+    "atlasRow": 18
+  },
+  {
+    "id": 526,
+    "name": "7 Seals",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 18
+  },
+  {
+    "id": 527,
+    "name": "Mr Me",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 20,
+    "atlasRow": 18
+  },
+  {
+    "id": 528,
+    "name": "Angelic Prism",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 18
+  },
+  {
+    "id": 529,
+    "name": "Pop",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 18
+  },
+  {
+    "id": 530,
+    "name": "Deaths List",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 18
+  },
+  {
+    "id": 531,
+    "name": "Haemolacria",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 24,
+    "atlasRow": 18
+  },
+  {
+    "id": 532,
+    "name": "Lachryphagy",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 25,
+    "atlasRow": 18
+  },
+  {
+    "id": 533,
+    "name": "Trisagion",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 18
+  },
+  {
+    "id": 534,
+    "name": "Schoolbag",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 27,
+    "atlasRow": 18
+  },
+  {
+    "id": 535,
+    "name": "Blanket",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 0,
+    "atlasRow": 19
+  },
+  {
+    "id": 536,
+    "name": "Sacrificial Altar",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 19
+  },
+  {
+    "id": 537,
+    "name": "Lil Spewer",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 19
+  },
+  {
+    "id": 538,
+    "name": "Marbles",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 19
+  },
+  {
+    "id": 539,
+    "name": "Mystery Egg",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 19
+  },
+  {
+    "id": 540,
+    "name": "Flat Stone",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 19
+  },
+  {
+    "id": 541,
+    "name": "Marrow",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 19
+  },
+  {
+    "id": 542,
+    "name": "Slipped Rib",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 19
+  },
+  {
+    "id": 543,
+    "name": "Hallowed Ground",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 19
+  },
+  {
+    "id": 544,
+    "name": "Pointy Rib",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 19
+  },
+  {
+    "id": 545,
+    "name": "Book of the Dead",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 19
+  },
+  {
+    "id": 546,
+    "name": "Dad's Ring",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 19
+  },
+  {
+    "id": 547,
+    "name": "Divorce Papers",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 12,
+    "atlasRow": 19
+  },
+  {
+    "id": 548,
+    "name": "Jaw Bone",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 19
+  },
+  {
+    "id": 549,
+    "name": "Brittle Bones",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 14,
+    "atlasRow": 19
+  },
+  {
+    "id": 550,
+    "name": "Broken Shovel",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 15,
+    "atlasRow": 19
+  },
+  {
+    "id": 551,
+    "name": "Broken Shovel2",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 16,
+    "atlasRow": 19
+  },
+  {
+    "id": 552,
+    "name": "Mom's Shovel",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 17,
+    "atlasRow": 19
+  },
+  {
+    "id": 553,
+    "name": "Mucormycosis",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 19
+  },
+  {
+    "id": 554,
+    "name": "2spooky",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 19,
+    "atlasRow": 19
+  },
+  {
+    "id": 555,
+    "name": "Golden Razor",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 20,
+    "atlasRow": 19
+  },
+  {
+    "id": 556,
+    "name": "Sulfur",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 19
+  },
+  {
+    "id": 557,
+    "name": "Fortune Cookie",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 22,
+    "atlasRow": 19
+  },
+  {
+    "id": 558,
+    "name": "Eye Sore",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 19
+  },
+  {
+    "id": 559,
+    "name": "120 Volt",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 19
+  },
+  {
+    "id": 560,
+    "name": "It Hurts",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 19
+  },
+  {
+    "id": 561,
+    "name": "Almond Milk",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 26,
+    "atlasRow": 19
+  },
+  {
+    "id": 562,
+    "name": "Rock Bottom",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 27,
+    "atlasRow": 19
+  },
+  {
+    "id": 563,
+    "name": "Nancy Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 20
+  },
+  {
+    "id": 564,
+    "name": "A Bar of Soap",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 20
+  },
+  {
+    "id": 565,
+    "name": "Blood Puppy",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 20
+  },
+  {
+    "id": 566,
+    "name": "Dream Catcher",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 20
+  },
+  {
+    "id": 567,
+    "name": "Paschal Candle",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 20
+  },
+  {
+    "id": 568,
+    "name": "Divine Intervention",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 20
+  },
+  {
+    "id": 569,
+    "name": "Blood Oath",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 20
+  },
+  {
+    "id": 570,
+    "name": "Playdough Cookie",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 20
+  },
+  {
+    "id": 571,
+    "name": "Orphan Socks",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 20
+  },
+  {
+    "id": 572,
+    "name": "Eye of the Occult",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 9,
+    "atlasRow": 20
+  },
+  {
+    "id": 573,
+    "name": "Immaculate Heart",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 20
+  },
+  {
+    "id": 574,
+    "name": "Monstrance",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 20
+  },
+  {
+    "id": 575,
+    "name": "The Intruder",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 20
+  },
+  {
+    "id": 576,
+    "name": "Dirty Mind",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 13,
+    "atlasRow": 20
+  },
+  {
+    "id": 577,
+    "name": "Damocles",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 20
+  },
+  {
+    "id": 578,
+    "name": "Free Lemonade",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 15,
+    "atlasRow": 20
+  },
+  {
+    "id": 579,
+    "name": "Spirit Sword",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 16,
+    "atlasRow": 20
+  },
+  {
+    "id": 580,
+    "name": "Red Key",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 20
+  },
+  {
+    "id": 581,
+    "name": "Psy Fly",
+    "kind": "familiar",
+    "quality": 4,
+    "atlasCol": 18,
+    "atlasRow": 20
+  },
+  {
+    "id": 582,
+    "name": "Wavy Cap",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 19,
+    "atlasRow": 20
+  },
+  {
+    "id": 583,
+    "name": "Rocket in a Jar",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 20,
+    "atlasRow": 20
+  },
+  {
+    "id": 584,
+    "name": "Book of Virtues",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 20
+  },
+  {
+    "id": 585,
+    "name": "Alabaster Box",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 20
+  },
+  {
+    "id": 586,
+    "name": "The Stairway",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 20
+  },
+  {
+    "id": 588,
+    "name": "Sol",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 20
+  },
+  {
+    "id": 589,
+    "name": "Luna",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 25,
+    "atlasRow": 20
+  },
+  {
+    "id": 590,
+    "name": "Mercurius",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 20
+  },
+  {
+    "id": 591,
+    "name": "Venus",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 20
+  },
+  {
+    "id": 592,
+    "name": "Terra",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 21
+  },
+  {
+    "id": 593,
+    "name": "Mars",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 21
+  },
+  {
+    "id": 594,
+    "name": "Jupiter",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 21
+  },
+  {
+    "id": 595,
+    "name": "Saturnus",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 3,
+    "atlasRow": 21
+  },
+  {
+    "id": 596,
+    "name": "Uranus",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 4,
+    "atlasRow": 21
+  },
+  {
+    "id": 597,
+    "name": "Neptunus",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 5,
+    "atlasRow": 21
+  },
+  {
+    "id": 598,
+    "name": "Pluto",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 21
+  },
+  {
+    "id": 599,
+    "name": "Voodoo Head",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 21
+  },
+  {
+    "id": 600,
+    "name": "Eye Drops",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 21
+  },
+  {
+    "id": 601,
+    "name": "Act of Contrition",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 9,
+    "atlasRow": 21
+  },
+  {
+    "id": 602,
+    "name": "Member Card",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 21
+  },
+  {
+    "id": 603,
+    "name": "Battery Pack",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 11,
+    "atlasRow": 21
+  },
+  {
+    "id": 604,
+    "name": "Mom's Bracelet",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 21
+  },
+  {
+    "id": 605,
+    "name": "The Scooper",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 13,
+    "atlasRow": 21
+  },
+  {
+    "id": 606,
+    "name": "Ocular Rift",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 21
+  },
+  {
+    "id": 607,
+    "name": "Boiled Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 21
+  },
+  {
+    "id": 608,
+    "name": "Freezer Baby",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 21
+  },
+  {
+    "id": 609,
+    "name": "Eternal D6",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 21
+  },
+  {
+    "id": 610,
+    "name": "Bird Cage",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 18,
+    "atlasRow": 21
+  },
+  {
+    "id": 611,
+    "name": "Larynx",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 21
+  },
+  {
+    "id": 612,
+    "name": "Lost Soul",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 20,
+    "atlasRow": 21
+  },
+  {
+    "id": 614,
+    "name": "Blood Bombs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 21
+  },
+  {
+    "id": 615,
+    "name": "Lil Dumpy",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 22,
+    "atlasRow": 21
+  },
+  {
+    "id": 616,
+    "name": "Birds Eye",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 23,
+    "atlasRow": 21
+  },
+  {
+    "id": 617,
+    "name": "Lodestone",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 21
+  },
+  {
+    "id": 618,
+    "name": "Rotten Tomato",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 21
+  },
+  {
+    "id": 619,
+    "name": "Birthright",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 21
+  },
+  {
+    "id": 621,
+    "name": "Red Stew",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 27,
+    "atlasRow": 21
+  },
+  {
+    "id": 622,
+    "name": "Genesis",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 22
+  },
+  {
+    "id": 623,
+    "name": "Sharp Key",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 22
+  },
+  {
+    "id": 624,
+    "name": "Booster Pack",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 22
+  },
+  {
+    "id": 625,
+    "name": "Mega Mush",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 3,
+    "atlasRow": 22
+  },
+  {
+    "id": 626,
+    "name": "Knife Piece 1",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 22
+  },
+  {
+    "id": 627,
+    "name": "Knife Piece 2",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 5,
+    "atlasRow": 22
+  },
+  {
+    "id": 628,
+    "name": "Death Certificate",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 6,
+    "atlasRow": 22
+  },
+  {
+    "id": 629,
+    "name": "Bot Fly",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 7,
+    "atlasRow": 22
+  },
+  {
+    "id": 631,
+    "name": "Meat Cleaver",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 8,
+    "atlasRow": 22
+  },
+  {
+    "id": 632,
+    "name": "Evil Charm",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 9,
+    "atlasRow": 22
+  },
+  {
+    "id": 633,
+    "name": "Dogma",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 22
+  },
+  {
+    "id": 634,
+    "name": "Purgatory",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 11,
+    "atlasRow": 22
+  },
+  {
+    "id": 635,
+    "name": "Stitches",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 12,
+    "atlasRow": 22
+  },
+  {
+    "id": 636,
+    "name": "R Key",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 13,
+    "atlasRow": 22
+  },
+  {
+    "id": 637,
+    "name": "Knockout Drops",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 14,
+    "atlasRow": 22
+  },
+  {
+    "id": 638,
+    "name": "Eraser",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 22
+  },
+  {
+    "id": 639,
+    "name": "Yuck Heart",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 22
+  },
+  {
+    "id": 640,
+    "name": "Urn of Souls",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 22
+  },
+  {
+    "id": 641,
+    "name": "Akeldama",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 22
+  },
+  {
+    "id": 642,
+    "name": "Magic Skin",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 22
+  },
+  {
+    "id": 643,
+    "name": "Revelation",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 20,
+    "atlasRow": 22
+  },
+  {
+    "id": 644,
+    "name": "Consolation Prize",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 22
+  },
+  {
+    "id": 645,
+    "name": "Tinytoma",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 22
+  },
+  {
+    "id": 646,
+    "name": "Brimstone Bombs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 23,
+    "atlasRow": 22
+  },
+  {
+    "id": 647,
+    "name": "4 5 Volt",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 24,
+    "atlasRow": 22
+  },
+  {
+    "id": 649,
+    "name": "Fruity Plum",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 22
+  },
+  {
+    "id": 650,
+    "name": "Plum Flute",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 26,
+    "atlasRow": 22
+  },
+  {
+    "id": 651,
+    "name": "Star of Bethlehem",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 27,
+    "atlasRow": 22
+  },
+  {
+    "id": 652,
+    "name": "Cube Baby",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 0,
+    "atlasRow": 23
+  },
+  {
+    "id": 653,
+    "name": "Vade Retro",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 1,
+    "atlasRow": 23
+  },
+  {
+    "id": 654,
+    "name": "False PHD",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 23
+  },
+  {
+    "id": 655,
+    "name": "Spin to Win",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 3,
+    "atlasRow": 23
+  },
+  {
+    "id": 656,
+    "name": "Damocles",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 23
+  },
+  {
+    "id": 657,
+    "name": "Vasculitis",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 23
+  },
+  {
+    "id": 658,
+    "name": "Giant Cell",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 6,
+    "atlasRow": 23
+  },
+  {
+    "id": 659,
+    "name": "Tropicamide",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 7,
+    "atlasRow": 23
+  },
+  {
+    "id": 660,
+    "name": "Card Reading",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 8,
+    "atlasRow": 23
+  },
+  {
+    "id": 661,
+    "name": "Quints",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 9,
+    "atlasRow": 23
+  },
+  {
+    "id": 663,
+    "name": "Tooth and Nail",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 10,
+    "atlasRow": 23
+  },
+  {
+    "id": 664,
+    "name": "Binge Eater",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 11,
+    "atlasRow": 23
+  },
+  {
+    "id": 665,
+    "name": "Guppy's Eye",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 12,
+    "atlasRow": 23
+  },
+  {
+    "id": 667,
+    "name": "Strawman",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 23
+  },
+  {
+    "id": 668,
+    "name": "Dad's Note",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 14,
+    "atlasRow": 23
+  },
+  {
+    "id": 669,
+    "name": "Sausage",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 15,
+    "atlasRow": 23
+  },
+  {
+    "id": 670,
+    "name": "Options",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 16,
+    "atlasRow": 23
+  },
+  {
+    "id": 671,
+    "name": "Candy Heart",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 17,
+    "atlasRow": 23
+  },
+  {
+    "id": 672,
+    "name": "A Pound of Flesh",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 18,
+    "atlasRow": 23
+  },
+  {
+    "id": 673,
+    "name": "Redemption",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 23
+  },
+  {
+    "id": 674,
+    "name": "Spirit Shackles",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 20,
+    "atlasRow": 23
+  },
+  {
+    "id": 675,
+    "name": "Cracked Orb",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 21,
+    "atlasRow": 23
+  },
+  {
+    "id": 676,
+    "name": "Empty Heart",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 23
+  },
+  {
+    "id": 677,
+    "name": "Astral Projection",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 23
+  },
+  {
+    "id": 678,
+    "name": "C Section",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 24,
+    "atlasRow": 23
+  },
+  {
+    "id": 679,
+    "name": "Lil Abaddon",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 25,
+    "atlasRow": 23
+  },
+  {
+    "id": 680,
+    "name": "Montezumas Revenge",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 26,
+    "atlasRow": 23
+  },
+  {
+    "id": 681,
+    "name": "Lil Portal",
+    "kind": "familiar",
+    "quality": 0,
+    "atlasCol": 27,
+    "atlasRow": 23
+  },
+  {
+    "id": 682,
+    "name": "Worm Friend",
+    "kind": "familiar",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 24
+  },
+  {
+    "id": 683,
+    "name": "Bone Spurs",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 1,
+    "atlasRow": 24
+  },
+  {
+    "id": 684,
+    "name": "Hungry Soul",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 2,
+    "atlasRow": 24
+  },
+  {
+    "id": 685,
+    "name": "Jar of Wisps",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 24
+  },
+  {
+    "id": 686,
+    "name": "Soul Locket",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 4,
+    "atlasRow": 24
+  },
+  {
+    "id": 687,
+    "name": "Friend Finder",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 5,
+    "atlasRow": 24
+  },
+  {
+    "id": 688,
+    "name": "Inner Child",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 24
+  },
+  {
+    "id": 689,
+    "name": "Glitched Crown",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 7,
+    "atlasRow": 24
+  },
+  {
+    "id": 690,
+    "name": "Belly Jelly",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 8,
+    "atlasRow": 24
+  },
+  {
+    "id": 691,
+    "name": "Sacred Orb",
+    "kind": "passive",
+    "quality": 4,
+    "atlasCol": 9,
+    "atlasRow": 24
+  },
+  {
+    "id": 692,
+    "name": "Sanguine Bond",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 10,
+    "atlasRow": 24
+  },
+  {
+    "id": 693,
+    "name": "The Swarm",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 24
+  },
+  {
+    "id": 694,
+    "name": "Heartbreak",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 12,
+    "atlasRow": 24
+  },
+  {
+    "id": 695,
+    "name": "Bloody Gust",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 24
+  },
+  {
+    "id": 696,
+    "name": "Salvation",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 14,
+    "atlasRow": 24
+  },
+  {
+    "id": 697,
+    "name": "Vanishing Twin",
+    "kind": "familiar",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 24
+  },
+  {
+    "id": 698,
+    "name": "Twisted Pair",
+    "kind": "familiar",
+    "quality": 4,
+    "atlasCol": 16,
+    "atlasRow": 24
+  },
+  {
+    "id": 699,
+    "name": "Azazel's Rage",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 17,
+    "atlasRow": 24
+  },
+  {
+    "id": 700,
+    "name": "Echo Chamber",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 18,
+    "atlasRow": 24
+  },
+  {
+    "id": 701,
+    "name": "Isaac's Tomb",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 19,
+    "atlasRow": 24
+  },
+  {
+    "id": 702,
+    "name": "Vengeful Spirit",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 20,
+    "atlasRow": 24
+  },
+  {
+    "id": 703,
+    "name": "Esau Jr",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 21,
+    "atlasRow": 24
+  },
+  {
+    "id": 704,
+    "name": "Berserk",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 22,
+    "atlasRow": 24
+  },
+  {
+    "id": 705,
+    "name": "Dark Arts",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 23,
+    "atlasRow": 24
+  },
+  {
+    "id": 706,
+    "name": "Abyss",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 24,
+    "atlasRow": 24
+  },
+  {
+    "id": 707,
+    "name": "Supper",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 25,
+    "atlasRow": 24
+  },
+  {
+    "id": 708,
+    "name": "Stapler",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 26,
+    "atlasRow": 24
+  },
+  {
+    "id": 709,
+    "name": "Suplex",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 27,
+    "atlasRow": 24
+  },
+  {
+    "id": 710,
+    "name": "Bag of Crafting",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 0,
+    "atlasRow": 25
+  },
+  {
+    "id": 711,
+    "name": "Flip",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 1,
+    "atlasRow": 25
+  },
+  {
+    "id": 712,
+    "name": "Lemegeton",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 2,
+    "atlasRow": 25
+  },
+  {
+    "id": 713,
+    "name": "Sumptorium",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 3,
+    "atlasRow": 25
+  },
+  {
+    "id": 714,
+    "name": "Recall",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 4,
+    "atlasRow": 25
+  },
+  {
+    "id": 715,
+    "name": "Hold",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 5,
+    "atlasRow": 25
+  },
+  {
+    "id": 716,
+    "name": "Keeper's Sack",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 6,
+    "atlasRow": 25
+  },
+  {
+    "id": 717,
+    "name": "Keeper's Kin",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 25
+  },
+  {
+    "id": 719,
+    "name": "Keeper's Box",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 25
+  },
+  {
+    "id": 720,
+    "name": "Everything Jar",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 9,
+    "atlasRow": 25
+  },
+  {
+    "id": 721,
+    "name": "Tmtrainer",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 10,
+    "atlasRow": 25
+  },
+  {
+    "id": 722,
+    "name": "Anima Sola",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 11,
+    "atlasRow": 25
+  },
+  {
+    "id": 723,
+    "name": "Spindown Dice",
+    "kind": "active",
+    "quality": 4,
+    "atlasCol": 12,
+    "atlasRow": 25
+  },
+  {
+    "id": 724,
+    "name": "Hypercoagulation",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 13,
+    "atlasRow": 25
+  },
+  {
+    "id": 725,
+    "name": "Ibs",
+    "kind": "passive",
+    "quality": 0,
+    "atlasCol": 14,
+    "atlasRow": 25
+  },
+  {
+    "id": 726,
+    "name": "Hemoptysis",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 15,
+    "atlasRow": 25
+  },
+  {
+    "id": 727,
+    "name": "Ghost Bombs",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 16,
+    "atlasRow": 25
+  },
+  {
+    "id": 728,
+    "name": "Gello",
+    "kind": "active",
+    "quality": 3,
+    "atlasCol": 17,
+    "atlasRow": 25
+  },
+  {
+    "id": 729,
+    "name": "Decap Attack",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 18,
+    "atlasRow": 25
+  },
+  {
+    "id": 730,
+    "name": "Glass Eye",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 19,
+    "atlasRow": 25
+  },
+  {
+    "id": 731,
+    "name": "Stye",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 20,
+    "atlasRow": 25
+  },
+  {
+    "id": 732,
+    "name": "Mom's Ring",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 21,
+    "atlasRow": 25
+  }
+]

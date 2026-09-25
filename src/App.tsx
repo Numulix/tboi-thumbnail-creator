@@ -18,7 +18,9 @@ import {
 import {
   copyCanvasToClipboard,
   exportCanvasToPngBlob,
+  preloadSceneAssets,
   renderThumbnail,
+  type AssetBitmapCache,
 } from './canvas/thumbnailRenderer';
 import {
   createDefaultSceneState,
@@ -87,9 +89,11 @@ export function App(): React.ReactElement {
   const [scene, setScene] = useState<SceneState>(() => createDefaultSceneState());
   const [activeCategory, setActiveCategory] = useState<RoomCategory>('main');
   const [exportStatus, setExportStatus] = useState<string | null>(null);
+  const [assetRevision, setAssetRevision] = useState(0);
 
   const stageCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const assetBitmapsRef = useRef<AssetBitmapCache>(new Map());
 
   const activeRoom = useMemo(() => getRoomBackdropById(scene.stageId), [scene.stageId]);
   const categoryRooms = useMemo(
@@ -98,13 +102,20 @@ export function App(): React.ReactElement {
   );
   const resolvedNodes = useMemo(() => resolveSceneLayout(scene), [scene]);
 
+  // Preload authentic room backdrop, collectibles atlas, altar sheet, and character/Eden hair atlases
+  useEffect(() => {
+    preloadSceneAssets(scene, assetBitmapsRef.current, () => {
+      setAssetRevision((rev) => rev + 1);
+    });
+  }, [scene]);
+
   // Synchronize both 1280x720 Interactive Stage and 180x101 YouTube Feed Preview
   useEffect(() => {
     const stageCanvas = stageCanvasRef.current;
     if (stageCanvas) {
       const ctx = stageCanvas.getContext('2d');
       if (ctx) {
-        renderThumbnail(ctx, scene, resolvedNodes, new Map(), {
+        renderThumbnail(ctx, scene, resolvedNodes, assetBitmapsRef.current, {
           includeEditorOverlays: true,
         });
       }
@@ -114,12 +125,12 @@ export function App(): React.ReactElement {
     if (previewCanvas) {
       const pctx = previewCanvas.getContext('2d');
       if (pctx) {
-        renderThumbnail(pctx, scene, resolvedNodes, new Map(), {
+        renderThumbnail(pctx, scene, resolvedNodes, assetBitmapsRef.current, {
           includeEditorOverlays: false,
         });
       }
     }
-  }, [scene, resolvedNodes]);
+  }, [scene, resolvedNodes, assetRevision]);
 
   const buildCleanExportCanvas = useCallback((): HTMLCanvasElement => {
     const offscreen = document.createElement('canvas');
@@ -127,7 +138,7 @@ export function App(): React.ReactElement {
     offscreen.height = 720;
     const ctx = offscreen.getContext('2d');
     if (ctx) {
-      renderThumbnail(ctx, scene, resolvedNodes, new Map(), {
+      renderThumbnail(ctx, scene, resolvedNodes, assetBitmapsRef.current, {
         includeEditorOverlays: false,
       });
     }

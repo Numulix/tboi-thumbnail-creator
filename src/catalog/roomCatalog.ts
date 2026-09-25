@@ -19,43 +19,50 @@ export interface RoomBackdropRecord {
   category: RoomCategory;
   accentDotColor: string;
   palette: RoomPalette;
+  textureUrl: string;
   textureDataUrl: string;
 }
 
-function createRoomSvgDataUrl(palette: RoomPalette, label: string): string {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180" shape-rendering="crispEdges">
-    <rect width="320" height="180" fill="${palette.wallColor}" />
-    <rect x="20" y="34" width="280" height="132" fill="${palette.floorPrimary}" />
-    <g fill="${palette.floorSecondary}">
-      <rect x="20" y="34" width="35" height="22" />
-      <rect x="90" y="34" width="35" height="22" />
-      <rect x="160" y="34" width="35" height="22" />
-      <rect x="230" y="34" width="35" height="22" />
-      <rect x="55" y="56" width="35" height="22" />
-      <rect x="125" y="56" width="35" height="22" />
-      <rect x="195" y="56" width="35" height="22" />
-      <rect x="265" y="56" width="35" height="22" />
-      <rect x="20" y="78" width="35" height="22" />
-      <rect x="90" y="78" width="35" height="22" />
-      <rect x="160" y="78" width="35" height="22" />
-      <rect x="230" y="78" width="35" height="22" />
-      <rect x="55" y="100" width="35" height="22" />
-      <rect x="125" y="100" width="35" height="22" />
-      <rect x="195" y="100" width="35" height="22" />
-      <rect x="265" y="100" width="35" height="22" />
-      <rect x="20" y="122" width="35" height="22" />
-      <rect x="90" y="122" width="35" height="22" />
-      <rect x="160" y="122" width="35" height="22" />
-      <rect x="230" y="122" width="35" height="22" />
-    </g>
-    <rect x="142" y="8" width="36" height="26" fill="${palette.doorFrameColor}" />
-    <rect x="147" y="13" width="26" height="21" fill="${palette.doorInnerColor}" />
-    <title>${label}</title>
-  </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
+const ROOM_TEXTURE_FILES: Record<string, string> = {
+  basement: '/assets/rooms/basement.png',
+  cellar: '/assets/rooms/cellar.png',
+  'burning-basement': '/assets/rooms/burning-basement.png',
+  caves: '/assets/rooms/caves.png',
+  catacombs: '/assets/rooms/catacombs.png',
+  'flooded-caves': '/assets/rooms/flooded-caves.png',
+  depths: '/assets/rooms/depths.png',
+  necropolis: '/assets/rooms/necropolis.png',
+  'dank-depths': '/assets/rooms/dank-depths.png',
+  womb: '/assets/rooms/womb.png',
+  utero: '/assets/rooms/utero.png',
+  'scarred-womb': '/assets/rooms/scarred-womb.png',
+  'blue-womb': '/assets/rooms/blue-womb.png',
+  sheol: '/assets/rooms/sheol.png',
+  cathedral: '/assets/rooms/cathedral.png',
+  chest: '/assets/rooms/chest.png',
+  'dark-room': '/assets/rooms/dark-room.png',
+  home: '/assets/rooms/home.png',
+  downpour: '/assets/rooms/downpour.png',
+  dross: '/assets/rooms/dross.png',
+  mines: '/assets/rooms/mines.png',
+  ashpit: '/assets/rooms/ashpit.png',
+  mausoleum: '/assets/rooms/mausoleum.png',
+  gehenna: '/assets/rooms/gehenna.png',
+  corpse: '/assets/rooms/corpse.png',
+  'devil-room': '/assets/rooms/sheol.png',
+  'angel-room': '/assets/rooms/cathedral.png',
+  planetarium: '/assets/rooms/planetarium.png',
+  'treasure-room': '/assets/rooms/chest.png',
+  'ultra-secret-red-room': '/assets/rooms/scarred-womb.png',
+  'shop-room': '/assets/rooms/shop-room.png',
+  library: '/assets/rooms/library.png',
+  'secret-room': '/assets/rooms/secret-room.png',
+  arcade: '/assets/rooms/arcade.png',
+  'sacrifice-room': '/assets/rooms/sacrifice-room.png',
+  'dice-room': '/assets/rooms/dice-room.png',
+};
 
-const RAW_ROOMS: Array<Omit<RoomBackdropRecord, 'textureDataUrl'>> = [
+const RAW_ROOMS: Array<Omit<RoomBackdropRecord, 'textureDataUrl' | 'textureUrl'>> = [
   // Main Path
   {
     id: 'basement',
@@ -601,12 +608,107 @@ const RAW_ROOMS: Array<Omit<RoomBackdropRecord, 'textureDataUrl'>> = [
       particleColor: '#FDE68A',
     },
   },
+  {
+    id: 'library',
+    name: 'Library',
+    subtitle: 'Special • Ancient Tomes & Hardwood',
+    category: 'special',
+    accentDotColor: '#D97706',
+    palette: {
+      wallColor: '#241712',
+      wallBrickColor: '#36231B',
+      floorPrimary: '#4A3126',
+      floorSecondary: '#3F291F',
+      groutColor: '#291A13',
+      doorFrameColor: '#694737',
+      doorInnerColor: '#170E0B',
+      ambientGlowColor: 'rgba(217, 119, 6, 0.25)',
+      particleColor: '#FCD34D',
+    },
+  },
+  {
+    id: 'secret-room',
+    name: 'Secret Room',
+    subtitle: 'Special • Hidden Cavern Chamber',
+    category: 'special',
+    accentDotColor: '#94A3B8',
+    palette: {
+      wallColor: '#111318',
+      wallBrickColor: '#1B1F28',
+      floorPrimary: '#242934',
+      floorSecondary: '#1D222B',
+      groutColor: '#12151B',
+      doorFrameColor: '#3E4656',
+      doorInnerColor: '#0A0B0E',
+      ambientGlowColor: 'rgba(148, 163, 184, 0.24)',
+      particleColor: '#CBD5E1',
+    },
+  },
+  {
+    id: 'arcade',
+    name: 'Arcade',
+    subtitle: 'Special • Blood Bank & Slot Parlor',
+    category: 'special',
+    accentDotColor: '#F43F5E',
+    palette: {
+      wallColor: '#1E0D14',
+      wallBrickColor: '#331622',
+      floorPrimary: '#451E2E',
+      floorSecondary: '#381825',
+      groutColor: '#210E16',
+      doorFrameColor: '#E11D48',
+      doorInnerColor: '#12070C',
+      ambientGlowColor: 'rgba(244, 63, 94, 0.28)',
+      particleColor: '#FDA4AF',
+    },
+  },
+  {
+    id: 'sacrifice-room',
+    name: 'Sacrifice Room',
+    subtitle: 'Special • Blood Spikes & Stone',
+    category: 'special',
+    accentDotColor: '#B91C1C',
+    palette: {
+      wallColor: '#1A1114',
+      wallBrickColor: '#2E1E24',
+      floorPrimary: '#3D2830',
+      floorSecondary: '#301F26',
+      groutColor: '#1C1216',
+      doorFrameColor: '#991B1B',
+      doorInnerColor: '#0F090B',
+      ambientGlowColor: 'rgba(185, 28, 28, 0.3)',
+      particleColor: '#F87171',
+    },
+  },
+  {
+    id: 'dice-room',
+    name: 'Dice Room',
+    subtitle: 'Special • Red Die Fate Sanctum',
+    category: 'special',
+    accentDotColor: '#EF4444',
+    palette: {
+      wallColor: '#210C0E',
+      wallBrickColor: '#381418',
+      floorPrimary: '#4A1B20',
+      floorSecondary: '#3C161A',
+      groutColor: '#240D0F',
+      doorFrameColor: '#DC2626',
+      doorInnerColor: '#140708',
+      ambientGlowColor: 'rgba(239, 68, 68, 0.32)',
+      particleColor: '#FCA5A5',
+    },
+  },
 ];
 
-const ROOM_CATALOG: RoomBackdropRecord[] = RAW_ROOMS.map((room) => ({
-  ...room,
-  textureDataUrl: createRoomSvgDataUrl(room.palette, room.name),
-}));
+const ROOM_CATALOG: RoomBackdropRecord[] = RAW_ROOMS.map((room) => {
+  const textureUrl =
+    ROOM_TEXTURE_FILES[room.id] ?? '/assets/rooms/burning-basement.png';
+  return {
+    ...room,
+    textureUrl,
+    textureDataUrl: textureUrl,
+  };
+});
 
 export function listRoomBackdrops(category?: RoomCategory): RoomBackdropRecord[] {
   if (!category) {

@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   getRoomBackdropById,
@@ -25,8 +27,10 @@ describe('roomCatalog', () => {
     );
 
     for (const room of allRooms) {
-      expect(room.textureDataUrl.startsWith('data:image/svg+xml;utf8,')).toBe(true);
+      expect(room.textureDataUrl.startsWith('/assets/rooms/')).toBe(true);
       expect(room.textureDataUrl).not.toMatch(/^https?:\/\//i);
+      const diskPath = path.resolve('public', room.textureDataUrl.slice(1));
+      expect(fs.existsSync(diskPath)).toBe(true);
     }
 
     const mainRooms = listRoomBackdrops('main');
