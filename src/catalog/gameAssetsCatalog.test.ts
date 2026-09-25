@@ -96,4 +96,49 @@ describe('gameAssetsCatalog & SpriteCompositor.composeCharacterStack', () => {
     expect(hairs.length).toBeGreaterThanOrEqual(12);
     expect(hairs[0]).toMatchObject({ id: 1, col: 0, row: 0 });
   });
+
+  it('searches 730+ Repentance+ collectibles by exact numeric ID ("182", "#182"), case-insensitive prefixes, and substrings sorted by Quality (Q4 -> Q0)', async () => {
+    const catalogMod = await import('./gameAssetsCatalog');
+    const allItems = catalogMod.listCollectibles();
+    expect(allItems.length).toBeGreaterThanOrEqual(730);
+
+    // Exact numeric ID lookup ("182" and "#182") returns Sacred Heart (Q4) first
+    const byId = catalogMod.searchCollectibles('182');
+    expect(byId.length).toBeGreaterThanOrEqual(1);
+    expect(byId[0].id).toBe(182);
+    expect(byId[0].name).toBe('Sacred Heart');
+    expect(byId[0].quality).toBe(4);
+    expect(byId[0].spriteUrl).toBe('/assets/collectibles/collectibles-atlas.png');
+
+    const byHashId = catalogMod.searchCollectibles('#182');
+    expect(byHashId[0].id).toBe(182);
+    expect(byHashId[0].name).toBe('Sacred Heart');
+
+    // Case-insensitive prefix & substring matching ("sacred", "brim", "heart")
+    const sacredResults = catalogMod.searchCollectibles('sacred');
+    expect(sacredResults.some((item) => item.id === 182 && item.name === 'Sacred Heart')).toBe(true);
+    expect(sacredResults[0].name.toLowerCase().startsWith('sacred')).toBe(true);
+
+    const brimResults = catalogMod.searchCollectibles('BRIM');
+    expect(brimResults[0].id).toBe(118);
+    expect(brimResults[0].name).toBe('Brimstone');
+    expect(brimResults[0].quality).toBe(4);
+
+    // Substring search ("heart") ranks prefix matches first, and sorts ties by Quality descending (Q4 -> Q0)
+    const heartResults = catalogMod.searchCollectibles('heart');
+    expect(heartResults.length).toBeGreaterThan(3);
+    const sacredIdx = heartResults.findIndex((i) => i.name === 'Sacred Heart'); // Q4
+    const yumIdx = heartResults.findIndex((i) => i.name === 'Yum Heart'); // Q1
+    expect(sacredIdx).toBeGreaterThanOrEqual(0);
+    expect(yumIdx).toBeGreaterThan(sacredIdx);
+
+    // Empty query returns collectibles sorted by Quality (Q4 -> Q0) and respects optional limit
+    const defaultResults = catalogMod.searchCollectibles('', 25);
+    expect(defaultResults).toHaveLength(25);
+    expect(defaultResults[0].quality).toBe(4);
+    for (let i = 1; i < defaultResults.length; i++) {
+      expect(defaultResults[i - 1].quality).toBeGreaterThanOrEqual(defaultResults[i].quality);
+    }
+  });
 });
+

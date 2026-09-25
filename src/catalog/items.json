@@ -336,6 +336,14 @@
     "atlasRow": 1
   },
   {
+    "id": 43,
+    "name": "Poptart",
+    "kind": "active",
+    "quality": 0,
+    "atlasCol": 1,
+    "atlasRow": 0
+  },
+  {
     "id": 44,
     "name": "Teleport",
     "kind": "active",
@@ -470,6 +478,14 @@
     "quality": 1,
     "atlasCol": 3,
     "atlasRow": 2
+  },
+  {
+    "id": 61,
+    "name": "Tarot Card",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 2,
+    "atlasRow": 0
   },
   {
     "id": 62,
@@ -1854,6 +1870,14 @@
     "quality": 3,
     "atlasCol": 8,
     "atlasRow": 8
+  },
+  {
+    "id": 235,
+    "name": "Theattrick",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 3,
+    "atlasRow": 0
   },
   {
     "id": 236,
@@ -4664,6 +4688,14 @@
     "atlasRow": 20
   },
   {
+    "id": 587,
+    "name": "Menorah",
+    "kind": "familiar",
+    "quality": 2,
+    "atlasCol": 4,
+    "atlasRow": 0
+  },
+  {
     "id": 588,
     "name": "Sol",
     "kind": "passive",
@@ -4864,6 +4896,14 @@
     "atlasRow": 21
   },
   {
+    "id": 613,
+    "name": "Salt Shaker",
+    "kind": "passive",
+    "quality": 1,
+    "atlasCol": 5,
+    "atlasRow": 0
+  },
+  {
     "id": 614,
     "name": "Blood Bombs",
     "kind": "passive",
@@ -4910,6 +4950,14 @@
     "quality": 3,
     "atlasCol": 26,
     "atlasRow": 21
+  },
+  {
+    "id": 620,
+    "name": "Voodoo Pin",
+    "kind": "active",
+    "quality": 2,
+    "atlasCol": 6,
+    "atlasRow": 0
   },
   {
     "id": 621,
@@ -4982,6 +5030,14 @@
     "quality": 3,
     "atlasCol": 7,
     "atlasRow": 22
+  },
+  {
+    "id": 630,
+    "name": "Lucky Seven",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 7,
+    "atlasRow": 0
   },
   {
     "id": 631,
@@ -5120,6 +5176,14 @@
     "atlasRow": 22
   },
   {
+    "id": 648,
+    "name": "Pill Crusher",
+    "kind": "active",
+    "quality": 1,
+    "atlasCol": 8,
+    "atlasRow": 0
+  },
+  {
     "id": 649,
     "name": "Fruity Plum",
     "kind": "familiar",
@@ -5224,6 +5288,14 @@
     "atlasRow": 23
   },
   {
+    "id": 662,
+    "name": "Pacifist",
+    "kind": "passive",
+    "quality": 2,
+    "atlasCol": 9,
+    "atlasRow": 0
+  },
+  {
     "id": 663,
     "name": "Tooth and Nail",
     "kind": "passive",
@@ -5246,6 +5318,14 @@
     "quality": 2,
     "atlasCol": 12,
     "atlasRow": 23
+  },
+  {
+    "id": 666,
+    "name": "Brimstone Mark",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 10,
+    "atlasRow": 0
   },
   {
     "id": 667,
@@ -5654,6 +5734,14 @@
     "quality": 2,
     "atlasCol": 7,
     "atlasRow": 25
+  },
+  {
+    "id": 718,
+    "name": "Repentance Relic",
+    "kind": "passive",
+    "quality": 3,
+    "atlasCol": 11,
+    "atlasRow": 0
   },
   {
     "id": 719,

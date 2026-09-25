@@ -107,5 +107,102 @@ describe('sceneDocument', () => {
     expect(randomized.character.edenHairId).toBeGreaterThanOrEqual(1);
     expect(randomized.character.edenHairId).toBeLessThanOrEqual(54);
   });
+
+  it('computes symmetric within-bounds coordinates for 3, 4, 5, and 6 pedestals across all 4 formation presets, blends manualOffset, resets positions, and depth-sorts sprites by floor Y coordinate', async () => {
+    const sceneMod = await import('./sceneDocument');
+    const presets = ['arc', 'row', 'grid-2x2', 'flank'] as const;
+    const counts = [3, 4, 5, 6] as const;
+
+    for (const count of counts) {
+      const withCount = sceneMod.updatePedestalCount(createDefaultSceneState(), count);
+      expect(withCount.pedestals).toHaveLength(count);
+
+      for (const preset of presets) {
+        const formatted = sceneMod.applyFormationPreset(withCount, preset);
+        expect(formatted.formationPreset).toBe(preset);
+
+        const resolved = sceneMod.resolveSceneLayout(formatted);
+        const pedestalNodes = resolved.filter((n) => n.kind === 'pedestal');
+        expect(pedestalNodes).toHaveLength(count);
+
+        // Within-bounds (1280x720) check
+        for (const node of pedestalNodes) {
+          expect(node.x).toBeGreaterThanOrEqual(40);
+          expect(node.x).toBeLessThanOrEqual(1240);
+          expect(node.y).toBeGreaterThanOrEqual(80);
+          expect(node.y).toBeLessThanOrEqual(680);
+        }
+
+        // Verify horizontal symmetry around the formation center axis
+        const xs = pedestalNodes.map((n) => n.x);
+        const avgX = xs.reduce((sum, x) => sum + x, 0) / count;
+        const expectedAxis = preset === 'flank' ? 640 : 780;
+        expect(Math.abs(avgX - expectedAxis)).toBeLessThanOrEqual(1);
+      }
+    }
+
+    // Applying manualOffset to pedestal-2 shifts only pedestal-2 while preserving all other pedestals
+    const baseScene = sceneMod.applyFormationPreset(createDefaultSceneState(), 'row');
+    const beforeLayout = sceneMod.resolveSceneLayout(baseScene);
+    const ped1Before = beforeLayout.find((n) => n.id === 'pedestal-1')!;
+    const ped2Before = beforeLayout.find((n) => n.id === 'pedestal-2')!;
+
+    const draggedPedestalScene = sceneMod.updateNodeDragOffset(baseScene, 'pedestal-2', {
+      x: 45,
+      y: 70,
+    });
+    const afterLayout = sceneMod.resolveSceneLayout(draggedPedestalScene);
+    const ped1After = afterLayout.find((n) => n.id === 'pedestal-1')!;
+    const ped2After = afterLayout.find((n) => n.id === 'pedestal-2')!;
+
+    expect(ped1After.x).toBe(ped1Before.x);
+    expect(ped1After.y).toBe(ped1Before.y);
+    expect(ped2After.x).toBe(ped2Before.x + 45);
+    expect(ped2After.y).toBe(ped2Before.y + 70);
+
+    // Dragging character shifts character coordinates and updates Y-depth sort order
+    const draggedCharScene = sceneMod.updateNodeDragOffset(draggedPedestalScene, 'character', {
+      x: 100,
+      y: 120, // moves character from y=505 to y=625 (in front of all pedestals)
+    });
+    const sortedLayout = sceneMod.resolveSceneLayout(draggedCharScene);
+    const spriteNodes = sortedLayout.filter((n) => n.kind !== 'text');
+    const textNodes = sortedLayout.filter((n) => n.kind === 'text');
+
+    for (let i = 1; i < spriteNodes.length; i++) {
+      expect(spriteNodes[i].y).toBeGreaterThanOrEqual(spriteNodes[i - 1].y);
+      expect(spriteNodes[i].zIndex).toBeGreaterThanOrEqual(spriteNodes[i - 1].zIndex);
+    }
+    // Character at y=625 is the lowest sprite on the floor so it renders last among sprites
+    expect(spriteNodes[spriteNodes.length - 1].kind).toBe('character');
+    expect(spriteNodes[spriteNodes.length - 1].y).toBe(625);
+
+    // Text layers always sort above all sprite layers
+    for (const textNode of textNodes) {
+      expect(textNode.zIndex).toBeGreaterThan(spriteNodes[spriteNodes.length - 1].zIndex);
+    }
+
+    // Switching formation preset or calling resetNodePositions clears all manual drag offsets
+    const resetScene = sceneMod.resetNodePositions(draggedCharScene);
+    const resetLayout = sceneMod.resolveSceneLayout(resetScene);
+    expect(resetLayout.find((n) => n.id === 'pedestal-2')!.x).toBe(ped2Before.x);
+    expect(resetLayout.find((n) => n.id === 'pedestal-2')!.y).toBe(ped2Before.y);
+    expect(resetLayout.find((n) => n.kind === 'character')!.x).toBe(280);
+    expect(resetLayout.find((n) => n.kind === 'character')!.y).toBe(505);
+
+    // Updating pedestal scale and assigning collectible item to slot
+    const scaledPedestals = sceneMod.updatePedestalScale(resetScene, 2.0);
+    expect(scaledPedestals.pedestalScale).toBe(2.0);
+    const scaledNodes = sceneMod.resolveSceneLayout(scaledPedestals);
+    expect(scaledNodes.find((n) => n.kind === 'pedestal')!.scale).toBe(2.0);
+
+    const assignedScene = sceneMod.assignCollectibleToPedestal(scaledPedestals, 'pedestal-4', 182);
+    const slot4 = assignedScene.pedestals.find((p) => p.id === 'pedestal-4')!;
+    expect(slot4.itemId).toBe(182);
+    expect(slot4.itemName).toBe('Sacred Heart');
+    expect(slot4.quality).toBe(4);
+    expect(slot4.priceTag).toBe('none');
+  });
 });
+
 

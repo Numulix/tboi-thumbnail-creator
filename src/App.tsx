@@ -7,7 +7,10 @@ import {
   Eye,
   Grid,
   Layers,
+  Move,
+  Package,
   RotateCcw,
+  Search,
   Skull,
   Tv,
   User,
@@ -16,10 +19,13 @@ import {
   composeCharacterStack,
   getCharacterById,
   getCharacterPoseById,
+  getCollectibleById,
   getEdenHairById,
   listCharacters,
+  listCollectibles,
   listEdenHairs,
   resolveCharacterEdenHairId,
+  searchCollectibles,
 } from './catalog/gameAssetsCatalog';
 import {
   getRoomBackdropById,
@@ -34,10 +40,13 @@ import {
   type AssetBitmapCache,
 } from './canvas/thumbnailRenderer';
 import {
+  applyFormationPreset,
+  assignCollectibleToPedestal,
   createDefaultSceneState,
   randomizeEdenHair,
   resetCameraAndBackdrop,
   resetCharacterScale,
+  resetNodePositions,
   resolveSceneLayout,
   selectCharacter,
   selectEdenHair,
@@ -46,9 +55,14 @@ import {
   updateCameraFraming,
   updateCharacterPose,
   updateCharacterScale,
+  updateNodeDragOffset,
+  updatePedestalCount,
+  updatePedestalScale,
   updateRoomStage,
   type CharacterPoseId,
+  type FormationPreset,
   type SceneState,
+  type Vec2,
 } from './domain/sceneDocument';
 
 interface InspectorSliderProps {
@@ -109,21 +123,73 @@ const POSE_OPTIONS: Array<{ id: CharacterPoseId; label: string }> = [
   { id: 'crying', label: 'Crying' },
 ];
 
+const FORMATION_PRESET_OPTIONS: Array<{ id: FormationPreset; label: string }> = [
+  { id: 'arc', label: 'Arc' },
+  { id: 'row', label: 'Row' },
+  { id: 'grid-2x2', label: '2×2 Grid' },
+  { id: 'flank', label: 'Flank' },
+];
+
+const PEDESTAL_COUNT_OPTIONS: Array<3 | 4 | 5 | 6> = [3, 4, 5, 6];
+
+function getQualityBadgeClasses(quality: 0 | 1 | 2 | 3 | 4): string {
+  switch (quality) {
+    case 4:
+      return 'bg-[#E5A93C]/25 text-[#E5A93C] border-[#E5A93C]/60';
+    case 3:
+      return 'bg-[#A855F7]/20 text-[#C084FC] border-[#A855F7]/50';
+    case 2:
+      return 'bg-[#3B82F6]/20 text-[#60A5FA] border-[#3B82F6]/50';
+    case 1:
+      return 'bg-[#22C55E]/20 text-[#4ADE80] border-[#22C55E]/50';
+    default:
+      return 'bg-[#231F28] text-[#9E95A8] border-[#2A252D]';
+  }
+}
+
+function getCollectibleAtlasSpriteStyle(
+  atlasCol: number,
+  atlasRow: number
+): React.CSSProperties {
+  return {
+    backgroundImage: 'url(/assets/collectibles/collectibles-atlas.png)',
+    backgroundPosition: `-${atlasCol * 32}px -${atlasRow * 32}px`,
+    backgroundSize: `${28 * 32}px ${26 * 32}px`,
+  };
+}
+
+function clientToCanvasCoords(
+  canvas: HTMLCanvasElement,
+  clientX: number,
+  clientY: number
+): Vec2 {
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width > 0 ? rect.width : 1280;
+  const height = rect.height > 0 ? rect.height : 720;
+  return {
+    x: ((clientX - rect.left) / width) * 1280,
+    y: ((clientY - rect.top) / height) * 720,
+  };
+}
+
 export function App(): React.ReactElement {
   const [scene, setScene] = useState<SceneState>(() => createDefaultSceneState());
-  const [activeDrawerTab, setActiveDrawerTab] = useState<'character' | 'rooms'>(
-    'character'
-  );
+  const [activeDrawerTab, setActiveDrawerTab] = useState<
+    'character' | 'pedestals' | 'rooms'
+  >('character');
   const [characterVariantTab, setCharacterVariantTab] = useState<'normal' | 'tainted'>(
     'normal'
   );
   const [activeCategory, setActiveCategory] = useState<RoomCategory>('main');
+  const [selectedPedestalId, setSelectedPedestalId] = useState<string>('pedestal-1');
+  const [collectibleSearchQuery, setCollectibleSearchQuery] = useState<string>('');
   const [exportStatus, setExportStatus] = useState<string | null>(null);
   const [assetRevision, setAssetRevision] = useState(0);
 
   const stageCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const assetBitmapsRef = useRef<AssetBitmapCache>(new Map());
+  const activeDragRef = useRef<{ nodeId: string; lastCanvasPos: Vec2 } | null>(null);
 
   const activeRoom = useMemo(() => getRoomBackdropById(scene.stageId), [scene.stageId]);
   const categoryRooms = useMemo(
@@ -165,6 +231,14 @@ export function App(): React.ReactElement {
     [characterVariantTab]
   );
   const allEdenHairs = useMemo(() => listEdenHairs(), []);
+  const matchingCollectibles = useMemo(
+    () => searchCollectibles(collectibleSearchQuery, 48),
+    [collectibleSearchQuery]
+  );
+  const effectiveSelectedPedestalId = useMemo(() => {
+    const exists = scene.pedestals.some((p) => p.id === selectedPedestalId);
+    return exists ? selectedPedestalId : (scene.pedestals[0]?.id ?? 'pedestal-1');
+  }, [scene.pedestals, selectedPedestalId]);
   const resolvedNodes = useMemo(() => resolveSceneLayout(scene), [scene]);
 
   // Preload authentic room backdrop, collectibles atlas, altar sheet, and character/Eden hair atlases
@@ -534,6 +608,366 @@ export function App(): React.ReactElement {
     </section>
   );
 
+  const handleCanvasPointerDown = (
+    e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
+  ) => {
+    const canvas = stageCanvasRef.current;
+    if (!canvas) {
+      return;
+    }
+    const pt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
+    const spriteNodesDesc = [...resolvedNodes]
+      .filter((n) => n.kind === 'character' || n.kind === 'pedestal')
+      .reverse();
+
+    let hitNode = spriteNodesDesc.find((node) => {
+      const halfWidth = node.kind === 'character' ? 72 : 68;
+      const topExtent = node.kind === 'character' ? 165 : 155;
+      return (
+        Math.abs(pt.x - node.x) <= halfWidth &&
+        pt.y >= node.y - topExtent &&
+        pt.y <= node.y + 40
+      );
+    });
+
+    if (!hitNode) {
+      let bestDist = 120;
+      for (const node of spriteNodesDesc) {
+        const dist = Math.hypot(pt.x - node.x, pt.y - (node.y - 35));
+        if (dist <= bestDist) {
+          bestDist = dist;
+          hitNode = node;
+        }
+      }
+    }
+
+    if (!hitNode) {
+      return;
+    }
+
+    const nodeId = hitNode.kind === 'character' ? 'character' : hitNode.id;
+    activeDragRef.current = {
+      nodeId,
+      lastCanvasPos: pt,
+    };
+
+    if (hitNode.kind === 'pedestal') {
+      setSelectedPedestalId(hitNode.id);
+    }
+
+    if ('pointerId' in e && typeof e.currentTarget.setPointerCapture === 'function') {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        // Ignore pointer capture errors in synthetic test environments
+      }
+    }
+  };
+
+  const handleCanvasPointerMove = (
+    e: React.PointerEvent<HTMLCanvasElement>
+  ) => {
+    const dragState = activeDragRef.current;
+    const canvas = stageCanvasRef.current;
+    if (!dragState || !canvas) {
+      return;
+    }
+
+    const nextPt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
+    const dx = Math.round(nextPt.x - dragState.lastCanvasPos.x);
+    const dy = Math.round(nextPt.y - dragState.lastCanvasPos.y);
+    if (dx === 0 && dy === 0) {
+      return;
+    }
+
+    const { nodeId } = dragState;
+    activeDragRef.current = {
+      nodeId,
+      lastCanvasPos: {
+        x: dragState.lastCanvasPos.x + dx,
+        y: dragState.lastCanvasPos.y + dy,
+      },
+    };
+    setScene((prev) => updateNodeDragOffset(prev, nodeId, { x: dx, y: dy }));
+  };
+
+  const handleCanvasPointerUp = () => {
+    activeDragRef.current = null;
+  };
+
+  const pedestalsSection = (
+    <section
+      key="drawer-pedestals-section"
+      data-testid="pedestals-builder-section"
+      className="space-y-3.5"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
+          Pedestal Formation Engine
+        </span>
+        <span className="text-[11px] font-mono-tabular text-[#E5A93C]">
+          {listCollectibles().length} Items
+        </span>
+      </div>
+
+      {/* 1. Active Pedestal Count (3, 4, 5, 6) */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
+            Active Pedestals
+          </span>
+          <span className="text-[10px] font-mono-tabular text-[#9E95A8]">
+            {scene.pedestals.length} Slots Active
+          </span>
+        </div>
+        <div className="grid grid-cols-4 gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D] text-xs">
+          {PEDESTAL_COUNT_OPTIONS.map((count) => {
+            const isSelected = scene.pedestals.length === count;
+            return (
+              <button
+                key={count}
+                type="button"
+                data-testid={`pedestal-count-${count}`}
+                aria-pressed={isSelected}
+                onClick={() =>
+                  setScene((prev) => updatePedestalCount(prev, count))
+                }
+                className={`py-1.5 rounded font-mono-tabular font-bold transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#E5A93C] text-[#110F13]'
+                    : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+                }`}
+              >
+                {count} Slots
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 2. 1-Click Formation Presets (Arc, Row, 2×2 Grid, Flank) & Reset Positions */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
+            Formation Preset
+          </span>
+          <button
+            type="button"
+            data-testid="reset-positions-btn"
+            aria-label="Reset Positions"
+            onClick={() => setScene((prev) => resetNodePositions(prev))}
+            className="text-[10px] font-mono-tabular text-[#E5A93C] hover:text-[#F4EFEA] bg-[#231F28] border border-[#E5A93C]/50 px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer"
+          >
+            <RotateCcw className="w-2.5 h-2.5" />
+            <span>Reset Positions</span>
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D] text-[11px]">
+          {FORMATION_PRESET_OPTIONS.map((preset) => {
+            const isSelected = scene.formationPreset === preset.id;
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                data-testid={`formation-preset-${preset.id}`}
+                aria-pressed={isSelected}
+                onClick={() =>
+                  setScene((prev) => applyFormationPreset(prev, preset.id))
+                }
+                className={`py-1.5 px-2 rounded font-semibold transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C] font-bold'
+                    : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+                }`}
+              >
+                {preset.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. Pedestal Scale Slider (1.0x - 2.5x) */}
+      <InspectorSlider
+        id="slider-pedestal-scale"
+        label="Pedestal Scale"
+        displayValue={`${(scene.pedestalScale ?? 1.5).toFixed(2)}x`}
+        min={1.0}
+        max={2.5}
+        step={0.05}
+        value={scene.pedestalScale ?? 1.5}
+        highlightReadout
+        onChange={(pedestalScale) =>
+          setScene((prev) => updatePedestalScale(prev, pedestalScale))
+        }
+      />
+
+      {/* 4. Active Pedestal Slots Selector */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
+            Pedestal Slots (Click to Target)
+          </span>
+          <span className="text-[10px] font-mono-tabular text-[#9E95A8] flex items-center gap-1">
+            <Move className="w-2.5 h-2.5 text-[#E5A93C]" />
+            Drag on Stage
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-1.5">
+          {scene.pedestals.map((slot, idx) => {
+            const isSelected = slot.id === effectiveSelectedPedestalId;
+            const itemEntry = getCollectibleById(
+              slot.priceTag === 'blind' ? 0 : slot.itemId
+            );
+            const hasManualOffset =
+              slot.manualOffset !== undefined &&
+              (slot.manualOffset.x !== 0 || slot.manualOffset.y !== 0);
+            const offsetLabel = hasManualOffset
+              ? `${slot.manualOffset!.x >= 0 ? '+' : ''}${slot.manualOffset!.x}, ${
+                  slot.manualOffset!.y >= 0 ? '+' : ''
+                }${slot.manualOffset!.y}`
+              : 'Auto';
+
+            return (
+              <button
+                key={slot.id}
+                type="button"
+                data-testid={`pedestal-slot-card-${slot.id}`}
+                aria-pressed={isSelected}
+                onClick={() => setSelectedPedestalId(slot.id)}
+                className={`p-1.5 rounded border text-left flex items-center gap-2 transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#231F28] border-[#E5A93C] ring-1 ring-[#E5A93C]'
+                    : 'bg-[#0D0B0E] border-[#2A252D] hover:border-[#9E95A8]'
+                }`}
+              >
+                <div className="w-8 h-8 rounded bg-[#19161C] border border-[#2A252D] flex items-center justify-center shrink-0 overflow-hidden">
+                  <div
+                    className="w-8 h-8 pixelated shrink-0"
+                    style={getCollectibleAtlasSpriteStyle(
+                      itemEntry.atlasCol,
+                      itemEntry.atlasRow
+                    )}
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[10px] font-mono-tabular text-[#E5A93C] font-bold">
+                      #{idx + 1}
+                    </span>
+                    <span
+                      className={`text-[9px] font-mono-tabular font-bold px-1 rounded border ${getQualityBadgeClasses(
+                        slot.quality
+                      )}`}
+                    >
+                      Q{slot.quality}
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#F4EFEA] truncate">
+                    {slot.itemName}
+                  </div>
+                  <div className="text-[9px] font-mono-tabular text-[#9E95A8] truncate">
+                    {offsetLabel}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 5. 730+ Repentance+ Collectible Search & Picker */}
+      <div className="space-y-2 pt-2 border-t border-[#2A252D]">
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="collectible-search-input"
+            className="text-[11px] font-bold uppercase tracking-wider text-[#E5A93C]"
+          >
+            Assign Collectible
+          </label>
+          <span className="text-[10px] font-mono-tabular text-[#9E95A8]">
+            Target: {effectiveSelectedPedestalId}
+          </span>
+        </div>
+
+        <div className="relative">
+          <Search className="w-3.5 h-3.5 text-[#9E95A8] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            id="collectible-search-input"
+            data-testid="collectible-search-input"
+            aria-label="Search Collectibles"
+            type="text"
+            value={collectibleSearchQuery}
+            onChange={(e) => setCollectibleSearchQuery(e.target.value)}
+            placeholder='Search name ("Sacred") or ID ("#182")...'
+            className="w-full bg-[#0D0B0E] border border-[#2A252D] focus:border-[#E5A93C] rounded pl-8 pr-2.5 py-1.5 text-xs text-[#F4EFEA] placeholder-[#9E95A8]/60 outline-none font-mono-tabular"
+          />
+        </div>
+
+        <div
+          data-testid="collectible-search-results"
+          className="space-y-1 max-h-56 overflow-y-auto custom-scroll p-1 bg-[#0D0B0E] rounded border border-[#2A252D]"
+        >
+          {matchingCollectibles.map((item) => {
+            const activeSlot = scene.pedestals.find(
+              (p) => p.id === effectiveSelectedPedestalId
+            );
+            const isAssigned = activeSlot?.itemId === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                data-testid={`collectible-result-${item.id}`}
+                aria-pressed={isAssigned}
+                onClick={() =>
+                  setScene((prev) =>
+                    assignCollectibleToPedestal(
+                      prev,
+                      effectiveSelectedPedestalId,
+                      item.id
+                    )
+                  )
+                }
+                className={`w-full p-1.5 rounded border text-left flex items-center gap-2 transition-colors cursor-pointer ${
+                  isAssigned
+                    ? 'bg-[#231F28] border-[#E5A93C]'
+                    : 'bg-[#19161C] border-[#2A252D] hover:bg-[#231F28]/70'
+                }`}
+              >
+                <div
+                  className="w-8 h-8 pixelated shrink-0"
+                  style={getCollectibleAtlasSpriteStyle(
+                    item.atlasCol,
+                    item.atlasRow
+                  )}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-xs font-bold text-[#F4EFEA] truncate">
+                      {item.name}
+                    </span>
+                    <span
+                      data-testid={`quality-badge-${item.id}`}
+                      className={`text-[10px] font-mono-tabular font-bold px-1.5 py-0.5 rounded border shrink-0 ${getQualityBadgeClasses(
+                        item.quality
+                      )}`}
+                    >
+                      Q{item.quality}
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-mono-tabular text-[#9E95A8]">
+                    #{item.id} • {item.kind}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+
   const stageCatalogSection = (
     <section
       key="drawer-stage-section"
@@ -753,17 +1187,17 @@ export function App(): React.ReactElement {
               </span>
             </div>
             <span className="text-[11px] font-mono-tabular text-[#9E95A8]">
-              {listCharacters().length} Chars • {listRoomBackdrops().length} Rooms
+              {listCharacters().length} Chars • {listCollectibles().length} Items
             </span>
           </div>
 
-          {/* Left Drawer Tab Switcher: Character vs Rooms */}
-          <div className="grid grid-cols-2 gap-1 p-2 bg-[#0D0B0E] border-b border-[#2A252D] text-xs">
+          {/* Left Drawer Tab Switcher: Character vs Pedestals vs Rooms */}
+          <div className="grid grid-cols-3 gap-1 p-2 bg-[#0D0B0E] border-b border-[#2A252D] text-xs">
             <button
               type="button"
               onClick={() => setActiveDrawerTab('character')}
               aria-pressed={activeDrawerTab === 'character'}
-              className={`py-1.5 px-2 rounded font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+              className={`py-1.5 px-1.5 rounded font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                 activeDrawerTab === 'character'
                   ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C]'
                   : 'text-[#9E95A8] hover:text-[#F4EFEA]'
@@ -774,9 +1208,22 @@ export function App(): React.ReactElement {
             </button>
             <button
               type="button"
+              onClick={() => setActiveDrawerTab('pedestals')}
+              aria-pressed={activeDrawerTab === 'pedestals'}
+              className={`py-1.5 px-1.5 rounded font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                activeDrawerTab === 'pedestals'
+                  ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C]'
+                  : 'text-[#9E95A8] hover:text-[#F4EFEA]'
+              }`}
+            >
+              <Package className="w-3.5 h-3.5" />
+              <span>Pedestals</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveDrawerTab('rooms')}
               aria-pressed={activeDrawerTab === 'rooms'}
-              className={`py-1.5 px-2 rounded font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+              className={`py-1.5 px-1.5 rounded font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                 activeDrawerTab === 'rooms'
                   ? 'bg-[#231F28] border border-[#E5A93C] text-[#E5A93C]'
                   : 'text-[#9E95A8] hover:text-[#F4EFEA]'
@@ -788,7 +1235,11 @@ export function App(): React.ReactElement {
           </div>
 
           <div className="p-3 space-y-5">
-            {activeDrawerTab === 'character' ? characterSection : stageCatalogSection}
+            {activeDrawerTab === 'character'
+              ? characterSection
+              : activeDrawerTab === 'pedestals'
+              ? pedestalsSection
+              : stageCatalogSection}
           </div>
         </aside>
 
@@ -819,7 +1270,11 @@ export function App(): React.ReactElement {
               data-testid="stage-canvas"
               width={1280}
               height={720}
-              className="w-full h-full block pixelated"
+              onPointerDown={handleCanvasPointerDown}
+              onPointerMove={handleCanvasPointerMove}
+              onPointerUp={handleCanvasPointerUp}
+              onPointerCancel={handleCanvasPointerUp}
+              className="w-full h-full block pixelated cursor-grab active:cursor-grabbing"
             />
           </div>
 

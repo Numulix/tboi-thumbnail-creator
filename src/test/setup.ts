@@ -130,6 +130,20 @@ if (typeof URL.revokeObjectURL !== 'function') {
   URL.revokeObjectURL = vi.fn();
 }
 
+if (typeof window !== 'undefined' && typeof window.PointerEvent === 'undefined') {
+  class MockPointerEvent extends MouseEvent {
+    pointerId: number;
+    pointerType: string;
+    constructor(type: string, params: PointerEventInit = {}) {
+      super(type, params);
+      this.pointerId = params.pointerId ?? 1;
+      this.pointerType = params.pointerType ?? 'mouse';
+    }
+  }
+  window.PointerEvent = MockPointerEvent as unknown as typeof PointerEvent;
+}
+
 HTMLAnchorElement.prototype.click = vi.fn();
+
 
 

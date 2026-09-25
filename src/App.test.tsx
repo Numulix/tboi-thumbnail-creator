@@ -174,5 +174,83 @@ describe('StudioWorkbenchUI (App)', () => {
       screen.getByRole('button', { name: /Randomize Hair/i })
     ).toBeInTheDocument();
   });
+
+  it('supports the Left Drawer Pedestals tab (3-6 count, Arc/Row/2x2 Grid/Flank presets, Pedestal Scale, 730+ collectible search by ID/name with Q0-Q4 badges) and interactive canvas dragging with Reset Positions', () => {
+    render(<App />);
+
+    // 1. Switch Left Asset Drawer to Pedestals tab
+    const pedestalsTabBtn = screen.getByRole('button', { name: /^Pedestals$/i });
+    fireEvent.click(pedestalsTabBtn);
+    expect(screen.getByTestId('pedestals-builder-section')).toBeInTheDocument();
+
+    // 2. Select active pedestal count (3, 4, 5, 6)
+    expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(4);
+
+    fireEvent.click(screen.getByTestId('pedestal-count-6'));
+    expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(6);
+
+    fireEvent.click(screen.getByTestId('pedestal-count-3'));
+    expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(3);
+
+    fireEvent.click(screen.getByTestId('pedestal-count-4'));
+    expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(4);
+
+    // 3. Switch formation presets (Arc, Row, 2×2 Grid, Flank) and scrub Pedestal Scale
+    const rowPresetBtn = screen.getByTestId('formation-preset-row');
+    fireEvent.click(rowPresetBtn);
+    expect(rowPresetBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const gridPresetBtn = screen.getByTestId('formation-preset-grid-2x2');
+    fireEvent.click(gridPresetBtn);
+    expect(gridPresetBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const flankPresetBtn = screen.getByTestId('formation-preset-flank');
+    fireEvent.click(flankPresetBtn);
+    expect(flankPresetBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const arcPresetBtn = screen.getByTestId('formation-preset-arc');
+    fireEvent.click(arcPresetBtn);
+    expect(arcPresetBtn).toHaveAttribute('aria-pressed', 'true');
+
+    const pedestalScaleSlider = screen.getByLabelText('Pedestal Scale');
+    fireEvent.change(pedestalScaleSlider, { target: { value: '1.95' } });
+    expect(screen.getByText('1.95x')).toBeInTheDocument();
+
+    // 4. Select Pedestal Slot #4 and search 730+ items by numeric ID ("#182") and partial name ("Godhead")
+    fireEvent.click(screen.getByTestId('pedestal-slot-card-pedestal-4'));
+
+    const searchInput = screen.getByTestId('collectible-search-input');
+    fireEvent.change(searchInput, { target: { value: '#182' } });
+    expect(screen.getByTestId('collectible-result-182')).toBeInTheDocument();
+    expect(screen.getByTestId('quality-badge-182')).toHaveTextContent('Q4');
+
+    fireEvent.change(searchInput, { target: { value: 'Sacred' } });
+    const sacredResult = screen.getByTestId('collectible-result-182');
+    expect(sacredResult).toBeInTheDocument();
+    fireEvent.click(sacredResult);
+
+    // Slot 4 now displays Sacred Heart instead of Curse of the Blind
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-4')).toHaveTextContent(
+      'Sacred Heart'
+    );
+
+    // 5. Drag pedestal-1 (at x=530, y=515 in 4-slot Arc) on stage-canvas and verify manual offset + Reset Positions
+    const stageCanvas = screen.getByTestId('stage-canvas');
+    fireEvent.pointerDown(stageCanvas, { clientX: 530, clientY: 515 });
+    fireEvent.pointerMove(stageCanvas, { clientX: 610, clientY: 590 });
+    fireEvent.pointerUp(stageCanvas, { clientX: 610, clientY: 590 });
+
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-1')).toHaveTextContent(
+      '+80, +75'
+    );
+
+    // Clicking Reset Positions clears manual drag offsets back to mathematical formation
+    const resetPositionsBtn = screen.getByTestId('reset-positions-btn');
+    fireEvent.click(resetPositionsBtn);
+    expect(
+      screen.getByTestId('pedestal-slot-card-pedestal-1')
+    ).not.toHaveTextContent('+80, +75');
+  });
 });
+
 

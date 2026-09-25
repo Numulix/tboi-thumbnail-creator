@@ -10,7 +10,11 @@ export interface CollectibleCatalogEntry {
   gfx: string;
   atlasCol: number;
   atlasRow: number;
+  spriteUrl: string;
+  pools: string[];
 }
+
+export type CollectibleRecord = CollectibleCatalogEntry;
 
 export interface CharacterPoseEntry {
   id: string;
@@ -59,9 +63,36 @@ export interface CompositeSpriteLayer {
   edenHairId?: number;
 }
 
-const ITEMS_ARRAY = (
-  Array.isArray(itemsJson) ? itemsJson : (itemsJson as { items: CollectibleCatalogEntry[] }).items
-) as CollectibleCatalogEntry[];
+const COLLECTIBLES_ATLAS_URL = '/assets/collectibles/collectibles-atlas.png';
+
+interface RawCollectibleJsonEntry {
+  id: number;
+  name: string;
+  kind: string;
+  quality: 0 | 1 | 2 | 3 | 4;
+  gfx?: string;
+  atlasCol: number;
+  atlasRow: number;
+  pools?: string[];
+}
+
+const RAW_ITEMS_ARRAY = (
+  Array.isArray(itemsJson)
+    ? itemsJson
+    : (itemsJson as { items: RawCollectibleJsonEntry[] }).items
+) as RawCollectibleJsonEntry[];
+
+const ITEMS_ARRAY: CollectibleCatalogEntry[] = RAW_ITEMS_ARRAY.map((raw) => ({
+  id: raw.id,
+  name: raw.name,
+  kind: raw.kind,
+  quality: raw.quality,
+  gfx: raw.gfx ?? `collectibles_${String(raw.id).padStart(3, '0')}.png`,
+  atlasCol: raw.atlasCol,
+  atlasRow: raw.atlasRow,
+  spriteUrl: COLLECTIBLES_ATLAS_URL,
+  pools: raw.pools ?? ['treasure'],
+}));
 
 const ITEMS_BY_ID = new Map<number, CollectibleCatalogEntry>();
 for (const item of ITEMS_ARRAY) {
@@ -76,6 +107,8 @@ const CURSE_OF_THE_BLIND_ENTRY: CollectibleCatalogEntry = {
   gfx: 'questionmark.png',
   atlasCol: 0,
   atlasRow: 0,
+  spriteUrl: COLLECTIBLES_ATLAS_URL,
+  pools: ['special'],
 };
 
 export function getCollectibleById(itemId: number): CollectibleCatalogEntry {
@@ -87,6 +120,71 @@ export function getCollectibleById(itemId: number): CollectibleCatalogEntry {
 
 export function listCollectibles(): CollectibleCatalogEntry[] {
   return ITEMS_ARRAY;
+}
+
+export function searchCollectibles(
+  query: string,
+  limit?: number
+): CollectibleCatalogEntry[] {
+  const trimmed = query.trim();
+
+  if (!trimmed) {
+    const sortedAll = [...ITEMS_ARRAY].sort((a, b) => {
+      if (b.quality !== a.quality) {
+        return b.quality - a.quality;
+      }
+      return a.id - b.id;
+    });
+    return typeof limit === 'number' ? sortedAll.slice(0, limit) : sortedAll;
+  }
+
+  const numericCandidate = trimmed.startsWith('#')
+    ? trimmed.slice(1).trim()
+    : trimmed;
+  const isNumericQuery = /^\d+$/.test(numericCandidate);
+  const exactNumericId = isNumericQuery ? Number(numericCandidate) : null;
+  const qLower = trimmed.toLowerCase();
+
+  const scored: Array<{ entry: CollectibleCatalogEntry; tier: number }> = [];
+
+  for (const entry of ITEMS_ARRAY) {
+    const nameLower = entry.name.toLowerCase();
+
+    if (exactNumericId !== null && entry.id === exactNumericId) {
+      scored.push({ entry, tier: 0 });
+      continue;
+    }
+
+    if (nameLower === qLower) {
+      scored.push({ entry, tier: 1 });
+      continue;
+    }
+
+    if (nameLower.startsWith(qLower)) {
+      scored.push({ entry, tier: 2 });
+      continue;
+    }
+
+    if (
+      nameLower.includes(qLower) ||
+      (isNumericQuery && String(entry.id).startsWith(numericCandidate))
+    ) {
+      scored.push({ entry, tier: 3 });
+    }
+  }
+
+  scored.sort((a, b) => {
+    if (a.tier !== b.tier) {
+      return a.tier - b.tier;
+    }
+    if (b.entry.quality !== a.entry.quality) {
+      return b.entry.quality - a.entry.quality;
+    }
+    return a.entry.id - b.entry.id;
+  });
+
+  const results = scored.map((s) => s.entry);
+  return typeof limit === 'number' ? results.slice(0, limit) : results;
 }
 
 export function getCharacterById(characterId: string): CharacterCatalogEntry {

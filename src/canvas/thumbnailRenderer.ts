@@ -253,7 +253,8 @@ function renderPass2Sprites(
       }
     } else {
       const slot = scene.pedestals.find((p) => p.id === node.id);
-      const pedPixelScale = 3.4 * scaleRatio;
+      const scaleFactor = (node.scale || 1.5) / 1.5;
+      const pedPixelScale = 3.4 * scaleFactor * scaleRatio;
       const cellDestSize = Math.round(32 * pedPixelScale);
 
       // 1. Draw Altar Pedestal & Shadow from levelitem_001_itemaltar.png
@@ -297,8 +298,8 @@ function renderPass2Sprites(
           cellDestSize
         );
       } else if (!altarSheet && slot?.altarStyle !== 'hidden') {
-        const pedW = 68 * scaleRatio;
-        const pedH = 52 * scaleRatio;
+        const pedW = 68 * scaleFactor * scaleRatio;
+        const pedH = 52 * scaleFactor * scaleRatio;
         ctx.fillStyle = '#4A4152';
         ctx.fillRect(nx - pedW / 2, ny - pedH, pedW, pedH);
       }

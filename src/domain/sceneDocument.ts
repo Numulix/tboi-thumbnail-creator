@@ -1,5 +1,6 @@
 import {
   getCharacterById,
+  getCollectibleById,
   listEdenHairs,
   resolveCharacterEdenHairId,
 } from '../catalog/gameAssetsCatalog';
@@ -67,6 +68,7 @@ export interface SceneState {
   backdrop: BackdropFilterConfig;
   editorOverlays: EditorOverlayConfig;
   formationPreset: FormationPreset;
+  pedestalScale: number;
   character: {
     id: string;
     name: string;
@@ -103,6 +105,65 @@ export const DEFAULT_BACKDROP_FILTERS: BackdropFilterConfig = {
 };
 
 export const DEFAULT_CHARACTER_SCALE = 1.85;
+export const DEFAULT_PEDESTAL_SCALE = 1.5;
+export const DEFAULT_CHARACTER_POSITION: Vec2 = { x: 280, y: 505 };
+
+const STARTER_PEDESTAL_POOL: PedestalSlotNode[] = [
+  {
+    id: 'pedestal-1',
+    itemId: 182,
+    itemName: 'Sacred Heart',
+    quality: 4,
+    altarStyle: 'gold',
+    priceTag: 'none',
+    highlightFx: 'q4-glow',
+  },
+  {
+    id: 'pedestal-2',
+    itemId: 118,
+    itemName: 'Brimstone',
+    quality: 4,
+    altarStyle: 'devil',
+    priceTag: '2-hearts',
+    highlightFx: 'outline',
+  },
+  {
+    id: 'pedestal-3',
+    itemId: 562,
+    itemName: 'Rock Bottom',
+    quality: 3,
+    altarStyle: 'stone',
+    priceTag: 'none',
+    highlightFx: 'none',
+  },
+  {
+    id: 'pedestal-4',
+    itemId: 0,
+    itemName: 'Curse of the Blind',
+    quality: 4,
+    altarStyle: 'stone',
+    priceTag: 'blind',
+    highlightFx: 'none',
+  },
+  {
+    id: 'pedestal-5',
+    itemId: 331,
+    itemName: 'Godhead',
+    quality: 4,
+    altarStyle: 'angel',
+    priceTag: 'none',
+    highlightFx: 'q4-glow',
+  },
+  {
+    id: 'pedestal-6',
+    itemId: 689,
+    itemName: 'Glitched Crown',
+    quality: 4,
+    altarStyle: 'devil',
+    priceTag: 'none',
+    highlightFx: 'q4-glow',
+  },
+];
 
 export function createDefaultSceneState(): SceneState {
   return {
@@ -116,53 +177,17 @@ export function createDefaultSceneState(): SceneState {
       showSnapGrid: false,
     },
     formationPreset: 'arc',
+    pedestalScale: DEFAULT_PEDESTAL_SCALE,
     character: {
       id: 'eden',
       name: '09. Eden',
       pose: 'pickup',
       edenHairId: 12,
       scale: DEFAULT_CHARACTER_SCALE,
-      x: 280,
-      y: 505,
+      x: DEFAULT_CHARACTER_POSITION.x,
+      y: DEFAULT_CHARACTER_POSITION.y,
     },
-    pedestals: [
-      {
-        id: 'pedestal-1',
-        itemId: 182,
-        itemName: 'Sacred Heart',
-        quality: 4,
-        altarStyle: 'gold',
-        priceTag: 'none',
-        highlightFx: 'q4-glow',
-      },
-      {
-        id: 'pedestal-2',
-        itemId: 118,
-        itemName: 'Brimstone',
-        quality: 4,
-        altarStyle: 'devil',
-        priceTag: '2-hearts',
-        highlightFx: 'outline',
-      },
-      {
-        id: 'pedestal-3',
-        itemId: 562,
-        itemName: 'Rock Bottom',
-        quality: 3,
-        altarStyle: 'stone',
-        priceTag: 'none',
-        highlightFx: 'none',
-      },
-      {
-        id: 'pedestal-4',
-        itemId: 0,
-        itemName: 'Curse of the Blind',
-        quality: 4,
-        altarStyle: 'stone',
-        priceTag: 'blind',
-        highlightFx: 'none',
-      },
-    ],
+    pedestals: STARTER_PEDESTAL_POOL.slice(0, 4).map((slot) => ({ ...slot })),
     textLayers: [
       {
         id: 'text-headline',
@@ -260,6 +285,164 @@ export function randomizeEdenHair(
   };
 }
 
+export function updatePedestalCount(
+  scene: SceneState,
+  count: 3 | 4 | 5 | 6
+): SceneState {
+  const clampedCount = Math.max(3, Math.min(6, Math.round(count)));
+  const nextPedestals: PedestalSlotNode[] = [];
+
+  for (let i = 0; i < clampedCount; i++) {
+    const existing = scene.pedestals[i];
+    if (existing) {
+      nextPedestals.push({
+        ...existing,
+        manualOffset: undefined,
+      });
+    } else {
+      const fallback = STARTER_PEDESTAL_POOL[i] ?? {
+        id: `pedestal-${i + 1}`,
+        itemId: 182,
+        itemName: 'Sacred Heart',
+        quality: 4 as const,
+        altarStyle: 'stone' as const,
+        priceTag: 'none' as const,
+        highlightFx: 'none' as const,
+      };
+      nextPedestals.push({
+        ...fallback,
+        id: `pedestal-${i + 1}`,
+        manualOffset: undefined,
+      });
+    }
+  }
+
+  return {
+    ...scene,
+    pedestals: nextPedestals,
+  };
+}
+
+function clampStageCoords(x: number, y: number): Vec2 {
+  return {
+    x: Math.max(40, Math.min(1240, Math.round(x))),
+    y: Math.max(80, Math.min(680, Math.round(y))),
+  };
+}
+
+export function resetNodePositions(scene: SceneState): SceneState {
+  return {
+    ...scene,
+    character: {
+      ...scene.character,
+      x: DEFAULT_CHARACTER_POSITION.x,
+      y: DEFAULT_CHARACTER_POSITION.y,
+    },
+    pedestals: scene.pedestals.map((slot) => ({
+      ...slot,
+      manualOffset: undefined,
+    })),
+  };
+}
+
+export function applyFormationPreset(
+  scene: SceneState,
+  preset: FormationPreset
+): SceneState {
+  return {
+    ...resetNodePositions(scene),
+    formationPreset: preset,
+  };
+}
+
+export function updatePedestalScale(scene: SceneState, scale: number): SceneState {
+  const clamped = Math.max(1.0, Math.min(2.5, Number(scale.toFixed(2))));
+  return {
+    ...scene,
+    pedestalScale: clamped,
+  };
+}
+
+export function assignCollectibleToPedestal(
+  scene: SceneState,
+  pedestalId: string,
+  itemId: number
+): SceneState {
+  const item = getCollectibleById(itemId);
+  const isBlind = item.id === 0;
+
+  return {
+    ...scene,
+    pedestals: scene.pedestals.map((slot) => {
+      if (slot.id !== pedestalId) {
+        return slot;
+      }
+      return {
+        ...slot,
+        itemId: item.id,
+        itemName: item.name,
+        quality: item.quality,
+        priceTag: isBlind
+          ? 'blind'
+          : slot.priceTag === 'blind'
+          ? 'none'
+          : slot.priceTag,
+        highlightFx:
+          item.quality === 4 && slot.highlightFx === 'none'
+            ? 'q4-glow'
+            : slot.highlightFx,
+      };
+    }),
+  };
+}
+
+export function updateNodeDragOffset(
+  scene: SceneState,
+  nodeId: string,
+  delta: Vec2
+): SceneState {
+  if (nodeId === 'character' || nodeId === scene.character.id) {
+    const clamped = clampStageCoords(
+      scene.character.x + delta.x,
+      scene.character.y + delta.y
+    );
+    return {
+      ...scene,
+      character: {
+        ...scene.character,
+        x: clamped.x,
+        y: clamped.y,
+      },
+    };
+  }
+
+  return {
+    ...scene,
+    pedestals: scene.pedestals.map((slot, idx) => {
+      if (slot.id !== nodeId) {
+        return slot;
+      }
+      const base = getFormationCoordinates(
+        idx,
+        scene.pedestals.length,
+        scene.formationPreset
+      );
+      const prevOffset = slot.manualOffset ?? { x: 0, y: 0 };
+      const clamped = clampStageCoords(
+        base.x + prevOffset.x + delta.x,
+        base.y + prevOffset.y + delta.y
+      );
+      return {
+        ...slot,
+        manualOffset: {
+          x: clamped.x - base.x,
+          y: clamped.y - base.y,
+        },
+      };
+    }),
+  };
+}
+
 export function updateRoomStage(scene: SceneState, stageId: string): SceneState {
   return {
     ...scene,
@@ -323,13 +506,17 @@ export function toggleEditorOverlay(
   };
 }
 
-function getFormationCoordinates(index: number, count: number, preset: FormationPreset): Vec2 {
+function getFormationCoordinates(
+  index: number,
+  count: number,
+  preset: FormationPreset
+): Vec2 {
   const safeCount = Math.max(1, count);
   const t = safeCount === 1 ? 0.5 : index / (safeCount - 1);
 
   if (preset === 'row') {
     return {
-      x: Math.round(520 + t * 520),
+      x: Math.round(530 + t * 500),
       y: 505,
     };
   }
@@ -337,18 +524,35 @@ function getFormationCoordinates(index: number, count: number, preset: Formation
   if (preset === 'grid-2x2') {
     const col = index % 2;
     const row = Math.floor(index / 2);
+    const totalRows = Math.ceil(safeCount / 2);
+    const isTrailingSingle = safeCount % 2 === 1 && index === safeCount - 1;
+    const x = isTrailingSingle ? 780 : 670 + col * 220;
+    const startY = totalRows <= 2 ? 430 : 380;
+    const rowStep = totalRows <= 2 ? 110 : 95;
     return {
-      x: 620 + col * 220,
-      y: 420 + row * 110,
+      x,
+      y: startY + row * rowStep,
     };
   }
 
   if (preset === 'flank') {
-    const isLeft = index < Math.ceil(safeCount / 2);
-    const sideIndex = isLeft ? index : index - Math.ceil(safeCount / 2);
+    const half = Math.floor(safeCount / 2);
+    if (index < half) {
+      return {
+        x: 210 + index * 115,
+        y: 490 + (index % 2) * 35,
+      };
+    }
+    if (safeCount % 2 === 1 && index === half) {
+      return {
+        x: 640,
+        y: 450,
+      };
+    }
+    const mirrorIdx = safeCount - 1 - index;
     return {
-      x: isLeft ? 200 + sideIndex * 110 : 860 + sideIndex * 110,
-      y: 490 + (sideIndex % 2) * 35,
+      x: 1280 - (210 + mirrorIdx * 115),
+      y: 490 + (mirrorIdx % 2) * 35,
     };
   }
 
@@ -361,6 +565,8 @@ function getFormationCoordinates(index: number, count: number, preset: Formation
 }
 
 export function resolveSceneLayout(scene: SceneState): ResolvedSceneNode[] {
+  const pedestalScale = scene.pedestalScale ?? DEFAULT_PEDESTAL_SCALE;
+
   const spriteNodes: ResolvedSceneNode[] = [
     {
       id: scene.character.id,
@@ -372,16 +578,19 @@ export function resolveSceneLayout(scene: SceneState): ResolvedSceneNode[] {
       zIndex: Math.round(scene.character.y),
     },
     ...scene.pedestals.map((slot, idx) => {
-      const base = getFormationCoordinates(idx, scene.pedestals.length, scene.formationPreset);
+      const base = getFormationCoordinates(
+        idx,
+        scene.pedestals.length,
+        scene.formationPreset
+      );
       const offset = slot.manualOffset ?? { x: 0, y: 0 };
-      const x = Math.max(40, Math.min(1240, base.x + offset.x));
-      const y = Math.max(80, Math.min(680, base.y + offset.y));
+      const { x, y } = clampStageCoords(base.x + offset.x, base.y + offset.y);
       return {
         id: slot.id,
         kind: 'pedestal' as const,
         x,
         y,
-        scale: 1.5,
+        scale: pedestalScale,
         rotationDeg: 0,
         zIndex: Math.round(y),
       };
