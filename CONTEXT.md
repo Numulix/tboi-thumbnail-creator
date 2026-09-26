@@ -27,3 +27,19 @@ _Avoid_: Player sprite, character avatar
 **Pedestal Formation**:
 A structured geometric arrangement (arc, row, 2x2 grid, flank) for 3 to 6 item altars with collectibles, price tags, and quality glows.
 _Avoid_: Item rack, altar layout
+
+**Studio Workbench**:
+The top-level 3-column studio environment coordinating the Asset Drawer, Stage Viewport, and Inspector.
+_Avoid_: Main app, editor container, shell
+
+**Asset Drawer**:
+The left-hand navigation panel providing tabbed drawers for Character Builder, Pedestal Formations, and Room Backdrops.
+_Avoid_: Sidebar, left panel, tools drawer
+
+**Stage Viewport**:
+The center workspace displaying the 1280x720 interactive stage canvas, the 180x101 YouTube feed preview, and safe-zone overlay controls.
+_Avoid_: Canvas container, viewport area, preview column
+
+**Inspector**:
+The right-hand panel providing parameter controls for vector typography layers, camera framing, and room backdrop depth filters.
+_Avoid_: Properties panel, right sidebar, settings panel
