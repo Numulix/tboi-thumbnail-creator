@@ -49,4 +49,89 @@ describe('CharacterDrawer', () => {
     fireEvent.click(randomizeBtn);
     expect(onRandomizeEdenHair).toHaveBeenCalledTimes(1);
   });
+
+  it('renders active character preview with 7-column atlas scaling and exact pose coordinates', () => {
+    const defaultScene = createDefaultSceneState();
+
+    // Test Tainted Eve in 'thumbsUp', 'shocked', and 'agony' poses (from user report)
+    const { rerender } = render(
+      <CharacterDrawer
+        character={{
+          ...defaultScene.character,
+          id: 'tainted-eve',
+          pose: 'thumbsUp',
+        }}
+        onSelectCharacter={vi.fn()}
+        onPoseChange={vi.fn()}
+        onScaleChange={vi.fn()}
+        onResetScale={vi.fn()}
+        onSelectEdenHair={vi.fn()}
+        onRandomizeEdenHair={vi.fn()}
+      />
+    );
+
+    const preview = screen.getByTestId('active-character-preview');
+    expect(within(preview).getByText('Tainted Eve')).toBeInTheDocument();
+
+    const spriteDiv = preview.querySelector('.pixelated') as HTMLElement;
+    expect(spriteDiv).not.toBeNull();
+    expect(spriteDiv.style.backgroundSize).toBe('448px 2432px');
+    expect(spriteDiv.style.backgroundPosition).toBe('-128px -1600px');
+    expect(spriteDiv.style.backgroundRepeat).toBe('no-repeat');
+
+    // Rerender with pose 'shocked' (col 3: 192px)
+    rerender(
+      <CharacterDrawer
+        character={{
+          ...defaultScene.character,
+          id: 'tainted-eve',
+          pose: 'shocked',
+        }}
+        onSelectCharacter={vi.fn()}
+        onPoseChange={vi.fn()}
+        onScaleChange={vi.fn()}
+        onResetScale={vi.fn()}
+        onSelectEdenHair={vi.fn()}
+        onRandomizeEdenHair={vi.fn()}
+      />
+    );
+    expect(spriteDiv.style.backgroundPosition).toBe('-192px -1600px');
+
+    // Rerender with pose 'agony' (col 4: 256px)
+    rerender(
+      <CharacterDrawer
+        character={{
+          ...defaultScene.character,
+          id: 'tainted-eve',
+          pose: 'agony',
+        }}
+        onSelectCharacter={vi.fn()}
+        onPoseChange={vi.fn()}
+        onScaleChange={vi.fn()}
+        onResetScale={vi.fn()}
+        onSelectEdenHair={vi.fn()}
+        onRandomizeEdenHair={vi.fn()}
+      />
+    );
+    expect(spriteDiv.style.backgroundPosition).toBe('-256px -1600px');
+
+    // Rerender with pose 'crying' (col 6: 384px)
+    rerender(
+      <CharacterDrawer
+        character={{
+          ...defaultScene.character,
+          id: 'tainted-eve',
+          pose: 'crying',
+        }}
+        onSelectCharacter={vi.fn()}
+        onPoseChange={vi.fn()}
+        onScaleChange={vi.fn()}
+        onResetScale={vi.fn()}
+        onSelectEdenHair={vi.fn()}
+        onRandomizeEdenHair={vi.fn()}
+      />
+    );
+    expect(spriteDiv.style.backgroundPosition).toBe('-384px -1600px');
+  });
 });
+

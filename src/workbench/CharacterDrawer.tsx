@@ -124,7 +124,8 @@ export function CharacterDrawer({
               style={{
                 backgroundImage: `url(${previewHeadLayer.atlasUrl})`,
                 backgroundPosition: `-${previewHeadLayer.sx}px -${previewHeadLayer.sy}px`,
-                backgroundSize: `${6 * 64}px ${38 * 64}px`,
+                backgroundSize: `${POSE_OPTIONS.length * 64}px ${38 * 64}px`,
+                backgroundRepeat: 'no-repeat',
               }}
             />
           )}
@@ -137,6 +138,7 @@ export function CharacterDrawer({
                 backgroundImage: `url(${previewHairLayer.atlasUrl})`,
                 backgroundPosition: `-${previewHairLayer.sx}px -${previewHairLayer.sy}px`,
                 backgroundSize: `${9 * 64}px ${6 * 64}px`,
+                backgroundRepeat: 'no-repeat',
                 transform: `translate(${previewHairLayer.anchorOffset.x}px, ${previewHairLayer.anchorOffset.y}px)`,
               }}
             />

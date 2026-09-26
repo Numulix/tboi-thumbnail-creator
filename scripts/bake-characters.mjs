@@ -198,8 +198,8 @@ const costumesDir = path.resolve('raw-assets/gfx/characters/costumes');
 const outDir = path.resolve('public/assets/characters');
 fs.mkdirSync(outDir, { recursive: true });
 
-// 1. Bake characters-atlas.png (6 cols of 64x64 = 384px wide, CHARACTERS.length rows of 64px)
-const charAtlasW = CHARACTER_POSES.length * 64; // 384
+// 1. Bake characters-atlas.png (7 cols of 64x64 = 448px wide, CHARACTERS.length rows of 64px)
+const charAtlasW = CHARACTER_POSES.length * 64; // 448
 const charAtlasH = CHARACTERS.length * 64; // 38 * 64 = 2432
 const charAtlasPixels = Buffer.alloc(charAtlasW * charAtlasH * 4);
 
