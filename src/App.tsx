@@ -1290,7 +1290,7 @@ export function App(): React.ReactElement {
       {/* =================================================================== */}
       {/* 1. TOP HEADER BAR (Single-line, unclipped, Studio Brimstone tokens) */}
       {/* =================================================================== */}
-      <header className="h-14 w-full bg-[#19161C] border-b border-[#2A252D] px-4 flex items-center justify-between shrink-0 flex-nowrap whitespace-nowrap overflow-x-auto custom-scroll z-30">
+      <header className="h-14 w-full bg-[#19161C] border-b border-[#2A252D] px-4 flex items-center justify-between shrink-0 flex-nowrap whitespace-nowrap z-30">
         {/* Left: Brand & Project Status */}
         <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
           <div className="flex items-center gap-2.5">
@@ -1339,7 +1339,7 @@ export function App(): React.ReactElement {
             {isPresetDropdownOpen && (
               <div
                 data-testid="preset-dropdown-menu"
-                className="absolute left-0 mt-1.5 w-64 bg-[#19161C] border border-[#2A252D] rounded-lg shadow-2xl p-2 z-50 space-y-2 select-none"
+                className="absolute left-0 top-full mt-1.5 w-64 bg-[#19161C] border border-[#2A252D] rounded-lg shadow-2xl p-2 z-50 space-y-2 select-none"
               >
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-[#9E95A8] px-2 py-1">
