@@ -43,3 +43,16 @@ _Avoid_: Canvas container, viewport area, preview column
 **Inspector**:
 The right-hand panel providing parameter controls for vector typography layers, camera framing, and room backdrop depth filters.
 _Avoid_: Properties panel, right sidebar, settings panel
+
+**Stage Render Pipeline**:
+The multi-pass canvas rasterization pipeline executing backdrop, sprite composite, typography, and editor overlay passes onto stage coordinates.
+_Avoid_: Canvas painter, drawing service, render engine
+
+**Asset Store**:
+The caching and preloading module managing sprite atlas sheets, procedural room surfaces, and web fonts.
+_Avoid_: Image loader, asset manager, texture cache
+
+**Thumbnail Export Pipeline**:
+The export subsystem that rasterizes an unadorned stage scene to clean 1280x720 PNG blobs for direct download or system clipboard transfer.
+_Avoid_: Exporter service, image downloader, file saver
+

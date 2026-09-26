@@ -10,11 +10,11 @@ import {
   type RoomCategory,
 } from './catalog/roomCatalog';
 import {
-  copyCanvasToClipboard,
-  exportCanvasToPngBlob,
-  preloadSceneAssets,
+  copyThumbnailToClipboard,
+  createAssetStore,
+  downloadThumbnailPng,
   renderThumbnail,
-  type AssetBitmapCache,
+  type AssetStore,
 } from './canvas/thumbnailRenderer';
 import {
   createCanvasInteractionController,
@@ -90,7 +90,10 @@ export function App(): React.ReactElement {
 
   const stageCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const assetBitmapsRef = useRef<AssetBitmapCache>(new Map());
+  const assetStoreRef = useRef<AssetStore | null>(null);
+  if (!assetStoreRef.current) {
+    assetStoreRef.current = createAssetStore();
+  }
   const interactionControllerRef = useRef<CanvasInteractionController | null>(null);
   if (!interactionControllerRef.current) {
     interactionControllerRef.current = createCanvasInteractionController();
@@ -105,18 +108,21 @@ export function App(): React.ReactElement {
 
   // Preload authentic room backdrop, collectibles atlas, altar sheet, and character/Eden hair atlases
   useEffect(() => {
-    preloadSceneAssets(scene, assetBitmapsRef.current, () => {
+    assetStoreRef.current?.preload(scene, () => {
       setAssetRevision((rev) => rev + 1);
     });
   }, [scene]);
 
   // Synchronize both 1280x720 Interactive Stage and 180x101 YouTube Feed Preview
   useEffect(() => {
+    const store = assetStoreRef.current;
+    if (!store) return;
+
     const stageCanvas = stageCanvasRef.current;
     if (stageCanvas) {
       const ctx = stageCanvas.getContext('2d');
       if (ctx) {
-        renderThumbnail(ctx, scene, resolvedNodes, assetBitmapsRef.current, {
+        renderThumbnail(ctx, scene, resolvedNodes, store, {
           includeEditorOverlays: true,
           selectedNodeId,
         });
@@ -127,53 +133,34 @@ export function App(): React.ReactElement {
     if (previewCanvas) {
       const pctx = previewCanvas.getContext('2d');
       if (pctx) {
-        renderThumbnail(pctx, scene, resolvedNodes, assetBitmapsRef.current, {
+        renderThumbnail(pctx, scene, resolvedNodes, store, {
           includeEditorOverlays: false,
         });
       }
     }
   }, [scene, resolvedNodes, assetRevision, selectedNodeId]);
 
-  const buildCleanExportCanvas = useCallback((): HTMLCanvasElement => {
-    const offscreen = document.createElement('canvas');
-    offscreen.width = 1280;
-    offscreen.height = 720;
-    const ctx = offscreen.getContext('2d');
-    if (ctx) {
-      renderThumbnail(ctx, scene, resolvedNodes, assetBitmapsRef.current, {
-        includeEditorOverlays: false,
-      });
-    }
-    return offscreen;
-  }, [scene, resolvedNodes]);
-
   const handleExportPng = useCallback(async () => {
+    const store = assetStoreRef.current;
+    if (!store) return;
     try {
-      const cleanCanvas = buildCleanExportCanvas();
-      const blob = await exportCanvasToPngBlob(cleanCanvas);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `isaac-thumb-${scene.stageId}-1280x720.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      await downloadThumbnailPng(scene, resolvedNodes, store);
       setExportStatus('Exported 1280×720 PNG');
     } catch {
       setExportStatus('Export failed');
     }
-  }, [buildCleanExportCanvas, scene.stageId]);
+  }, [scene, resolvedNodes]);
 
   const handleCopyClipboard = useCallback(async () => {
+    const store = assetStoreRef.current;
+    if (!store) return;
     try {
-      const cleanCanvas = buildCleanExportCanvas();
-      await copyCanvasToClipboard(cleanCanvas);
+      await copyThumbnailToClipboard(scene, resolvedNodes, store);
       setExportStatus('Copied 1280×720 PNG to Clipboard');
     } catch {
       setExportStatus('Clipboard unavailable');
     }
-  }, [buildCleanExportCanvas]);
+  }, [scene, resolvedNodes]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {

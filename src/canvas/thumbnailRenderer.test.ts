@@ -6,7 +6,11 @@ import {
 } from '../domain/sceneDocument';
 import {
   copyCanvasToClipboard,
+  copyThumbnailToClipboard,
+  downloadThumbnailPng,
   exportCanvasToPngBlob,
+  exportSceneToPngBlob,
+  renderCleanThumbnailCanvas,
   renderThumbnail,
 } from './thumbnailRenderer';
 
@@ -293,6 +297,39 @@ describe('thumbnailRenderer', () => {
         op.args.includes('#22D3EE')
     );
     expect(previewCyanGizmoOps).toHaveLength(0);
+  });
+
+  it('provides high-leverage export helpers for clean canvas rendering, blob download, and clipboard copy', async () => {
+    const scene = createDefaultSceneState();
+    const resolved = resolveSceneLayout(scene);
+    const store = new Map<string, CanvasImageSource>();
+
+    // Clean canvas helper
+    const canvas = renderCleanThumbnailCanvas(scene, resolved, store);
+    expect(canvas.width).toBe(1280);
+    expect(canvas.height).toBe(720);
+
+    // Direct blob export helper
+    const blob = await exportSceneToPngBlob(scene, resolved, store);
+    expect(blob).toBeInstanceOf(Blob);
+    expect(blob.type).toBe('image/png');
+
+    // Direct download helper
+    const appendSpy = vi.spyOn(document.body, 'appendChild');
+    const removeSpy = vi.spyOn(document.body, 'removeChild');
+    const downloadedBlob = await downloadThumbnailPng(scene, resolved, store);
+    expect(downloadedBlob).toBeInstanceOf(Blob);
+    expect(appendSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalled();
+
+    // Direct clipboard helper
+    const writeSpy = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { write: writeSpy },
+      configurable: true,
+    });
+    await copyThumbnailToClipboard(scene, resolved, store);
+    expect(writeSpy).toHaveBeenCalledTimes(1);
   });
 });
 
