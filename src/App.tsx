@@ -5,10 +5,7 @@ import {
   listCharacters,
   listCollectibles,
 } from './catalog/gameAssetsCatalog';
-import {
-  getRoomBackdropById,
-  type RoomCategory,
-} from './catalog/roomCatalog';
+import { getRoomBackdropById } from './catalog/roomCatalog';
 import {
   copyThumbnailToClipboard,
   createAssetStore,
@@ -23,27 +20,9 @@ import {
 } from './canvas/canvasInteractionEngine';
 import {
   addTextLayer,
-  applyFormationPreset,
-  assignCollectibleToPedestal,
   deleteTextLayer,
-  randomizeEdenHair,
-  resetCameraAndBackdrop,
-  resetCharacterScale,
-  resetNodePositions,
   resolveSceneLayout,
-  selectCharacter,
-  selectEdenHair,
-  toggleEditorOverlay,
-  updateBackdropFilters,
-  updateCameraFraming,
-  updateCharacterPose,
-  updateCharacterScale,
-  updatePedestalCount,
-  updatePedestalScale,
-  updateRoomStage,
-  updateTextLayer,
-  type CharacterPoseId,
-  type FormationPreset,
+  useSceneDocument,
   type SceneState,
 } from './domain/sceneDocument';
 import {
@@ -75,7 +54,7 @@ function capturePointerSafely(
 }
 
 export function App(): React.ReactElement {
-  const [scene, setScene] = useState<SceneState>(() => loadWorkspaceScene());
+  const { scene, actions } = useSceneDocument(() => loadWorkspaceScene());
   const [activeDrawerTab, setActiveDrawerTab] = useState<
     'character' | 'pedestals' | 'rooms'
   >('character');
@@ -183,7 +162,7 @@ export function App(): React.ReactElement {
 
   const handleSelectPreset = (preset: TemplatePreset) => {
     const nextScene: SceneState = deepClone(preset.scene);
-    setScene(nextScene);
+    actions.replaceScene(nextScene);
     setSelectedPedestalId(nextScene.pedestals[0]?.id ?? 'pedestal-1');
     setSelectedTextLayerId(nextScene.textLayers[0]?.id ?? 'text-headline');
     setSelectedNodeId(nextScene.textLayers[0]?.id ?? 'character');
@@ -191,28 +170,17 @@ export function App(): React.ReactElement {
 
   const handleSavePreset = (name: string) => {
     const saved = saveCustomPreset(name, scene);
-    setScene((prev) => ({
-      ...prev,
+    actions.replaceScene({
+      ...scene,
       presetName: saved.name,
-    }));
+    });
   };
 
   const handleDeletePreset = (presetId: string) => {
     deleteCustomPreset(presetId);
-    setScene((prev) => {
-      if (prev.presetName === presetId) {
-        return { ...prev, presetName: 'Eden Run Default' };
-      }
-      return prev;
-    });
-  };
-
-  const handleSelectStage = (stageId: string, _category: RoomCategory) => {
-    setScene((prev) => updateRoomStage(prev, stageId));
-  };
-
-  const handleSelectCharacter = (characterId: string, _variant: 'normal' | 'tainted') => {
-    setScene((prev) => selectCharacter(prev, characterId));
+    if (scene.presetName === presetId) {
+      actions.replaceScene({ ...scene, presetName: 'Eden Run Default' });
+    }
   };
 
   const handleCanvasPointerDown = (
@@ -253,7 +221,7 @@ export function App(): React.ReactElement {
     const pt = viewportToCanvasPoint(canvas, e.clientX, e.clientY);
     const result = controller.onPointerMove(pt, scene);
     if (result.hasChanges) {
-      setScene(result.scene);
+      actions.replaceScene(result.scene);
     }
   };
 
@@ -273,7 +241,7 @@ export function App(): React.ReactElement {
         onSelectPreset={handleSelectPreset}
         onSavePreset={handleSavePreset}
         onDeletePreset={handleDeletePreset}
-        onToggleOverlay={(overlay) => setScene((prev) => toggleEditorOverlay(prev, overlay))}
+        onToggleOverlay={actions.toggleOverlay}
         onCopyClipboard={() => void handleCopyClipboard()}
         onExportPng={() => void handleExportPng()}
       />
@@ -341,20 +309,12 @@ export function App(): React.ReactElement {
             {activeDrawerTab === 'character' ? (
               <CharacterDrawer
                 character={scene.character}
-                onSelectCharacter={handleSelectCharacter}
-                onPoseChange={(pose: CharacterPoseId) =>
-                  setScene((prev) => updateCharacterPose(prev, pose))
-                }
-                onScaleChange={(scale: number) =>
-                  setScene((prev) => updateCharacterScale(prev, scale))
-                }
-                onResetScale={() => setScene((prev) => resetCharacterScale(prev))}
-                onSelectEdenHair={(hairId: number) =>
-                  setScene((prev) => selectEdenHair(prev, hairId))
-                }
-                onRandomizeEdenHair={() =>
-                  setScene((prev) => randomizeEdenHair(prev))
-                }
+                onSelectCharacter={(charId) => actions.selectCharacter(charId)}
+                onPoseChange={actions.setCharacterPose}
+                onScaleChange={actions.setCharacterScale}
+                onResetScale={actions.resetCharacterScale}
+                onSelectEdenHair={actions.selectEdenHair}
+                onRandomizeEdenHair={actions.randomizeEdenHair}
               />
             ) : activeDrawerTab === 'pedestals' ? (
               <PedestalDrawer
@@ -363,24 +323,18 @@ export function App(): React.ReactElement {
                 pedestalScale={scene.pedestalScale}
                 selectedPedestalId={selectedPedestalId}
                 onSelectPedestal={setSelectedPedestalId}
-                onUpdateCount={(count: 3 | 4 | 5 | 6) =>
-                  setScene((prev) => updatePedestalCount(prev, count))
+                onUpdateCount={actions.setPedestalCount}
+                onApplyPreset={actions.applyFormationPreset}
+                onScaleChange={actions.setPedestalScale}
+                onAssignCollectible={(pedestalId, itemId) =>
+                  actions.assignCollectible(pedestalId, itemId)
                 }
-                onApplyPreset={(preset: FormationPreset) =>
-                  setScene((prev) => applyFormationPreset(prev, preset))
-                }
-                onScaleChange={(scale: number) =>
-                  setScene((prev) => updatePedestalScale(prev, scale))
-                }
-                onAssignCollectible={(pedestalId: string, itemId: number) =>
-                  setScene((prev) => assignCollectibleToPedestal(prev, pedestalId, itemId))
-                }
-                onResetPositions={() => setScene((prev) => resetNodePositions(prev))}
+                onResetPositions={actions.resetPositions}
               />
             ) : (
               <RoomDrawer
                 activeStageId={scene.stageId}
-                onSelectStage={handleSelectStage}
+                onSelectStage={(stageId) => actions.setRoomStage(stageId)}
               />
             )}
           </div>
@@ -416,7 +370,7 @@ export function App(): React.ReactElement {
               onAddLayer={() => {
                 const nextScene = addTextLayer(scene);
                 const created = nextScene.textLayers[nextScene.textLayers.length - 1];
-                setScene(nextScene);
+                actions.replaceScene(nextScene);
                 if (created) {
                   setSelectedTextLayerId(created.id);
                   setSelectedNodeId(created.id);
@@ -424,14 +378,12 @@ export function App(): React.ReactElement {
               }}
               onDeleteLayer={(id: string) => {
                 const nextScene = deleteTextLayer(scene, id);
-                setScene(nextScene);
+                actions.replaceScene(nextScene);
                 const nextFallback = nextScene.textLayers[0]?.id ?? '';
                 setSelectedTextLayerId(nextFallback);
                 setSelectedNodeId(nextFallback || null);
               }}
-              onUpdateLayer={(id, patch) => {
-                setScene((prev) => updateTextLayer(prev, id, patch));
-              }}
+              onUpdateLayer={actions.updateTextLayer}
             />
 
             <div className="h-px bg-[#2A252D]" />
@@ -440,13 +392,9 @@ export function App(): React.ReactElement {
               activeRoomName={activeRoom.name}
               camera={scene.camera}
               backdrop={scene.backdrop}
-              onUpdateCamera={(patch) =>
-                setScene((prev) => updateCameraFraming(prev, patch))
-              }
-              onUpdateBackdrop={(patch) =>
-                setScene((prev) => updateBackdropFilters(prev, patch))
-              }
-              onReset={() => setScene((prev) => resetCameraAndBackdrop(prev))}
+              onUpdateCamera={actions.updateCameraFraming}
+              onUpdateBackdrop={actions.updateBackdropFilters}
+              onReset={actions.resetCameraAndBackdrop}
             />
           </div>
         </aside>

@@ -56,3 +56,8 @@ _Avoid_: Image loader, asset manager, texture cache
 The export subsystem that rasterizes an unadorned stage scene to clean 1280x720 PNG blobs for direct download or system clipboard transfer.
 _Avoid_: Exporter service, image downloader, file saver
 
+**Scene Mutation Engine**:
+The domain transition module executing immutable scene document transformations, formation layout updates, and action dispatching.
+_Avoid_: State manager, scene updater, mutation service
+
+
