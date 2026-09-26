@@ -125,7 +125,7 @@ export const CHARACTER_POSES = [
   },
   {
     id: 'agony',
-    label: 'Crying / Despair',
+    label: 'Agony / Pain',
     sx: 128,
     sy: 192,
     hairDx: 2,
@@ -138,6 +138,14 @@ export const CHARACTER_POSES = [
     sy: 256,
     hairDx: 0,
     hairDy: 8,
+  },
+  {
+    id: 'crying',
+    label: 'Crying',
+    sx: 128,
+    sy: 256,
+    hairDx: 0,
+    hairDy: 5,
   },
 ];
 

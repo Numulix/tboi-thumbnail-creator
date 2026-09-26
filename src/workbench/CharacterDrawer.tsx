@@ -226,7 +226,7 @@ export function CharacterDrawer({
                 style={{
                   backgroundImage: 'url(/assets/characters/characters-atlas.png)',
                   backgroundPosition: `0px -${char.atlasRow * 32}px`,
-                  backgroundSize: `${6 * 32}px ${38 * 32}px`,
+                  backgroundSize: `${POSE_OPTIONS.length * 32}px ${38 * 32}px`,
                 }}
               />
               <span className="text-[10px] font-semibold leading-tight truncate w-full">

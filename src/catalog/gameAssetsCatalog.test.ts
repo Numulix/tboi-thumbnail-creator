@@ -47,27 +47,42 @@ describe('gameAssetsCatalog & SpriteCompositor.composeCharacterStack', () => {
       edenHairId: 21,
     });
 
+    const agonyStack = composeCharacterStack({
+      id: 'eden',
+      pose: 'agony',
+      edenHairId: 12,
+    });
+
     const idleHead = idleStack.find((l) => l.kind === 'head')!;
     const idleHair = idleStack.find((l) => l.kind === 'edenHair')!;
     const pickupHead = pickupStack.find((l) => l.kind === 'head')!;
     const pickupHair = pickupStack.find((l) => l.kind === 'edenHair')!;
+    const agonyHead = agonyStack.find((l) => l.kind === 'head')!;
+    const agonyHair = agonyStack.find((l) => l.kind === 'edenHair')!;
     const cryingHead = cryingStack.find((l) => l.kind === 'head')!;
     const cryingHair = cryingStack.find((l) => l.kind === 'edenHair')!;
 
-    // Verify pose-specific shifts across Front Idle, Happy Pickup, and Crying
+    // Verify pose-specific shifts across Front Idle, Happy Pickup, Agony, and Crying
     expect(idleHead.anchorOffset).toEqual({ x: 0, y: 0 });
     expect(idleHair.anchorOffset).toEqual({ x: 0, y: 6 });
 
     expect(pickupHead.anchorOffset).toEqual({ x: 0, y: 2 });
     expect(pickupHair.anchorOffset).toEqual({ x: 0, y: 8 });
 
-    expect(cryingHead.anchorOffset).toEqual({ x: 2, y: -1 });
-    expect(cryingHair.anchorOffset).toEqual({ x: 2, y: 5 });
+    expect(agonyHead.anchorOffset).toEqual({ x: 2, y: -1 });
+    expect(agonyHair.anchorOffset).toEqual({ x: 2, y: 5 });
 
-    // Verify hair remains locked at constant relative offset (0, +6) from head across all 3 poses
+    expect(cryingHead.anchorOffset).toEqual({ x: 0, y: -1 });
+    expect(cryingHair.anchorOffset).toEqual({ x: 0, y: 5 });
+
+    // Verify Crying and Agony are distinct poses with different sprite atlas source coordinates
+    expect(cryingHead.sx).not.toBe(agonyHead.sx);
+
+    // Verify hair remains locked at constant relative offset (0, +6) from head across all poses
     for (const [head, hair] of [
       [idleHead, idleHair],
       [pickupHead, pickupHair],
+      [agonyHead, agonyHair],
       [cryingHead, cryingHair],
     ]) {
       expect(hair.anchorOffset.x - head.anchorOffset.x).toBe(0);

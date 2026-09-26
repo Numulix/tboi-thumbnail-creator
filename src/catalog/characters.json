@@ -30,7 +30,7 @@
     },
     {
       "id": "agony",
-      "label": "Crying / Despair",
+      "label": "Agony / Pain",
       "atlasCol": 4,
       "hairDx": 2,
       "hairDy": 5
@@ -41,6 +41,13 @@
       "atlasCol": 5,
       "hairDx": 0,
       "hairDy": 8
+    },
+    {
+      "id": "crying",
+      "label": "Crying",
+      "atlasCol": 6,
+      "hairDx": 0,
+      "hairDy": 5
     }
   ],
   "characters": [

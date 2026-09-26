@@ -208,9 +208,8 @@ export function listCharacters(variant?: 'normal' | 'tainted'): CharacterCatalog
 }
 
 export function getCharacterPoseById(poseId: string): CharacterPoseEntry {
-  const normalized = poseId === 'crying' ? 'agony' : poseId;
   const found = (charactersJson.poses as CharacterPoseEntry[]).find(
-    (p) => p.id === normalized
+    (p) => p.id === poseId
   );
   return found ?? (charactersJson.poses as CharacterPoseEntry[])[0];
 }
