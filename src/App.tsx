@@ -44,17 +44,19 @@ import {
 import {
   copyCanvasToClipboard,
   exportCanvasToPngBlob,
-  getNodeGizmoBounds,
-  hitTestTextLayer,
   preloadSceneAssets,
   renderThumbnail,
   type AssetBitmapCache,
 } from './canvas/thumbnailRenderer';
 import {
+  createCanvasInteractionController,
+  viewportToCanvasPoint,
+  type CanvasInteractionController,
+} from './canvas/canvasInteractionEngine';
+import {
   addTextLayer,
   applyFormationPreset,
   assignCollectibleToPedestal,
-  clampRotationDeg,
   deleteTextLayer,
   randomizeEdenHair,
   resetCameraAndBackdrop,
@@ -70,9 +72,6 @@ import {
   updateCameraFraming,
   updateCharacterPose,
   updateCharacterScale,
-  updateNodeDragOffset,
-  updateNodeRotation,
-  updateNodeScaleFromGizmo,
   updatePedestalCount,
   updatePedestalScale,
   updateRoomStage,
@@ -82,7 +81,6 @@ import {
   type SceneState,
   type TextAlignMode,
   type TextGradientSwatchId,
-  type Vec2,
 } from './domain/sceneDocument';
 import {
   deepClone,
@@ -187,20 +185,6 @@ function getCollectibleAtlasSpriteStyle(
   };
 }
 
-function clientToCanvasCoords(
-  canvas: HTMLCanvasElement,
-  clientX: number,
-  clientY: number
-): Vec2 {
-  const rect = canvas.getBoundingClientRect();
-  const width = rect.width > 0 ? rect.width : 1280;
-  const height = rect.height > 0 ? rect.height : 720;
-  return {
-    x: ((clientX - rect.left) / width) * 1280,
-    y: ((clientY - rect.top) / height) * 720,
-  };
-}
-
 function capturePointerSafely(
   e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
 ): void {
@@ -243,12 +227,10 @@ export function App(): React.ReactElement {
   const stageCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const assetBitmapsRef = useRef<AssetBitmapCache>(new Map());
-  const activeDragRef = useRef<{
-    mode: 'move' | 'rotate' | 'resize';
-    nodeId: string;
-    lastCanvasPos: Vec2;
-    anchor?: Vec2;
-  } | null>(null);
+  const interactionControllerRef = useRef<CanvasInteractionController | null>(null);
+  if (!interactionControllerRef.current) {
+    interactionControllerRef.current = createCanvasInteractionController();
+  }
 
   const activeRoom = useMemo(() => getRoomBackdropById(scene.stageId), [scene.stageId]);
   const categoryRooms = useMemo(
@@ -743,179 +725,46 @@ export function App(): React.ReactElement {
     e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
   ) => {
     const canvas = stageCanvasRef.current;
-    if (!canvas) {
+    const controller = interactionControllerRef.current;
+    if (!canvas || !controller) {
       return;
     }
-    const pt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
+    const pt = viewportToCanvasPoint(canvas, e.clientX, e.clientY);
+    const result = controller.onPointerDown(pt, scene, selectedNodeId);
 
-    // 1. Check if pointer hits the active node's cyan rotation handle knob or 4 corner resize handles
-    if (selectedNodeId) {
-      const activeBounds = getNodeGizmoBounds(
-        scene,
-        resolvedNodes,
-        selectedNodeId
-      );
-      if (activeBounds) {
-        if (
-          Math.hypot(pt.x - activeBounds.handleX, pt.y - activeBounds.handleY) <=
-          28
-        ) {
-          activeDragRef.current = {
-            mode: 'rotate',
-            nodeId: activeBounds.nodeId,
-            lastCanvasPos: pt,
-            anchor: { x: activeBounds.anchorX, y: activeBounds.anchorY },
-          };
-          capturePointerSafely(e);
-          return;
-        }
-
-        if (
-          activeBounds.corners.some(
-            (corner) => Math.hypot(pt.x - corner.x, pt.y - corner.y) <= 18
-          )
-        ) {
-          activeDragRef.current = {
-            mode: 'resize',
-            nodeId: activeBounds.nodeId,
-            lastCanvasPos: pt,
-            anchor: { x: activeBounds.anchorX, y: activeBounds.anchorY },
-          };
-          capturePointerSafely(e);
-          return;
-        }
+    if (result.selectedNode) {
+      setSelectedNodeId(result.selectedNode.id);
+      if (result.selectedNode.kind === 'text') {
+        setSelectedTextLayerId(result.selectedNode.id);
+      } else if (result.selectedNode.kind === 'pedestal') {
+        setSelectedPedestalId(result.selectedNode.id);
       }
+    } else {
+      setSelectedNodeId(null);
     }
 
-    // 2. Check if pointer hits any Text Layer node (topmost first)
-    const hitText = hitTestTextLayer(scene, pt);
-    if (hitText) {
-      setSelectedTextLayerId(hitText.id);
-      setSelectedNodeId(hitText.id);
-      activeDragRef.current = {
-        mode: 'move',
-        nodeId: hitText.id,
-        lastCanvasPos: pt,
-      };
+    if (result.isDragging) {
       capturePointerSafely(e);
-      return;
     }
-
-    // 3. Check if pointer hits Character or Pedestal sprite nodes
-    const spriteNodesDesc = [...resolvedNodes]
-      .filter((n) => n.kind === 'character' || n.kind === 'pedestal')
-      .reverse();
-
-    let hitNode = spriteNodesDesc.find((node) => {
-      const halfWidth = node.kind === 'character' ? 72 : 68;
-      const topExtent = node.kind === 'character' ? 165 : 155;
-      return (
-        Math.abs(pt.x - node.x) <= halfWidth &&
-        pt.y >= node.y - topExtent &&
-        pt.y <= node.y + 40
-      );
-    });
-
-    if (!hitNode) {
-      let bestDist = 120;
-      for (const node of spriteNodesDesc) {
-        const dist = Math.hypot(pt.x - node.x, pt.y - (node.y - 35));
-        if (dist <= bestDist) {
-          bestDist = dist;
-          hitNode = node;
-        }
-      }
-    }
-
-    if (!hitNode) {
-      return;
-    }
-
-    const nodeId = hitNode.kind === 'character' ? 'character' : hitNode.id;
-    setSelectedNodeId(nodeId);
-    activeDragRef.current = {
-      mode: 'move',
-      nodeId,
-      lastCanvasPos: pt,
-    };
-
-    if (hitNode.kind === 'pedestal') {
-      setSelectedPedestalId(hitNode.id);
-    }
-
-    capturePointerSafely(e);
   };
 
   const handleCanvasPointerMove = (
     e: React.PointerEvent<HTMLCanvasElement>
   ) => {
-    const dragState = activeDragRef.current;
     const canvas = stageCanvasRef.current;
-    if (!dragState || !canvas) {
+    const controller = interactionControllerRef.current;
+    if (!canvas || !controller || !controller.isDragging()) {
       return;
     }
-
-    const nextPt = clientToCanvasCoords(canvas, e.clientX, e.clientY);
-
-    if (dragState.mode === 'rotate' && dragState.anchor) {
-      const angleRad = Math.atan2(
-        nextPt.x - dragState.anchor.x,
-        -(nextPt.y - dragState.anchor.y)
-      );
-      const deg = clampRotationDeg((angleRad * 180) / Math.PI);
-      activeDragRef.current = {
-        ...dragState,
-        lastCanvasPos: nextPt,
-      };
-      setScene((prev) => updateNodeRotation(prev, dragState.nodeId, deg));
-      return;
+    const pt = viewportToCanvasPoint(canvas, e.clientX, e.clientY);
+    const result = controller.onPointerMove(pt, scene);
+    if (result.hasChanges) {
+      setScene(result.scene);
     }
-
-    if (dragState.mode === 'resize' && dragState.anchor) {
-      const prevDist = Math.max(
-        24,
-        Math.hypot(
-          dragState.lastCanvasPos.x - dragState.anchor.x,
-          dragState.lastCanvasPos.y - dragState.anchor.y
-        )
-      );
-      const nextDist = Math.max(
-        24,
-        Math.hypot(
-          nextPt.x - dragState.anchor.x,
-          nextPt.y - dragState.anchor.y
-        )
-      );
-      const scaleRatio = nextDist / prevDist;
-      activeDragRef.current = {
-        ...dragState,
-        lastCanvasPos: nextPt,
-      };
-      setScene((prev) =>
-        updateNodeScaleFromGizmo(prev, dragState.nodeId, scaleRatio)
-      );
-      return;
-    }
-
-    const dx = Math.round(nextPt.x - dragState.lastCanvasPos.x);
-    const dy = Math.round(nextPt.y - dragState.lastCanvasPos.y);
-    if (dx === 0 && dy === 0) {
-      return;
-    }
-
-    const { nodeId } = dragState;
-    activeDragRef.current = {
-      ...dragState,
-      lastCanvasPos: {
-        x: dragState.lastCanvasPos.x + dx,
-        y: dragState.lastCanvasPos.y + dy,
-      },
-    };
-    setScene((prev) => updateNodeDragOffset(prev, nodeId, { x: dx, y: dy }));
   };
 
   const handleCanvasPointerUp = () => {
-    activeDragRef.current = null;
+    interactionControllerRef.current?.onPointerUp();
   };
 
   const pedestalsSection = (

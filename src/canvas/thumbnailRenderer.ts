@@ -9,8 +9,6 @@ import {
   TEXT_GRADIENT_SWATCHES,
   type ResolvedSceneNode,
   type SceneState,
-  type TextLayerNode,
-  type Vec2,
 } from '../domain/sceneDocument';
 
 export type AssetBitmapCache = Map<string, CanvasImageSource>;
@@ -20,20 +18,16 @@ export interface RenderOptions {
   selectedNodeId?: string | null;
 }
 
-export interface NodeGizmoGeometry {
-  nodeId: string;
-  kind: 'character' | 'pedestal' | 'text';
-  anchorX: number;
-  anchorY: number;
-  rotationDeg: number;
-  localLeft: number;
-  localRight: number;
-  localTop: number;
-  localBottom: number;
-  handleX: number;
-  handleY: number;
-  corners: Vec2[];
-}
+import {
+  computeTextLayerBoxMetrics,
+  getNodeGizmoBounds,
+  type NodeGizmoGeometry,
+} from './gizmoGeometry';
+import { hitTestTextLayers } from './canvasInteractionEngine';
+
+export type { NodeGizmoGeometry };
+export { getNodeGizmoBounds };
+export const hitTestTextLayer = hitTestTextLayers;
 
 export const ASSET_URLS = {
   collectiblesAtlas: '/assets/collectibles/collectibles-atlas.png',
@@ -411,160 +405,6 @@ function renderPass2Sprites(
   ctx.restore();
 }
 
-function computeTextLayerBoxMetrics(layer: TextLayerNode) {
-  const align = layer.align ?? 'center';
-  const boxW = Math.max(
-    180,
-    Math.min(1160, Math.round(layer.text.length * layer.fontSize * 0.62 + 64))
-  );
-  const boxH = Math.max(52, Math.round(layer.fontSize * 1.38));
-  const localLeft =
-    align === 'left' ? -18 : align === 'right' ? -boxW + 18 : -boxW / 2;
-  const bannerW = Math.max(420, boxW + 32);
-  const bannerLeft =
-    align === 'left' ? -24 : align === 'right' ? -bannerW + 24 : -bannerW / 2;
-
-  return {
-    align,
-    boxW,
-    boxH,
-    localLeft,
-    localRight: localLeft + boxW,
-    localTop: -boxH / 2,
-    localBottom: boxH / 2,
-    bannerW,
-    bannerH: boxH,
-    bannerLeft,
-  };
-}
-
-function projectLocalGizmoGeometry(
-  nodeId: string,
-  kind: 'character' | 'pedestal' | 'text',
-  anchorX: number,
-  anchorY: number,
-  rotationDeg: number,
-  localLeft: number,
-  localRight: number,
-  localTop: number,
-  localBottom: number,
-  handleOffset: number
-): NodeGizmoGeometry {
-  const localCenterX = (localLeft + localRight) / 2;
-  const localHandleY = localTop - handleOffset;
-  const rad = (rotationDeg * Math.PI) / 180;
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
-
-  const toWorld = (lx: number, ly: number): Vec2 => ({
-    x: anchorX + lx * cos - ly * sin,
-    y: anchorY + lx * sin + ly * cos,
-  });
-
-  const handlePt = toWorld(localCenterX, localHandleY);
-  const corners: Vec2[] = [
-    toWorld(localLeft, localTop),
-    toWorld(localRight, localTop),
-    toWorld(localLeft, localBottom),
-    toWorld(localRight, localBottom),
-  ];
-
-  return {
-    nodeId,
-    kind,
-    anchorX,
-    anchorY,
-    rotationDeg,
-    localLeft,
-    localRight,
-    localTop,
-    localBottom,
-    handleX: handlePt.x,
-    handleY: handlePt.y,
-    corners,
-  };
-}
-
-export function getNodeGizmoBounds(
-  scene: SceneState,
-  resolvedNodes: ResolvedSceneNode[],
-  nodeId: string
-): NodeGizmoGeometry | null {
-  const textLayer = scene.textLayers.find((l) => l.id === nodeId);
-  if (textLayer) {
-    const metrics = computeTextLayerBoxMetrics(textLayer);
-    return projectLocalGizmoGeometry(
-      textLayer.id,
-      'text',
-      textLayer.x,
-      textLayer.y,
-      textLayer.rotationDeg ?? 0,
-      metrics.localLeft,
-      metrics.localRight,
-      metrics.localTop,
-      metrics.localBottom,
-      28
-    );
-  }
-
-  const resolved = resolvedNodes.find(
-    (n) =>
-      n.id === nodeId || (nodeId === 'character' && n.kind === 'character')
-  );
-  if (resolved) {
-    const halfW = resolved.kind === 'character' ? 68 : 64;
-    const localTop = resolved.kind === 'character' ? -156 : -148;
-    return projectLocalGizmoGeometry(
-      resolved.kind === 'character' ? 'character' : resolved.id,
-      resolved.kind,
-      resolved.x,
-      resolved.y,
-      resolved.rotationDeg ?? 0,
-      -halfW,
-      halfW,
-      localTop,
-      20,
-      26
-    );
-  }
-
-  return null;
-}
-
-export function hitTestTextLayer(
-  scene: SceneState,
-  pt: Vec2
-): TextLayerNode | null {
-  let bestLayer: TextLayerNode | null = null;
-  let bestDist = Infinity;
-
-  for (let i = scene.textLayers.length - 1; i >= 0; i--) {
-    const layer = scene.textLayers[i];
-    const bounds = getNodeGizmoBounds(scene, [], layer.id);
-    if (!bounds) {
-      continue;
-    }
-    const dx = pt.x - bounds.anchorX;
-    const dy = pt.y - bounds.anchorY;
-    const rad = (-bounds.rotationDeg * Math.PI) / 180;
-    const lx = dx * Math.cos(rad) - dy * Math.sin(rad);
-    const ly = dx * Math.sin(rad) + dy * Math.cos(rad);
-    if (
-      lx >= bounds.localLeft - 6 &&
-      lx <= bounds.localRight + 6 &&
-      ly >= bounds.localTop - 6 &&
-      ly <= bounds.localBottom + 6
-    ) {
-      const localCenterX = (bounds.localLeft + bounds.localRight) / 2;
-      const dist = Math.hypot(lx - localCenterX, ly);
-      if (dist < bestDist) {
-        bestDist = dist;
-        bestLayer = layer;
-      }
-    }
-  }
-  return bestLayer;
-}
 
 function renderPass3Typography(
   ctx: CanvasRenderingContext2D,
