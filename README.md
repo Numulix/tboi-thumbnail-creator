@@ -2,6 +2,8 @@
 
 # Isaac Thumbnail Studio
 
+<img width="1719" height="853" alt="image" src="https://github.com/user-attachments/assets/7a066d1c-779c-4004-8c61-37a714f8671e" />
+
 **A studio workbench for authentic *The Binding of Isaac: Repentance* YouTube thumbnails.**<br>
 Compose pixel-accurate room backdrops, modular character stacks, pedestal formations, and multi-layer vector typography in seconds.
 
