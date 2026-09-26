@@ -244,7 +244,7 @@ const STARTER_PEDESTAL_POOL: PedestalSlotNode[] = [
 export function createDefaultSceneState(): SceneState {
   return {
     projectName: 'Eden Run - Burning Basement',
-    presetName: 'YouTube 16:9 Bold',
+    presetName: 'Eden Run Default',
     stageId: 'burning-basement',
     camera: { ...DEFAULT_CAMERA_CONFIG },
     backdrop: { ...DEFAULT_BACKDROP_FILTERS },

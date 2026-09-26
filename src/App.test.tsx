@@ -1,8 +1,20 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import {
+  PRESETS_STORAGE_KEY,
+  WORKSPACE_STORAGE_KEY,
+} from './domain/templatePersistenceStore';
 
 describe('StudioWorkbenchUI (App)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
   it('renders the 3-column Studio Brimstone layout with single-line header, updates stage & preview on room/camera/filter changes, toggles safe-zone guides, and exports/copies clean 1280x720 PNGs', async () => {
     render(<App />);
 
@@ -327,6 +339,114 @@ describe('StudioWorkbenchUI (App)', () => {
     expect((screen.getByTestId('headline-text-input') as HTMLInputElement).value).toBe(
       'STREAK #99 BOSS RUSH'
     );
+  });
+
+  it('supports localStorage auto-save, fallback on corrupted cache, switching between built-in templates ("Eden Run Default", "Devil Deal Showcase"), and + Save Preset / delete custom presets workflow', async () => {
+    // 1. Initial render with empty localStorage starts with "Eden Run Default" and [Saved] status badge
+    const { unmount } = render(<App />);
+
+    expect(screen.getByTestId('workspace-status-badge')).toHaveTextContent('[Saved]');
+    expect(screen.getByTestId('preset-selector-dropdown')).toHaveTextContent('Eden Run Default');
+
+    // 2. Modifying properties on the workbench auto-persists to localStorage
+    // Change character to Judas
+    fireEvent.click(screen.getByTestId('character-option-judas'));
+    // Change room stage to Sheol
+    fireEvent.click(screen.getByRole('button', { name: /^Rooms$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Sheol/i }));
+
+    // Verify localStorage has persisted the modified character and stage
+    await waitFor(() => {
+      const rawStored = localStorage.getItem(WORKSPACE_STORAGE_KEY);
+      expect(rawStored).toBeTruthy();
+      const parsed = JSON.parse(rawStored!);
+      expect(parsed.scene.character.id).toBe('judas');
+      expect(parsed.scene.stageId).toBe('sheol');
+    });
+
+    // 3. Simulating page reload: unmount and re-render App -> restores Judas and Sheol cleanly
+    unmount();
+    const reloaded = render(<App />);
+
+    expect(reloaded.getByTestId('workspace-status-badge')).toHaveTextContent('[Saved]');
+    expect(reloaded.getAllByText('Sheol').length).toBeGreaterThanOrEqual(1);
+    expect(reloaded.getByTestId('active-character-preview')).toHaveTextContent('Judas');
+
+    // 4. Fallback on corrupt or invalid localStorage
+    reloaded.unmount();
+    localStorage.setItem(WORKSPACE_STORAGE_KEY, '{{invalid json garbage}}');
+
+    const corruptReloaded = render(<App />);
+    expect(corruptReloaded.getByTestId('preset-selector-dropdown')).toHaveTextContent(
+      'Eden Run Default'
+    );
+    expect(corruptReloaded.getByTestId('active-character-preview')).toHaveTextContent('Eden');
+
+    // 5. Switching between built-in presets: open dropdown and select "Devil Deal Showcase"
+    const presetDropdownBtn = corruptReloaded.getByTestId('preset-selector-dropdown');
+    fireEvent.click(presetDropdownBtn);
+
+    expect(corruptReloaded.getByTestId('preset-dropdown-menu')).toBeInTheDocument();
+    expect(corruptReloaded.getByText('Built-in Templates')).toBeInTheDocument();
+
+    const devilDealOption = corruptReloaded.getByTestId('preset-option-devil-deal-showcase');
+    expect(devilDealOption).toHaveTextContent('Devil Deal Showcase');
+    fireEvent.click(devilDealOption);
+
+    // Immediately applies Devil Deal Showcase scene: Judas, Devil Room, Brimstone red, headline
+    expect(corruptReloaded.getByTestId('preset-selector-dropdown')).toHaveTextContent(
+      'Devil Deal Showcase'
+    );
+    expect(corruptReloaded.getAllByText('Devil Room').length).toBeGreaterThanOrEqual(1);
+    expect(
+      (corruptReloaded.getByTestId('headline-text-input') as HTMLInputElement).value
+    ).toBe('DEVIL DEAL CARRY?!');
+
+    // 6. + Save Preset workflow
+    const savePresetBtn = corruptReloaded.getByTestId('save-preset-btn');
+    fireEvent.click(savePresetBtn);
+
+    // Modal dialog is displayed
+    expect(corruptReloaded.getByRole('dialog')).toBeInTheDocument();
+    const presetNameInput = corruptReloaded.getByTestId('preset-name-input') as HTMLInputElement;
+
+    fireEvent.change(presetNameInput, { target: { value: 'My Mega Satan Preset' } });
+    const confirmSaveBtn = corruptReloaded.getByTestId('confirm-save-preset-btn');
+    fireEvent.click(confirmSaveBtn);
+
+    // Modal closes and active preset name is updated
+    expect(corruptReloaded.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(corruptReloaded.getByTestId('preset-selector-dropdown')).toHaveTextContent(
+      'My Mega Satan Preset'
+    );
+
+    // Verify custom preset is stored in localStorage
+    const rawPresets = localStorage.getItem(PRESETS_STORAGE_KEY);
+    expect(rawPresets).toBeTruthy();
+    expect(rawPresets).toContain('My Mega Satan Preset');
+
+    // 7. Verify custom preset appears in dropdown and can be deleted while built-in presets remain protected
+    fireEvent.click(corruptReloaded.getByTestId('preset-selector-dropdown'));
+    const dropdownMenu = corruptReloaded.getByTestId('preset-dropdown-menu');
+    expect(within(dropdownMenu).getByText('Custom Presets')).toBeInTheDocument();
+    expect(within(dropdownMenu).getByText('My Mega Satan Preset')).toBeInTheDocument();
+
+    // Built-in presets do not have a delete button
+    expect(
+      within(dropdownMenu).queryByTestId('delete-preset-eden-run-default')
+    ).not.toBeInTheDocument();
+    expect(
+      within(dropdownMenu).queryByTestId('delete-preset-devil-deal-showcase')
+    ).not.toBeInTheDocument();
+
+    // Delete custom preset
+    const deleteCustomBtn = within(dropdownMenu).getByLabelText('Delete preset My Mega Satan Preset');
+    fireEvent.click(deleteCustomBtn);
+
+    expect(within(dropdownMenu).queryByText('My Mega Satan Preset')).not.toBeInTheDocument();
+    expect(within(dropdownMenu).getByText('No custom presets saved')).toBeInTheDocument();
+
+    corruptReloaded.unmount();
   });
 });
 
