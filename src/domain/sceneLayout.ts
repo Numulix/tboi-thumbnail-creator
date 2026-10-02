@@ -30,22 +30,32 @@ export function getFormationCoordinates(
   preset: FormationPreset
 ): Vec2 {
   const safeCount = Math.max(1, count);
-  const t = safeCount === 1 ? 0.5 : index / (safeCount - 1);
+  const safeIndex = Math.max(0, Math.min(safeCount - 1, index));
+  const t = safeCount === 1 ? 0.5 : safeIndex / (safeCount - 1);
 
   if (preset === 'row') {
+    const span =
+      safeCount <= 4 ? 500 : Math.min(860, 500 + (safeCount - 4) * 45);
     return {
-      x: Math.round(530 + t * 500),
+      x: Math.round(780 - span / 2 + t * span),
       y: 505,
     };
   }
 
   if (preset === 'grid-2x2') {
-    const col = index % 2;
-    const row = Math.floor(index / 2);
-    const totalRows = Math.ceil(safeCount / 2);
-    const isTrailingSingle = safeCount % 2 === 1 && index === safeCount - 1;
-    const x = isTrailingSingle ? 780 : 670 + col * 220;
-    const startY = totalRows <= 2 ? 430 : 380;
+    const cols = safeCount <= 5 ? 2 : safeCount <= 8 ? 3 : 4;
+    const totalRows = Math.ceil(safeCount / cols);
+    const row = Math.floor(safeIndex / cols);
+    const colInRow = safeIndex % cols;
+    const itemsInThisRow = Math.min(cols, safeCount - row * cols);
+
+    const colStep = cols === 2 ? 220 : cols === 3 ? 180 : 150;
+    const x =
+      itemsInThisRow === 1
+        ? 780
+        : Math.round(780 + (colInRow - (itemsInThisRow - 1) / 2) * colStep);
+
+    const startY = totalRows <= 2 ? 430 : 400;
     const rowStep = totalRows <= 2 ? 110 : 95;
     return {
       x,
@@ -54,30 +64,46 @@ export function getFormationCoordinates(
   }
 
   if (preset === 'flank') {
-    const half = Math.floor(safeCount / 2);
-    if (index < half) {
-      return {
-        x: 210 + index * 115,
-        y: 490 + (index % 2) * 35,
-      };
+    if (safeCount === 1) {
+      return { x: 385, y: 505 };
     }
-    if (safeCount % 2 === 1 && index === half) {
-      return {
-        x: 640,
-        y: 450,
-      };
+
+    const leftCount = Math.floor(safeCount / 2);
+    const isLeftWing = safeIndex < leftCount;
+    const wingItemIdx = isLeftWing ? safeIndex : safeIndex - leftCount;
+    const countInWing = isLeftWing ? leftCount : safeCount - leftCount;
+
+    let dx = 105;
+    let y = 505;
+
+    if (safeCount < 6) {
+      dx = 105;
+      if (countInWing === 1) {
+        y = 505;
+      } else if (countInWing === 2) {
+        y = wingItemIdx === 0 ? 460 : 550;
+      } else {
+        y = 425 + wingItemIdx * 80;
+      }
+    } else {
+      const col = wingItemIdx % 2; // 0 = inner column, 1 = outer column
+      const row = Math.floor(wingItemIdx / 2);
+      dx = col === 0 ? 105 : 180;
+      const baseY = 425 + row * 80;
+      const stagger = col === 1 ? 25 : 0;
+      y = baseY + stagger;
     }
-    const mirrorIdx = safeCount - 1 - index;
-    return {
-      x: 1280 - (210 + mirrorIdx * 115),
-      y: 490 + (mirrorIdx % 2) * 35,
-    };
+
+    const x = isLeftWing ? 280 - dx : 280 + dx;
+    return { x, y };
   }
 
   // Default 'arc'
+  const span =
+    safeCount <= 4 ? 500 : Math.min(860, 500 + (safeCount - 4) * 45);
   const arcY = Math.round(515 - Math.sin(t * Math.PI) * 55);
   return {
-    x: Math.round(530 + t * 500),
+    x: Math.round(780 - span / 2 + t * span),
     y: arcY,
   };
 }

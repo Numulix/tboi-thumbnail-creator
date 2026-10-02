@@ -108,10 +108,10 @@ describe('sceneDocument', () => {
     expect(randomized.character.edenHairId).toBeLessThanOrEqual(54);
   });
 
-  it('computes symmetric within-bounds coordinates for 3, 4, 5, and 6 pedestals across all 4 formation presets, blends manualOffset, resets positions, and depth-sorts sprites by floor Y coordinate', async () => {
+  it('computes symmetric within-bounds coordinates for 1 through 12 pedestals across all 4 formation presets, blends manualOffset, resets positions, and depth-sorts sprites by floor Y coordinate', async () => {
     const sceneMod = await import('./sceneDocument');
     const presets = ['arc', 'row', 'grid-2x2', 'flank'] as const;
-    const counts = [3, 4, 5, 6] as const;
+    const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 
     for (const count of counts) {
       const withCount = sceneMod.updatePedestalCount(createDefaultSceneState(), count);
@@ -133,11 +133,22 @@ describe('sceneDocument', () => {
           expect(node.y).toBeLessThanOrEqual(680);
         }
 
-        // Verify horizontal symmetry around the formation center axis
+        // Verify horizontal symmetry around the formation center axis (280 for flank, 780 for others)
         const xs = pedestalNodes.map((n) => n.x);
         const avgX = xs.reduce((sum, x) => sum + x, 0) / count;
-        const expectedAxis = preset === 'flank' ? 640 : 780;
-        expect(Math.abs(avgX - expectedAxis)).toBeLessThanOrEqual(1);
+        if (preset === 'flank') {
+          if (count % 2 === 0) {
+            expect(Math.abs(avgX - 280)).toBeLessThanOrEqual(1);
+          } else {
+            // Distinct wings on left and right of Isaac (x: 280) without advancing into screen center (640)
+            for (const node of pedestalNodes) {
+              expect(node.x).not.toBe(280);
+              expect(node.x).toBeLessThan(640);
+            }
+          }
+        } else {
+          expect(Math.abs(avgX - 780)).toBeLessThanOrEqual(1);
+        }
       }
     }
 
