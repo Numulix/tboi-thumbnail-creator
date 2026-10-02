@@ -85,16 +85,6 @@ export function App(): React.ReactElement {
   );
   const resolvedNodes = useMemo(() => resolveSceneLayout(scene), [scene]);
 
-  // Ensure active pedestal selection falls back cleanly if active altar count drops
-  useEffect(() => {
-    if (scene.pedestals.length > 0 && !scene.pedestals.some((p) => p.id === selectedPedestalId)) {
-      setSelectedPedestalId(scene.pedestals[0].id);
-      if (selectedNodeId?.startsWith('pedestal-')) {
-        setSelectedNodeId(scene.pedestals[0].id);
-      }
-    }
-  }, [scene.pedestals, selectedPedestalId, selectedNodeId]);
-
   // Preload authentic room backdrop, collectibles atlas, altar sheet, and character/Eden hair atlases
   useEffect(() => {
     assetStoreRef.current?.preload(scene, () => {

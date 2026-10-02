@@ -177,6 +177,8 @@ export const DEFAULT_BACKDROP_FILTERS: BackdropFilterConfig = {
 export const DEFAULT_CHARACTER_SCALE = 1.85;
 export const DEFAULT_PEDESTAL_SCALE = 1.5;
 export const DEFAULT_CHARACTER_POSITION: Vec2 = { x: 280, y: 505 };
+export const MIN_PEDESTAL_COUNT = 1;
+export const MAX_PEDESTAL_COUNT = 12;
 
 export const STARTER_PEDESTAL_POOL: PedestalSlotNode[] = [
   {

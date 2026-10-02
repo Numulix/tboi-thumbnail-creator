@@ -121,16 +121,6 @@ describe('sceneMutations & sceneReducer', () => {
       type: 'set-pedestal-count',
       count: 8,
     } satisfies SceneAction);
-
-    actions.incrementPedestalCount();
-    expect(dispatch).toHaveBeenCalledWith({
-      type: 'increment-pedestal-count',
-    } satisfies SceneAction);
-
-    actions.decrementPedestalCount();
-    expect(dispatch).toHaveBeenCalledWith({
-      type: 'decrement-pedestal-count',
-    } satisfies SceneAction);
   });
 
   it('verifies STARTER_PEDESTAL_POOL has 12 distinct curated items and styled altars for slots 7-12', () => {
@@ -201,18 +191,30 @@ describe('sceneMutations & sceneReducer', () => {
     expect(clampedNegative.pedestals).toHaveLength(1);
 
     // Increments and decrements
-    const inc1 = sceneReducer(clampedLower, { type: 'increment-pedestal-count' });
+    const inc1 = sceneReducer(clampedLower, {
+      type: 'set-pedestal-count',
+      count: clampedLower.pedestals.length + 1,
+    });
     expect(inc1.pedestals).toHaveLength(2);
 
-    const dec1 = sceneReducer(inc1, { type: 'decrement-pedestal-count' });
+    const dec1 = sceneReducer(inc1, {
+      type: 'set-pedestal-count',
+      count: inc1.pedestals.length - 1,
+    });
     expect(dec1.pedestals).toHaveLength(1);
 
     // Decrementing at bound 1 stays at 1
-    const decAtMin = sceneReducer(dec1, { type: 'decrement-pedestal-count' });
+    const decAtMin = sceneReducer(dec1, {
+      type: 'set-pedestal-count',
+      count: 0,
+    });
     expect(decAtMin.pedestals).toHaveLength(1);
 
     // Incrementing at bound 12 stays at 12
-    const incAtMax = sceneReducer(clampedUpper, { type: 'increment-pedestal-count' });
+    const incAtMax = sceneReducer(clampedUpper, {
+      type: 'set-pedestal-count',
+      count: 13,
+    });
     expect(incAtMax.pedestals).toHaveLength(12);
   });
 

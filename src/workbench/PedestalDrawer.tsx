@@ -6,6 +6,8 @@ import {
   searchCollectibles,
 } from '../catalog/gameAssetsCatalog';
 import {
+  MAX_PEDESTAL_COUNT,
+  MIN_PEDESTAL_COUNT,
   type FormationPreset,
   type PedestalSlotNode,
 } from '../domain/sceneDocument';
@@ -110,7 +112,7 @@ export function PedestalDrawer({
             type="button"
             data-testid="pedestal-stepper-decrement"
             aria-label="Decrease Altar Count"
-            disabled={pedestals.length <= 1}
+            disabled={pedestals.length <= MIN_PEDESTAL_COUNT}
             onClick={() => onUpdateCount(pedestals.length - 1)}
             className="w-6 h-6 rounded bg-[#231F28] hover:bg-[#2A252D] text-[#F4EFEA] font-bold text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors border border-[#2A252D]"
           >
@@ -128,7 +130,7 @@ export function PedestalDrawer({
             type="button"
             data-testid="pedestal-stepper-increment"
             aria-label="Increase Altar Count"
-            disabled={pedestals.length >= 12}
+            disabled={pedestals.length >= MAX_PEDESTAL_COUNT}
             onClick={() => onUpdateCount(pedestals.length + 1)}
             className="w-6 h-6 rounded bg-[#231F28] hover:bg-[#2A252D] text-[#F4EFEA] font-bold text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors border border-[#2A252D]"
           >

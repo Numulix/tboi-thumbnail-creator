@@ -15,6 +15,8 @@ import {
   DEFAULT_CAMERA_CONFIG,
   DEFAULT_CHARACTER_POSITION,
   DEFAULT_CHARACTER_SCALE,
+  MAX_PEDESTAL_COUNT,
+  MIN_PEDESTAL_COUNT,
   STARTER_PEDESTAL_POOL,
   type BackdropFilterConfig,
   type CameraConfig,
@@ -111,7 +113,10 @@ export function updatePedestalCount(
   scene: SceneState,
   count: number
 ): SceneState {
-  const clampedCount = Math.max(1, Math.min(12, Math.round(count)));
+  const clampedCount = Math.max(
+    MIN_PEDESTAL_COUNT,
+    Math.min(MAX_PEDESTAL_COUNT, Math.round(count))
+  );
   const nextPedestals: PedestalSlotNode[] = [];
 
   for (let i = 0; i < clampedCount; i++) {
@@ -143,13 +148,6 @@ export function updatePedestalCount(
   };
 }
 
-export function incrementPedestalCount(scene: SceneState): SceneState {
-  return updatePedestalCount(scene, scene.pedestals.length + 1);
-}
-
-export function decrementPedestalCount(scene: SceneState): SceneState {
-  return updatePedestalCount(scene, scene.pedestals.length - 1);
-}
 
 export function resetNodePositions(scene: SceneState): SceneState {
   return {
@@ -487,8 +485,6 @@ export type SceneAction =
   | { type: 'select-eden-hair'; edenHairId: number }
   | { type: 'randomize-eden-hair' }
   | { type: 'set-pedestal-count'; count: number }
-  | { type: 'increment-pedestal-count' }
-  | { type: 'decrement-pedestal-count' }
   | { type: 'apply-formation'; preset: FormationPreset }
   | { type: 'set-pedestal-scale'; scale: number }
   | { type: 'assign-collectible'; pedestalId: string; itemId: number }
@@ -522,10 +518,6 @@ export function sceneReducer(scene: SceneState, action: SceneAction): SceneState
       return randomizeEdenHair(scene);
     case 'set-pedestal-count':
       return updatePedestalCount(scene, action.count);
-    case 'increment-pedestal-count':
-      return incrementPedestalCount(scene);
-    case 'decrement-pedestal-count':
-      return decrementPedestalCount(scene);
     case 'apply-formation':
       return applyFormationPreset(scene, action.preset);
     case 'set-pedestal-scale':
@@ -577,10 +569,6 @@ export function createSceneActions(dispatch: (action: SceneAction) => void) {
     randomizeEdenHair: () => dispatch({ type: 'randomize-eden-hair' }),
     setPedestalCount: (count: number) =>
       dispatch({ type: 'set-pedestal-count', count }),
-    incrementPedestalCount: () =>
-      dispatch({ type: 'increment-pedestal-count' }),
-    decrementPedestalCount: () =>
-      dispatch({ type: 'decrement-pedestal-count' }),
     applyFormationPreset: (preset: FormationPreset) =>
       dispatch({ type: 'apply-formation', preset }),
     setPedestalScale: (scale: number) =>
