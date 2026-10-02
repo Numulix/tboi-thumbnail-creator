@@ -127,4 +127,56 @@ describe('PedestalDrawer', () => {
     const slotCards = screen.getAllByTestId(/^pedestal-slot-card-/);
     expect(slotCards).toHaveLength(12);
   });
+
+  it('renders a delete button with a trash icon on each slot card and triggers onDeletePedestal without triggering card selection', () => {
+    const scene = createDefaultSceneState(); // 4 pedestals
+    const onSelectPedestal = vi.fn();
+    const onDeletePedestal = vi.fn();
+
+    render(
+      <PedestalDrawer
+        pedestals={scene.pedestals}
+        formationPreset={scene.formationPreset}
+        pedestalScale={scene.pedestalScale}
+        selectedPedestalId="pedestal-1"
+        onSelectPedestal={onSelectPedestal}
+        onDeletePedestal={onDeletePedestal}
+        onUpdateCount={vi.fn()}
+        onApplyPreset={vi.fn()}
+        onScaleChange={vi.fn()}
+        onAssignCollectible={vi.fn()}
+        onResetPositions={vi.fn()}
+      />
+    );
+
+    // Verify each card has a delete button with a trash icon
+    for (const slot of scene.pedestals) {
+      const deleteBtn = screen.getByTestId(`delete-pedestal-slot-${slot.id}`);
+      expect(deleteBtn).toBeInTheDocument();
+      expect(deleteBtn).toHaveAttribute('aria-label', expect.stringContaining('Delete'));
+    }
+
+    // Clicking delete on pedestal-2 invokes onDeletePedestal with 'pedestal-2'
+    const deleteBtn2 = screen.getByTestId('delete-pedestal-slot-pedestal-2');
+    fireEvent.click(deleteBtn2);
+    expect(onDeletePedestal).toHaveBeenCalledWith('pedestal-2');
+    // Propagation was stopped, so onSelectPedestal was not triggered for pedestal-2
+    expect(onSelectPedestal).not.toHaveBeenCalledWith('pedestal-2');
+
+    // Clicking the slot card itself selects the slot
+    const card3 = screen.getByTestId('pedestal-slot-card-pedestal-3');
+    fireEvent.click(card3);
+    expect(onSelectPedestal).toHaveBeenCalledWith('pedestal-3');
+
+    // Pressing Enter on slot card triggers selection
+    fireEvent.keyDown(card3, { key: 'Enter' });
+    expect(onSelectPedestal).toHaveBeenCalledWith('pedestal-3');
+
+    // Pressing Enter or Space on delete button does not trigger slot selection
+    onSelectPedestal.mockClear();
+    const deleteBtn3 = screen.getByTestId('delete-pedestal-slot-pedestal-3');
+    fireEvent.keyDown(deleteBtn3, { key: 'Enter' });
+    expect(onSelectPedestal).not.toHaveBeenCalled();
+  });
 });
+

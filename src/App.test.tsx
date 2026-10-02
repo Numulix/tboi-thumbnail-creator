@@ -458,7 +458,105 @@ describe('StudioWorkbenchUI (App)', () => {
 
     corruptReloaded.unmount();
   });
+
+  it('supports granular pedestal slot deletion with trash button, updating stepper count, retaining stable IDs, and falling back selection smoothly', () => {
+    render(<App />);
+
+    // 1. Switch to Pedestals tab
+    fireEvent.click(screen.getByRole('button', { name: /^Pedestals$/i }));
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('4 Altars');
+
+    // 4 slot cards present: pedestal-1, pedestal-2, pedestal-3, pedestal-4
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-1')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-2')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-3')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-4')).toBeInTheDocument();
+
+    // 2. Select pedestal-2
+    fireEvent.click(screen.getByTestId('pedestal-slot-card-pedestal-2'));
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-2')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByText('Target: pedestal-2')).toBeInTheDocument();
+
+    // 3. Delete pedestal-2 from the middle of the list via its trash button
+    const deleteBtnPedestal2 = screen.getByTestId('delete-pedestal-slot-pedestal-2');
+    fireEvent.click(deleteBtnPedestal2);
+
+    // Stepper count decreases to 3 Altars
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('3 Altars');
+
+    // pedestal-2 card is removed from document
+    expect(screen.queryByTestId('pedestal-slot-card-pedestal-2')).not.toBeInTheDocument();
+
+    // Remaining slots maintain their stable IDs: pedestal-1, pedestal-3, pedestal-4
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-1')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-3')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-4')).toBeInTheDocument();
+
+    // 4. Selection falls back smoothly to the nearest remaining slot (pedestal-3)
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-3')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByText('Target: pedestal-3')).toBeInTheDocument();
+
+    // Stage canvas hit-testing immediately reflects the removal (clicking former position of pedestal-2 does not select it)
+    const stageCanvas = screen.getByTestId('stage-canvas') as HTMLCanvasElement;
+    fireEvent.pointerDown(stageCanvas, { clientX: 697, clientY: 477 });
+    expect(screen.getByText('Target: pedestal-3')).toBeInTheDocument();
+    expect(screen.queryByText('Target: pedestal-2')).not.toBeInTheDocument();
+
+    // Verify cyan transform gizmo is rendered for the fallback selection
+    const mockCtx = stageCanvas.getContext('2d') as unknown as {
+      __ops: Array<{ type: string; args: unknown[] }>;
+    };
+    const cyanGizmos = mockCtx.__ops.filter(
+      (op) => op.type === 'strokeRect' && op.args.includes('#22D3EE')
+    );
+    expect(cyanGizmos.length).toBeGreaterThan(0);
+
+    // 5. Select pedestal-4 (last item) and delete it
+    fireEvent.click(screen.getByTestId('pedestal-slot-card-pedestal-4'));
+    expect(screen.getByText('Target: pedestal-4')).toBeInTheDocument();
+
+    const deleteBtnPedestal4 = screen.getByTestId('delete-pedestal-slot-pedestal-4');
+    fireEvent.click(deleteBtnPedestal4);
+
+    // Stepper updates to 2 Altars
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('2 Altars');
+    expect(screen.queryByTestId('pedestal-slot-card-pedestal-4')).not.toBeInTheDocument();
+
+    // Selection falls back to preceding remaining slot (pedestal-3)
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-3')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByText('Target: pedestal-3')).toBeInTheDocument();
+
+    // 6. Delete remaining slots until list is emptied
+    fireEvent.click(screen.getByTestId('delete-pedestal-slot-pedestal-3'));
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('1 Altar');
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-1')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+
+    // Reset ops tracker before deleting the final altar
+    mockCtx.__ops.length = 0;
+    fireEvent.click(screen.getByTestId('delete-pedestal-slot-pedestal-1'));
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+    expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
+
+    // Stage canvas renders clean with zero pedestal transform gizmos
+    const postEmptyGizmos = mockCtx.__ops.filter(
+      (op) => op.type === 'strokeRect' && op.args.includes('#22D3EE')
+    );
+    expect(postEmptyGizmos).toHaveLength(0);
+  });
 });
+
 
 
 

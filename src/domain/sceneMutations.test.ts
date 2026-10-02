@@ -284,4 +284,67 @@ describe('sceneMutations & sceneReducer', () => {
     expect(afterPreset.pedestals[2].manualOffset).toBeUndefined();
     expect(afterPreset.formationPreset).toBe('flank');
   });
+
+  it('supports granular mid-list pedestal deletion while retaining stable IDs, manual offsets, and rotation angles', () => {
+    let scene = createDefaultSceneState(); // 4 pedestals: pedestal-1, pedestal-2, pedestal-3, pedestal-4
+    expect(scene.pedestals).toHaveLength(4);
+
+    // Apply manual drag offsets and rotation angles to pedestal-1, pedestal-2, and pedestal-3
+    scene = sceneReducer(scene, {
+      type: 'update-node-drag-offset',
+      nodeId: 'pedestal-1',
+      delta: { x: 50, y: -20 },
+    });
+    scene = sceneReducer(scene, {
+      type: 'update-node-drag-offset',
+      nodeId: 'pedestal-3',
+      delta: { x: -40, y: 35 },
+    });
+    scene = sceneReducer(scene, {
+      type: 'update-node-rotation',
+      nodeId: 'pedestal-3',
+      rotationDeg: 25,
+    });
+    scene = sceneReducer(scene, {
+      type: 'update-node-rotation',
+      nodeId: 'pedestal-4',
+      rotationDeg: -15,
+    });
+
+    const offset1 = scene.pedestals[0].manualOffset;
+    const offset3 = scene.pedestals[2].manualOffset;
+    expect(offset1).toBeDefined();
+    expect(offset3).toBeDefined();
+
+    // Delete pedestal-2 from the middle of the list
+    const afterDelete = sceneReducer(scene, {
+      type: 'delete-pedestal',
+      pedestalId: 'pedestal-2',
+    });
+
+    // 1. Altar count reduced to 3
+    expect(afterDelete.pedestals).toHaveLength(3);
+
+    // 2. Remaining altars preserve their original stable IDs without sequential renumbering
+    expect(afterDelete.pedestals.map((p) => p.id)).toEqual([
+      'pedestal-1',
+      'pedestal-3',
+      'pedestal-4',
+    ]);
+
+    // 3. Offsets and rotation angles are preserved on unaffected altars
+    expect(afterDelete.pedestals[0].manualOffset).toEqual(offset1);
+    expect(afterDelete.pedestals[1].manualOffset).toEqual(offset3);
+    expect(afterDelete.pedestals[1].rotationDeg).toBe(25);
+    expect(afterDelete.pedestals[2].rotationDeg).toBe(-15);
+
+    // 4. deletePedestal action creator dispatches typed action
+    const dispatch = vi.fn();
+    const actions = createSceneActions(dispatch);
+    actions.deletePedestal('pedestal-3');
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'delete-pedestal',
+      pedestalId: 'pedestal-3',
+    } satisfies SceneAction);
+  });
 });

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Move, RotateCcw, Search } from 'lucide-react';
+import { Move, RotateCcw, Search, Trash2 } from 'lucide-react';
 import {
   getCollectibleById,
   listCollectibles,
@@ -53,6 +53,7 @@ export interface PedestalDrawerProps {
   pedestalScale: number;
   selectedPedestalId: string;
   onSelectPedestal: (id: string) => void;
+  onDeletePedestal?: (id: string) => void;
   onUpdateCount: (count: number) => void;
   onApplyPreset: (preset: FormationPreset) => void;
   onScaleChange: (scale: number) => void;
@@ -66,6 +67,7 @@ export function PedestalDrawer({
   pedestalScale,
   selectedPedestalId,
   onSelectPedestal,
+  onDeletePedestal,
   onUpdateCount,
   onApplyPreset,
   onScaleChange,
@@ -81,7 +83,7 @@ export function PedestalDrawer({
 
   const effectiveSelectedPedestalId = useMemo(() => {
     const exists = pedestals.some((p) => p.id === selectedPedestalId);
-    return exists ? selectedPedestalId : (pedestals[0]?.id ?? 'pedestal-1');
+    return exists ? selectedPedestalId : (pedestals[0]?.id ?? '');
   }, [pedestals, selectedPedestalId]);
 
   return (
@@ -220,13 +222,23 @@ export function PedestalDrawer({
               : 'Auto';
 
             return (
-              <button
+              <div
                 key={slot.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 data-testid={`pedestal-slot-card-${slot.id}`}
                 aria-pressed={isSelected}
                 onClick={() => onSelectPedestal(slot.id)}
-                className={`p-1.5 rounded border text-left flex items-center gap-2 transition-all cursor-pointer ${
+                onKeyDown={(e) => {
+                  if (
+                    e.target === e.currentTarget &&
+                    (e.key === 'Enter' || e.key === ' ')
+                  ) {
+                    e.preventDefault();
+                    onSelectPedestal(slot.id);
+                  }
+                }}
+                className={`p-1.5 rounded border text-left flex items-center gap-2 transition-all cursor-pointer relative group ${
                   isSelected
                     ? 'bg-[#231F28] border-[#E5A93C] ring-1 ring-[#E5A93C]'
                     : 'bg-[#0D0B0E] border-[#2A252D] hover:border-[#9E95A8]'
@@ -246,13 +258,31 @@ export function PedestalDrawer({
                     <span className="text-[10px] font-mono-tabular text-[#E5A93C] font-bold">
                       #{idx + 1}
                     </span>
-                    <span
-                      className={`text-[9px] font-mono-tabular font-bold px-1 rounded border ${getQualityBadgeClasses(
-                        slot.quality
-                      )}`}
-                    >
-                      Q{slot.quality}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <span
+                        className={`text-[9px] font-mono-tabular font-bold px-1 rounded border ${getQualityBadgeClasses(
+                          slot.quality
+                        )}`}
+                      >
+                        Q{slot.quality}
+                      </span>
+                      <button
+                        type="button"
+                        data-testid={`delete-pedestal-slot-${slot.id}`}
+                        aria-label={`Delete altar ${idx + 1}`}
+                        title={`Delete altar #${idx + 1}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeletePedestal?.(slot.id);
+                        }}
+                        onKeyDown={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="p-0.5 rounded text-[#9E95A8] hover:text-[#F87171] hover:bg-[#C83A3A]/20 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                   <div className="text-[11px] font-semibold text-[#F4EFEA] truncate">
                     {slot.itemName}
@@ -261,7 +291,7 @@ export function PedestalDrawer({
                     {offsetLabel}
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

@@ -21,6 +21,7 @@ import {
 import {
   addTextLayer,
   deleteTextLayer,
+  resolveNearestPedestalFallback,
   resolveSceneLayout,
   useSceneDocument,
   type SceneState,
@@ -183,6 +184,34 @@ export function App(): React.ReactElement {
     }
   };
 
+  const handleDeletePedestal = useCallback(
+    (id: string) => {
+      const fallbackId = resolveNearestPedestalFallback(scene.pedestals, id);
+      actions.deletePedestal(id);
+
+      if (selectedPedestalId === id) {
+        setSelectedPedestalId(fallbackId);
+      }
+      if (selectedNodeId === id) {
+        setSelectedNodeId(fallbackId || null);
+      }
+    },
+    [actions, scene.pedestals, selectedPedestalId, selectedNodeId]
+  );
+
+  useEffect(() => {
+    if (
+      selectedPedestalId &&
+      !scene.pedestals.some((p) => p.id === selectedPedestalId)
+    ) {
+      const fallback = scene.pedestals[0]?.id ?? '';
+      setSelectedPedestalId(fallback);
+      if (selectedNodeId === selectedPedestalId) {
+        setSelectedNodeId(fallback || null);
+      }
+    }
+  }, [scene.pedestals, selectedPedestalId, selectedNodeId]);
+
   const handleCanvasPointerDown = (
     e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
   ) => {
@@ -323,6 +352,7 @@ export function App(): React.ReactElement {
                 pedestalScale={scene.pedestalScale}
                 selectedPedestalId={selectedPedestalId}
                 onSelectPedestal={setSelectedPedestalId}
+                onDeletePedestal={handleDeletePedestal}
                 onUpdateCount={actions.setPedestalCount}
                 onApplyPreset={actions.applyFormationPreset}
                 onScaleChange={actions.setPedestalScale}

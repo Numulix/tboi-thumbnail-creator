@@ -118,6 +118,7 @@ export function updatePedestalCount(
     Math.min(MAX_PEDESTAL_COUNT, Math.round(count))
   );
   const nextPedestals: PedestalSlotNode[] = [];
+  const existingIds = new Set<string>();
 
   for (let i = 0; i < clampedCount; i++) {
     const existing = scene.pedestals[i];
@@ -125,19 +126,29 @@ export function updatePedestalCount(
       nextPedestals.push({
         ...existing,
       });
+      existingIds.add(existing.id);
     } else {
-      const fallback = STARTER_PEDESTAL_POOL[i] ?? {
-        id: `pedestal-${i + 1}`,
-        itemId: 182,
-        itemName: 'Sacred Heart',
-        quality: 4 as const,
-        altarStyle: 'stone' as const,
-        priceTag: 'none' as const,
-        highlightFx: 'none' as const,
-      };
+      let nextNum = 1;
+      while (existingIds.has(`pedestal-${nextNum}`)) {
+        nextNum++;
+      }
+      const id = `pedestal-${nextNum}`;
+      existingIds.add(id);
+
+      const fallback =
+        STARTER_PEDESTAL_POOL.find((item) => item.id === id) ??
+        STARTER_PEDESTAL_POOL[i] ?? {
+          id,
+          itemId: 182,
+          itemName: 'Sacred Heart',
+          quality: 4 as const,
+          altarStyle: 'stone' as const,
+          priceTag: 'none' as const,
+          highlightFx: 'none' as const,
+        };
       nextPedestals.push({
         ...fallback,
-        id: `pedestal-${i + 1}`,
+        id,
       });
     }
   }
@@ -146,6 +157,29 @@ export function updatePedestalCount(
     ...scene,
     pedestals: nextPedestals,
   };
+}
+
+export function deletePedestal(scene: SceneState, pedestalId: string): SceneState {
+  return {
+    ...scene,
+    pedestals: scene.pedestals.filter((slot) => slot.id !== pedestalId),
+  };
+}
+
+export function resolveNearestPedestalFallback(
+  pedestals: PedestalSlotNode[],
+  deletedId: string
+): string {
+  const deletedIndex = pedestals.findIndex((p) => p.id === deletedId);
+  const remaining = pedestals.filter((p) => p.id !== deletedId);
+  if (remaining.length === 0) {
+    return '';
+  }
+  const nextIndex = Math.min(
+    Math.max(0, deletedIndex),
+    remaining.length - 1
+  );
+  return remaining[nextIndex].id;
 }
 
 
@@ -485,6 +519,7 @@ export type SceneAction =
   | { type: 'select-eden-hair'; edenHairId: number }
   | { type: 'randomize-eden-hair' }
   | { type: 'set-pedestal-count'; count: number }
+  | { type: 'delete-pedestal'; pedestalId: string }
   | { type: 'apply-formation'; preset: FormationPreset }
   | { type: 'set-pedestal-scale'; scale: number }
   | { type: 'assign-collectible'; pedestalId: string; itemId: number }
@@ -518,6 +553,8 @@ export function sceneReducer(scene: SceneState, action: SceneAction): SceneState
       return randomizeEdenHair(scene);
     case 'set-pedestal-count':
       return updatePedestalCount(scene, action.count);
+    case 'delete-pedestal':
+      return deletePedestal(scene, action.pedestalId);
     case 'apply-formation':
       return applyFormationPreset(scene, action.preset);
     case 'set-pedestal-scale':
@@ -569,6 +606,8 @@ export function createSceneActions(dispatch: (action: SceneAction) => void) {
     randomizeEdenHair: () => dispatch({ type: 'randomize-eden-hair' }),
     setPedestalCount: (count: number) =>
       dispatch({ type: 'set-pedestal-count', count }),
+    deletePedestal: (pedestalId: string) =>
+      dispatch({ type: 'delete-pedestal', pedestalId }),
     applyFormationPreset: (preset: FormationPreset) =>
       dispatch({ type: 'apply-formation', preset }),
     setPedestalScale: (scale: number) =>
