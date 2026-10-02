@@ -197,29 +197,17 @@ export function App(): React.ReactElement {
     [actions, scene.pedestals, selectedNodeId]
   );
 
-  const handleUpdatePedestalCount = useCallback(
-    (count: number) => {
-      const prevCount = scene.pedestals.length;
-      actions.setPedestalCount(count);
-      if (prevCount === 0 && count > 0) {
-        setSelectedPedestalId('pedestal-1');
-        setSelectedNodeId('pedestal-1');
-      } else if (count === 0) {
-        setSelectedPedestalId('');
-        if (selectedNodeId?.startsWith('pedestal-')) {
-          setSelectedNodeId(null);
-        }
-      }
-    },
-    [actions, scene.pedestals.length, selectedNodeId]
-  );
-
   useEffect(() => {
+    const isPedestalSelected =
+      selectedNodeId !== null &&
+      selectedNodeId !== 'character' &&
+      !scene.textLayers.some((l) => l.id === selectedNodeId);
+
     if (scene.pedestals.length === 0) {
       if (selectedPedestalId !== '') {
         setSelectedPedestalId('');
       }
-      if (selectedNodeId?.startsWith('pedestal-')) {
+      if (isPedestalSelected) {
         setSelectedNodeId(null);
       }
     } else if (
@@ -229,13 +217,14 @@ export function App(): React.ReactElement {
       const fallback = scene.pedestals[0]?.id ?? '';
       setSelectedPedestalId(fallback);
       if (
+        !selectedNodeId ||
         selectedNodeId === selectedPedestalId ||
-        selectedNodeId?.startsWith('pedestal-')
+        isPedestalSelected
       ) {
         setSelectedNodeId(fallback || null);
       }
     }
-  }, [scene.pedestals, selectedPedestalId, selectedNodeId]);
+  }, [scene.pedestals, scene.textLayers, selectedPedestalId, selectedNodeId]);
 
   const handleCanvasPointerDown = (
     e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
@@ -378,7 +367,7 @@ export function App(): React.ReactElement {
                 selectedPedestalId={selectedPedestalId}
                 onSelectPedestal={setSelectedPedestalId}
                 onDeletePedestal={handleDeletePedestal}
-                onUpdateCount={handleUpdatePedestalCount}
+                onUpdateCount={actions.setPedestalCount}
                 onApplyPreset={actions.applyFormationPreset}
                 onScaleChange={actions.setPedestalScale}
                 onAssignCollectible={(pedestalId, itemId) =>
