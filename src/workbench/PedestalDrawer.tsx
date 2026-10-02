@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Move, RotateCcw, Search, Trash2 } from 'lucide-react';
+import { Move, Package, Plus, RotateCcw, Search, Trash2 } from 'lucide-react';
 import {
   getCollectibleById,
   listCollectibles,
@@ -200,13 +200,43 @@ export function PedestalDrawer({
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
             Pedestal Slots (Click to Target)
           </span>
-          <span className="text-[10px] font-mono-tabular text-[#9E95A8] flex items-center gap-1">
-            <Move className="w-2.5 h-2.5 text-[#E5A93C]" />
-            Drag on Stage
-          </span>
+          {pedestals.length > 0 && (
+            <span className="text-[10px] font-mono-tabular text-[#9E95A8] flex items-center gap-1">
+              <Move className="w-2.5 h-2.5 text-[#E5A93C]" />
+              Drag on Stage
+            </span>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 gap-1.5">
+        {pedestals.length === 0 ? (
+          <div
+            data-testid="pedestal-empty-state"
+            className="p-5 rounded-lg border border-dashed border-[#2A252D] bg-[#0D0B0E]/60 text-center space-y-3 my-1"
+          >
+            <div className="w-10 h-10 mx-auto rounded-full bg-[#19161C] border border-[#2A252D] flex items-center justify-center text-[#9E95A8]">
+              <Package className="w-5 h-5 text-[#9E95A8]/70" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold text-[#F4EFEA]">
+                No Altars in Scene
+              </h4>
+              <p className="text-[11px] text-[#9E95A8] max-w-[240px] mx-auto leading-relaxed">
+                The stage is set for a character-only or room-backdrop composition.
+              </p>
+            </div>
+            <button
+              type="button"
+              data-testid="pedestal-empty-state-add-btn"
+              aria-label="Add Altar"
+              onClick={() => onUpdateCount(1)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#141216] bg-[#E5A93C] hover:bg-[#F2BA52] rounded transition-colors cursor-pointer shadow-sm"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Altar</span>
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-1.5">
           {pedestals.map((slot, idx) => {
             const isSelected = slot.id === effectiveSelectedPedestalId;
             const itemEntry = getCollectibleById(
@@ -295,6 +325,7 @@ export function PedestalDrawer({
             );
           })}
         </div>
+        )}
       </div>
 
       {/* 5. 730+ Repentance+ Collectible Search & Picker */}
@@ -307,7 +338,7 @@ export function PedestalDrawer({
             Assign Collectible
           </label>
           <span className="text-[10px] font-mono-tabular text-[#9E95A8]">
-            Target: {effectiveSelectedPedestalId}
+            Target: {effectiveSelectedPedestalId || 'None'}
           </span>
         </div>
 

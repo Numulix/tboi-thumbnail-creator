@@ -555,6 +555,126 @@ describe('StudioWorkbenchUI (App)', () => {
     );
     expect(postEmptyGizmos).toHaveLength(0);
   });
+
+  it('supports zero-pedestal scene workflow with empty altar drawer UI, disabled stepper decrement at 0, silent formation switching, clean 180x101 preview & PNG export, and [+] altar restoration with active selection', async () => {
+    render(<App />);
+
+    // 1. Switch to Pedestals tab
+    fireEvent.click(screen.getByRole('button', { name: /^Pedestals$/i }));
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('4 Altars');
+
+    const stepperDec = screen.getByTestId('pedestal-stepper-decrement');
+    const stepperInc = screen.getByTestId('pedestal-stepper-increment');
+
+    // 2. Decrement stepper down to 0 (4 -> 3 -> 2 -> 1 -> 0)
+    fireEvent.click(stepperDec);
+    fireEvent.click(stepperDec);
+    fireEvent.click(stepperDec);
+    fireEvent.click(stepperDec);
+
+    // Verify count 0 UI state
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+    expect(stepperDec).toBeDisabled();
+    expect(stepperInc).not.toBeDisabled();
+
+    // Verify empty state banner and no slot cards
+    expect(screen.getByTestId('pedestal-empty-state')).toBeInTheDocument();
+    expect(screen.getByText(/no altars in.*scene/i)).toBeInTheDocument();
+    expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
+    expect(screen.getByText('Target: None')).toBeInTheDocument();
+
+    // 3. Switch formation presets quietly without forcing pedestal creation
+    const rowPresetBtn = screen.getByTestId('formation-preset-row');
+    fireEvent.click(rowPresetBtn);
+    expect(rowPresetBtn).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+    expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
+
+    const flankPresetBtn = screen.getByTestId('formation-preset-flank');
+    fireEvent.click(flankPresetBtn);
+    expect(flankPresetBtn).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+
+    // 4. Verify stage canvas and YouTube feed preview (180x101) render cleanly with 0 pedestals
+    const stageCanvas = screen.getByTestId('stage-canvas') as HTMLCanvasElement;
+    const previewCanvas = screen.getByTestId('preview-canvas') as HTMLCanvasElement;
+    expect(stageCanvas).toBeInTheDocument();
+    expect(previewCanvas).toBeInTheDocument();
+    expect(previewCanvas.width).toBe(180);
+    expect(previewCanvas.height).toBe(101);
+
+    // Export PNG and Copy Image actions execute cleanly without errors on 0-pedestal scene
+    const writeSpy = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { write: writeSpy },
+      configurable: true,
+    });
+    const createObjectURLSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:mock-1280x720-png');
+    const revokeObjectURLSpy = vi
+      .spyOn(URL, 'revokeObjectURL')
+      .mockImplementation(() => {});
+
+    const exportBtn = screen.getByRole('button', { name: /Export 1280[×x]720 PNG/i });
+    fireEvent.click(exportBtn);
+    await waitFor(() => {
+      expect(createObjectURLSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const copyBtn = screen.getByRole('button', { name: /Copy Image/i });
+    fireEvent.click(copyBtn);
+    await waitFor(() => {
+      expect(writeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    createObjectURLSpy.mockRestore();
+    revokeObjectURLSpy.mockRestore();
+
+    // 5. Click [+] stepper increment when count is 0: adds pedestal-1 from starter pool and selects it
+    fireEvent.click(stepperInc);
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('1 Altar');
+    expect(stepperDec).not.toBeDisabled();
+    expect(screen.queryByTestId('pedestal-empty-state')).not.toBeInTheDocument();
+
+    // Slot card for pedestal-1 is rendered, selected, and shows Sacred Heart from starter pool
+    const slotCard1 = screen.getByTestId('pedestal-slot-card-pedestal-1');
+    expect(slotCard1).toBeInTheDocument();
+    expect(slotCard1).toHaveAttribute('aria-pressed', 'true');
+    expect(within(slotCard1).getByText('Sacred Heart')).toBeInTheDocument();
+    expect(screen.getByText('Target: pedestal-1')).toBeInTheDocument();
+
+    // Verify cyan transform gizmo is rendered on canvas for the newly added and selected pedestal-1
+    const mockCtx = stageCanvas.getContext('2d') as unknown as {
+      __ops: Array<{ type: string; args: unknown[] }>;
+    };
+    const gizmosForAddedPedestal = mockCtx.__ops.filter(
+      (op) => op.type === 'strokeRect' && op.args.includes('#22D3EE')
+    );
+    expect(gizmosForAddedPedestal.length).toBeGreaterThan(0);
+
+    // 6. Decrement back to 0
+    fireEvent.click(stepperDec);
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+    expect(screen.getByTestId('pedestal-empty-state')).toBeInTheDocument();
+
+    // 7. Click Add Altar button in the empty state banner: restores pedestal-1 and selects it
+    const emptyStateAddBtn = screen.getByTestId('pedestal-empty-state-add-btn');
+    fireEvent.click(emptyStateAddBtn);
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('1 Altar');
+    expect(screen.getByTestId('pedestal-slot-card-pedestal-1')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByText('Target: pedestal-1')).toBeInTheDocument();
+
+    // 8. Delete the last remaining pedestal card via trash button: count reaches 0 again
+    const deleteBtn = screen.getByTestId('delete-pedestal-slot-pedestal-1');
+    fireEvent.click(deleteBtn);
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
+    expect(screen.getByTestId('pedestal-empty-state')).toBeInTheDocument();
+    expect(screen.getByTestId('pedestal-stepper-decrement')).toBeDisabled();
+  });
 });
 
 

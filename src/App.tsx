@@ -164,7 +164,7 @@ export function App(): React.ReactElement {
   const handleSelectPreset = (preset: TemplatePreset) => {
     const nextScene: SceneState = deepClone(preset.scene);
     actions.replaceScene(nextScene);
-    setSelectedPedestalId(nextScene.pedestals[0]?.id ?? 'pedestal-1');
+    setSelectedPedestalId(nextScene.pedestals[0]?.id ?? '');
     setSelectedTextLayerId(nextScene.textLayers[0]?.id ?? 'text-headline');
     setSelectedNodeId(nextScene.textLayers[0]?.id ?? 'character');
   };
@@ -189,24 +189,49 @@ export function App(): React.ReactElement {
       const fallbackId = resolveNearestPedestalFallback(scene.pedestals, id);
       actions.deletePedestal(id);
 
-      if (selectedPedestalId === id) {
-        setSelectedPedestalId(fallbackId);
-      }
+      setSelectedPedestalId(fallbackId);
       if (selectedNodeId === id) {
         setSelectedNodeId(fallbackId || null);
       }
     },
-    [actions, scene.pedestals, selectedPedestalId, selectedNodeId]
+    [actions, scene.pedestals, selectedNodeId]
+  );
+
+  const handleUpdatePedestalCount = useCallback(
+    (count: number) => {
+      const prevCount = scene.pedestals.length;
+      actions.setPedestalCount(count);
+      if (prevCount === 0 && count > 0) {
+        setSelectedPedestalId('pedestal-1');
+        setSelectedNodeId('pedestal-1');
+      } else if (count === 0) {
+        setSelectedPedestalId('');
+        if (selectedNodeId?.startsWith('pedestal-')) {
+          setSelectedNodeId(null);
+        }
+      }
+    },
+    [actions, scene.pedestals.length, selectedNodeId]
   );
 
   useEffect(() => {
-    if (
-      selectedPedestalId &&
+    if (scene.pedestals.length === 0) {
+      if (selectedPedestalId !== '') {
+        setSelectedPedestalId('');
+      }
+      if (selectedNodeId?.startsWith('pedestal-')) {
+        setSelectedNodeId(null);
+      }
+    } else if (
+      !selectedPedestalId ||
       !scene.pedestals.some((p) => p.id === selectedPedestalId)
     ) {
       const fallback = scene.pedestals[0]?.id ?? '';
       setSelectedPedestalId(fallback);
-      if (selectedNodeId === selectedPedestalId) {
+      if (
+        selectedNodeId === selectedPedestalId ||
+        selectedNodeId?.startsWith('pedestal-')
+      ) {
         setSelectedNodeId(fallback || null);
       }
     }
@@ -353,7 +378,7 @@ export function App(): React.ReactElement {
                 selectedPedestalId={selectedPedestalId}
                 onSelectPedestal={setSelectedPedestalId}
                 onDeletePedestal={handleDeletePedestal}
-                onUpdateCount={actions.setPedestalCount}
+                onUpdateCount={handleUpdatePedestalCount}
                 onApplyPreset={actions.applyFormationPreset}
                 onScaleChange={actions.setPedestalScale}
                 onAssignCollectible={(pedestalId, itemId) =>

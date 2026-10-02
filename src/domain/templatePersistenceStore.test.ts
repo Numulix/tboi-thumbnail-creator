@@ -96,6 +96,28 @@ describe('TemplatePersistenceStore', () => {
       expect(restored.pedestals[11].manualOffset).toEqual({ x: 10, y: 30 });
     });
 
+    it('round-trips a 0-pedestal SceneState and custom preset losslessly without throwing errors', () => {
+      let scene = createDefaultSceneState();
+      scene = updatePedestalCount(scene, 0);
+      expect(scene.pedestals).toHaveLength(0);
+
+      saveWorkspaceScene(scene);
+      const restored = loadWorkspaceScene();
+
+      expect(restored.pedestals).toHaveLength(0);
+      expect(restored.character.id).toBe(scene.character.id);
+      expect(restored.formationPreset).toBe(scene.formationPreset);
+
+      // Save as custom preset
+      const customPreset = saveCustomPreset('Character Only Run', scene);
+      expect(customPreset.scene.pedestals).toHaveLength(0);
+
+      const allPresets = listPresets();
+      const found = allPresets.find((p) => p.name === 'Character Only Run');
+      expect(found).toBeDefined();
+      expect(found?.scene.pedestals).toHaveLength(0);
+    });
+
     it('gracefully falls back to "Eden Run Default" without throwing on corrupt or invalid JSON', () => {
       localStorage.setItem(WORKSPACE_STORAGE_KEY, '{{corrupted json syntax;;');
       expect(() => {

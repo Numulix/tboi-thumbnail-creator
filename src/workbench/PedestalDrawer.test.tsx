@@ -66,11 +66,11 @@ describe('PedestalDrawer', () => {
     expect(onAssignCollectible).toHaveBeenCalledWith('pedestal-1', 118);
   });
 
-  it('disables decrement button at bound 1 and increment button at bound 12', () => {
+  it('disables decrement button at bound 0 and increment button at bound 12, allowing decrement from 1 to 0', () => {
     const scene = createDefaultSceneState();
     const onUpdateCount = vi.fn();
 
-    // 1. Render with 1 altar: [-] must be disabled, [+] must be enabled
+    // 1. Render with 1 altar: [-] must be enabled, [+] must be enabled
     const singlePedestal = scene.pedestals.slice(0, 1);
     const { rerender } = render(
       <PedestalDrawer
@@ -90,10 +90,39 @@ describe('PedestalDrawer', () => {
     const decBtn = screen.getByTestId('pedestal-stepper-decrement');
     const incBtn = screen.getByTestId('pedestal-stepper-increment');
     expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('1 Altar');
+    expect(decBtn).not.toBeDisabled();
+    expect(incBtn).not.toBeDisabled();
+
+    // Decrement from 1 calls onUpdateCount with 0
+    fireEvent.click(decBtn);
+    expect(onUpdateCount).toHaveBeenCalledWith(0);
+
+    // 2. Render with 0 altars: [-] must be disabled, [+] must be enabled, stepper shows "0 Altars"
+    rerender(
+      <PedestalDrawer
+        pedestals={[]}
+        formationPreset="arc"
+        pedestalScale={1.5}
+        selectedPedestalId=""
+        onSelectPedestal={vi.fn()}
+        onUpdateCount={onUpdateCount}
+        onApplyPreset={vi.fn()}
+        onScaleChange={vi.fn()}
+        onAssignCollectible={vi.fn()}
+        onResetPositions={vi.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('pedestal-stepper-value')).toHaveTextContent('0 Altars');
     expect(decBtn).toBeDisabled();
     expect(incBtn).not.toBeDisabled();
 
-    // 2. Render with 12 altars: [+] must be disabled, [-] must be enabled
+    // Clicking [+] when count is 0 calls onUpdateCount with 1
+    onUpdateCount.mockClear();
+    fireEvent.click(incBtn);
+    expect(onUpdateCount).toHaveBeenCalledWith(1);
+
+    // 3. Render with 12 altars: [+] must be disabled, [-] must be enabled
     const twelvePedestals = Array.from({ length: 12 }, (_, i) => ({
       id: `pedestal-${i + 1}`,
       itemId: 182,
@@ -126,6 +155,48 @@ describe('PedestalDrawer', () => {
     // Verify all 12 slot cards are rendered
     const slotCards = screen.getAllByTestId(/^pedestal-slot-card-/);
     expect(slotCards).toHaveLength(12);
+  });
+
+  it('renders an empty state banner with an active add button when count is 0, and allows formation presets switching', () => {
+    const onUpdateCount = vi.fn();
+    const onApplyPreset = vi.fn();
+
+    render(
+      <PedestalDrawer
+        pedestals={[]}
+        formationPreset="arc"
+        pedestalScale={1.5}
+        selectedPedestalId=""
+        onSelectPedestal={vi.fn()}
+        onUpdateCount={onUpdateCount}
+        onApplyPreset={onApplyPreset}
+        onScaleChange={vi.fn()}
+        onAssignCollectible={vi.fn()}
+        onResetPositions={vi.fn()}
+      />
+    );
+
+    // Empty state banner is rendered
+    const emptyStateBanner = screen.getByTestId('pedestal-empty-state');
+    expect(emptyStateBanner).toBeInTheDocument();
+    expect(screen.getByText(/no altars in.*scene/i)).toBeInTheDocument();
+
+    // No slot cards are rendered
+    expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
+
+    // Target display indicates None
+    expect(screen.getByText('Target: None')).toBeInTheDocument();
+
+    // Active add button in empty state banner calls onUpdateCount with 1
+    const addAltarBtn = screen.getByTestId('pedestal-empty-state-add-btn');
+    expect(addAltarBtn).toBeInTheDocument();
+    fireEvent.click(addAltarBtn);
+    expect(onUpdateCount).toHaveBeenCalledWith(1);
+
+    // Formation preset buttons work cleanly even when count is 0
+    const rowPresetBtn = screen.getByTestId('formation-preset-row');
+    fireEvent.click(rowPresetBtn);
+    expect(onApplyPreset).toHaveBeenCalledWith('row');
   });
 
   it('renders a delete button with a trash icon on each slot card and triggers onDeletePedestal without triggering card selection', () => {

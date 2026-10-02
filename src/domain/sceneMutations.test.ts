@@ -167,7 +167,7 @@ describe('sceneMutations & sceneReducer', () => {
     expect(with12.pedestals[11].priceTag).toBe('1-heart');
   });
 
-  it('enforces stepper bounds (1 to 12) and supports incrementing/decrementing', () => {
+  it('enforces stepper bounds (0 to 12) and supports decrementing to 0 and incrementing to 12', () => {
     const scene = createDefaultSceneState();
 
     // Upper bound clamping at 12
@@ -177,38 +177,41 @@ describe('sceneMutations & sceneReducer', () => {
     });
     expect(clampedUpper.pedestals).toHaveLength(12);
 
-    // Lower bound clamping at 1
+    // Lower bound clamping at 0
     const clampedLower = sceneReducer(scene, {
       type: 'set-pedestal-count',
       count: 0,
     });
-    expect(clampedLower.pedestals).toHaveLength(1);
+    expect(clampedLower.pedestals).toHaveLength(0);
 
     const clampedNegative = sceneReducer(scene, {
       type: 'set-pedestal-count',
       count: -5,
     });
-    expect(clampedNegative.pedestals).toHaveLength(1);
+    expect(clampedNegative.pedestals).toHaveLength(0);
 
-    // Increments and decrements
+    // Increments from 0 to 1
     const inc1 = sceneReducer(clampedLower, {
       type: 'set-pedestal-count',
       count: clampedLower.pedestals.length + 1,
     });
-    expect(inc1.pedestals).toHaveLength(2);
+    expect(inc1.pedestals).toHaveLength(1);
+    expect(inc1.pedestals[0].id).toBe('pedestal-1');
+    expect(inc1.pedestals[0].itemName).toBe('Sacred Heart');
 
+    // Decrement from 1 to 0
     const dec1 = sceneReducer(inc1, {
       type: 'set-pedestal-count',
       count: inc1.pedestals.length - 1,
     });
-    expect(dec1.pedestals).toHaveLength(1);
+    expect(dec1.pedestals).toHaveLength(0);
 
-    // Decrementing at bound 1 stays at 1
+    // Decrementing at bound 0 stays at 0
     const decAtMin = sceneReducer(dec1, {
       type: 'set-pedestal-count',
-      count: 0,
+      count: -1,
     });
-    expect(decAtMin.pedestals).toHaveLength(1);
+    expect(decAtMin.pedestals).toHaveLength(0);
 
     // Incrementing at bound 12 stays at 12
     const incAtMax = sceneReducer(clampedUpper, {
@@ -216,6 +219,28 @@ describe('sceneMutations & sceneReducer', () => {
       count: 13,
     });
     expect(incAtMax.pedestals).toHaveLength(12);
+  });
+
+  it('updates formation preset quietly without creating pedestals when altar count is 0', () => {
+    const emptyScene = sceneReducer(createDefaultSceneState(), {
+      type: 'set-pedestal-count',
+      count: 0,
+    });
+    expect(emptyScene.pedestals).toHaveLength(0);
+
+    const rowScene = sceneReducer(emptyScene, {
+      type: 'apply-formation',
+      preset: 'row',
+    });
+    expect(rowScene.formationPreset).toBe('row');
+    expect(rowScene.pedestals).toHaveLength(0);
+
+    const gridScene = sceneReducer(rowScene, {
+      type: 'apply-formation',
+      preset: 'grid-2x2',
+    });
+    expect(gridScene.formationPreset).toBe('grid-2x2');
+    expect(gridScene.pedestals).toHaveLength(0);
   });
 
   it('preserves existing manual drag offsets on unaffected altars during count increment and decrement, resetting only on reset-positions or preset change', () => {
