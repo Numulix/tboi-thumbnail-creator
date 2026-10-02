@@ -25,7 +25,7 @@ A layered composite of pixel-art sprites representing a playable Isaac character
 _Avoid_: Player sprite, character avatar
 
 **Pedestal Formation**:
-A structured geometric arrangement (arc, row, 2x2 grid, flank) for 3 to 6 item altars with collectibles, price tags, and quality glows.
+A structured geometric arrangement (arc, row, 2x2 grid, flank) for up to 12 item altars with collectibles, price tags, and quality glows.
 _Avoid_: Item rack, altar layout
 
 **Studio Workbench**:

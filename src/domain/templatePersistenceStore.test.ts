@@ -74,6 +74,28 @@ describe('TemplatePersistenceStore', () => {
       expect(loaded).toEqual(original);
     });
 
+    it('round-trips a 12-pedestal SceneState with manual drag offsets losslessly', () => {
+      let scene = createDefaultSceneState();
+      scene = updatePedestalCount(scene, 12);
+      expect(scene.pedestals).toHaveLength(12);
+
+      // Add custom manual drag offsets to slots 1, 7, and 12
+      scene.pedestals[0].manualOffset = { x: 35, y: -20 };
+      scene.pedestals[6].manualOffset = { x: -40, y: 15 };
+      scene.pedestals[11].manualOffset = { x: 10, y: 30 };
+
+      saveWorkspaceScene(scene);
+      const restored = loadWorkspaceScene();
+
+      expect(restored.pedestals).toHaveLength(12);
+      expect(restored.pedestals[0].itemName).toBe('Sacred Heart');
+      expect(restored.pedestals[0].manualOffset).toEqual({ x: 35, y: -20 });
+      expect(restored.pedestals[6].itemName).toBe('C Section');
+      expect(restored.pedestals[6].manualOffset).toEqual({ x: -40, y: 15 });
+      expect(restored.pedestals[11].itemName).toBe('Twisted Pair');
+      expect(restored.pedestals[11].manualOffset).toEqual({ x: 10, y: 30 });
+    });
+
     it('gracefully falls back to "Eden Run Default" without throwing on corrupt or invalid JSON', () => {
       localStorage.setItem(WORKSPACE_STORAGE_KEY, '{{corrupted json syntax;;');
       expect(() => {

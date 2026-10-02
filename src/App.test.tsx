@@ -195,16 +195,26 @@ describe('StudioWorkbenchUI (App)', () => {
     fireEvent.click(pedestalsTabBtn);
     expect(screen.getByTestId('pedestals-builder-section')).toBeInTheDocument();
 
-    // 2. Select active pedestal count (3, 4, 5, 6)
+    // 2. Adjust active pedestal count via stepper
     expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(4);
 
-    fireEvent.click(screen.getByTestId('pedestal-count-6'));
+    const stepperInc = screen.getByTestId('pedestal-stepper-increment');
+    const stepperDec = screen.getByTestId('pedestal-stepper-decrement');
+
+    // Increment from 4 to 6
+    fireEvent.click(stepperInc);
+    expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(5);
+    fireEvent.click(stepperInc);
     expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(6);
 
-    fireEvent.click(screen.getByTestId('pedestal-count-3'));
+    // Decrement from 6 to 3
+    fireEvent.click(stepperDec);
+    fireEvent.click(stepperDec);
+    fireEvent.click(stepperDec);
     expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(3);
 
-    fireEvent.click(screen.getByTestId('pedestal-count-4'));
+    // Increment back to 4
+    fireEvent.click(stepperInc);
     expect(screen.getAllByTestId(/^pedestal-slot-card-/)).toHaveLength(4);
 
     // 3. Switch formation presets (Arc, Row, 2×2 Grid, Flank) and scrub Pedestal Scale

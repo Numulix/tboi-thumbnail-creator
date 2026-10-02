@@ -18,7 +18,6 @@ export const FORMATION_PRESET_OPTIONS: Array<{ id: FormationPreset; label: strin
   { id: 'flank', label: 'Flank' },
 ];
 
-export const PEDESTAL_COUNT_OPTIONS: Array<3 | 4 | 5 | 6> = [3, 4, 5, 6];
 
 export function getQualityBadgeClasses(quality: 0 | 1 | 2 | 3 | 4): string {
   switch (quality) {
@@ -52,7 +51,7 @@ export interface PedestalDrawerProps {
   pedestalScale: number;
   selectedPedestalId: string;
   onSelectPedestal: (id: string) => void;
-  onUpdateCount: (count: 3 | 4 | 5 | 6) => void;
+  onUpdateCount: (count: number) => void;
   onApplyPreset: (preset: FormationPreset) => void;
   onScaleChange: (scale: number) => void;
   onAssignCollectible: (pedestalId: string, itemId: number) => void;
@@ -88,43 +87,53 @@ export function PedestalDrawer({
       data-testid="pedestals-builder-section"
       className="space-y-3.5"
     >
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8]">
-          Pedestal Formation Engine
-        </span>
-        <span className="text-[11px] font-mono-tabular text-[#E5A93C]">
-          {listCollectibles().length} Items
-        </span>
-      </div>
-
-      {/* 1. Pedestal Slot Count Selector (3, 4, 5, 6) */}
-      <div className="space-y-1.5">
-        <label className="text-[11px] font-semibold text-[#9E95A8] flex items-center justify-between">
-          <span>Active Slots</span>
-          <span className="font-mono-tabular text-[#E5A93C]">
-            {pedestals.length} Altars
+      {/* 1. Pedestal Drawer Header with Stepper Control ( [-] N [+] ) */}
+      <div
+        data-testid="pedestal-drawer-header"
+        className="flex items-center justify-between pb-2.5 border-b border-[#2A252D]"
+      >
+        <div>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#9E95A8] block">
+            Pedestal Formation
           </span>
-        </label>
-        <div className="grid grid-cols-4 gap-1 bg-[#0D0B0E] p-1 rounded border border-[#2A252D] text-xs">
-          {PEDESTAL_COUNT_OPTIONS.map((count) => {
-            const isSelected = pedestals.length === count;
-            return (
-              <button
-                key={count}
-                type="button"
-                data-testid={`pedestal-count-${count}`}
-                aria-pressed={isSelected}
-                onClick={() => onUpdateCount(count)}
-                className={`py-1.5 rounded font-mono-tabular font-bold transition-colors cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#E5A93C] text-[#110F13]'
-                    : 'text-[#9E95A8] hover:text-[#F4EFEA]'
-                }`}
-              >
-                {count} Slots
-              </button>
-            );
-          })}
+          <span className="text-[10px] font-mono-tabular text-[#9E95A8]/70">
+            {listCollectibles().length} Items
+          </span>
+        </div>
+
+        {/* Stepper control ( [-] and [+] ) displaying active altar count */}
+        <div
+          data-testid="pedestal-stepper"
+          className="flex items-center gap-1.5 bg-[#0D0B0E] p-1 rounded border border-[#2A252D]"
+        >
+          <button
+            type="button"
+            data-testid="pedestal-stepper-decrement"
+            aria-label="Decrease Altar Count"
+            disabled={pedestals.length <= 1}
+            onClick={() => onUpdateCount(pedestals.length - 1)}
+            className="w-6 h-6 rounded bg-[#231F28] hover:bg-[#2A252D] text-[#F4EFEA] font-bold text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors border border-[#2A252D]"
+          >
+            <span data-testid="pedestal-count-decrement">-</span>
+          </button>
+          <span
+            data-testid="pedestal-count-display"
+            className="px-1 text-xs font-mono-tabular font-bold text-[#E5A93C] min-w-16 text-center"
+          >
+            <span data-testid="pedestal-stepper-value">
+              {pedestals.length} {pedestals.length === 1 ? 'Altar' : 'Altars'}
+            </span>
+          </span>
+          <button
+            type="button"
+            data-testid="pedestal-stepper-increment"
+            aria-label="Increase Altar Count"
+            disabled={pedestals.length >= 12}
+            onClick={() => onUpdateCount(pedestals.length + 1)}
+            className="w-6 h-6 rounded bg-[#231F28] hover:bg-[#2A252D] text-[#F4EFEA] font-bold text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors border border-[#2A252D]"
+          >
+            <span data-testid="pedestal-count-increment">+</span>
+          </button>
         </div>
       </div>
 
