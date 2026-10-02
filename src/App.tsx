@@ -189,12 +189,14 @@ export function App(): React.ReactElement {
       const fallbackId = resolveNearestPedestalFallback(scene.pedestals, id);
       actions.deletePedestal(id);
 
-      setSelectedPedestalId(fallbackId);
+      if (selectedPedestalId === id) {
+        setSelectedPedestalId(fallbackId);
+      }
       if (selectedNodeId === id) {
         setSelectedNodeId(fallbackId || null);
       }
     },
-    [actions, scene.pedestals, selectedNodeId]
+    [actions, scene.pedestals, selectedPedestalId, selectedNodeId]
   );
 
   useEffect(() => {

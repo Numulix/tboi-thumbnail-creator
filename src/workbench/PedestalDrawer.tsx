@@ -329,85 +329,87 @@ export function PedestalDrawer({
       </div>
 
       {/* 5. 730+ Repentance+ Collectible Search & Picker */}
-      <div className="space-y-2 pt-2 border-t border-[#2A252D]">
-        <div className="flex items-center justify-between">
-          <label
-            htmlFor="collectible-search-input"
-            className="text-[11px] font-bold uppercase tracking-wider text-[#E5A93C]"
+      {pedestals.length > 0 && (
+        <div className="space-y-2 pt-2 border-t border-[#2A252D]">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="collectible-search-input"
+              className="text-[11px] font-bold uppercase tracking-wider text-[#E5A93C]"
+            >
+              Assign Collectible
+            </label>
+            <span className="text-[10px] font-mono-tabular text-[#9E95A8]">
+              Target: {effectiveSelectedPedestalId}
+            </span>
+          </div>
+
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-[#9E95A8] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              id="collectible-search-input"
+              data-testid="collectible-search-input"
+              aria-label="Search Collectibles"
+              type="text"
+              value={collectibleSearchQuery}
+              onChange={(e) => setCollectibleSearchQuery(e.target.value)}
+              placeholder='Search name ("Sacred") or ID ("#182")...'
+              className="w-full bg-[#0D0B0E] border border-[#2A252D] focus:border-[#E5A93C] rounded pl-8 pr-2.5 py-1.5 text-xs text-[#F4EFEA] placeholder-[#9E95A8]/60 outline-none font-mono-tabular"
+            />
+          </div>
+
+          <div
+            data-testid="collectible-search-results"
+            className="space-y-1 max-h-56 overflow-y-auto custom-scroll p-1 bg-[#0D0B0E] rounded border border-[#2A252D]"
           >
-            Assign Collectible
-          </label>
-          <span className="text-[10px] font-mono-tabular text-[#9E95A8]">
-            Target: {effectiveSelectedPedestalId || 'None'}
-          </span>
-        </div>
-
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 text-[#9E95A8] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            id="collectible-search-input"
-            data-testid="collectible-search-input"
-            aria-label="Search Collectibles"
-            type="text"
-            value={collectibleSearchQuery}
-            onChange={(e) => setCollectibleSearchQuery(e.target.value)}
-            placeholder='Search name ("Sacred") or ID ("#182")...'
-            className="w-full bg-[#0D0B0E] border border-[#2A252D] focus:border-[#E5A93C] rounded pl-8 pr-2.5 py-1.5 text-xs text-[#F4EFEA] placeholder-[#9E95A8]/60 outline-none font-mono-tabular"
-          />
-        </div>
-
-        <div
-          data-testid="collectible-search-results"
-          className="space-y-1 max-h-56 overflow-y-auto custom-scroll p-1 bg-[#0D0B0E] rounded border border-[#2A252D]"
-        >
-          {matchingCollectibles.map((item) => {
-            const activeSlot = pedestals.find(
-              (p) => p.id === effectiveSelectedPedestalId
-            );
-            const isAssigned = activeSlot?.itemId === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                data-testid={`collectible-result-${item.id}`}
-                aria-pressed={isAssigned}
-                onClick={() => onAssignCollectible(effectiveSelectedPedestalId, item.id)}
-                className={`w-full p-1.5 rounded border text-left flex items-center gap-2 transition-colors cursor-pointer ${
-                  isAssigned
-                    ? 'bg-[#231F28] border-[#E5A93C]'
-                    : 'bg-[#19161C] border-[#2A252D] hover:bg-[#231F28]/70'
-                }`}
-              >
-                <div
-                  className="w-8 h-8 pixelated shrink-0"
-                  style={getCollectibleAtlasSpriteStyle(
-                    item.atlasCol,
-                    item.atlasRow
-                  )}
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-xs font-bold text-[#F4EFEA] truncate">
-                      {item.name}
-                    </span>
-                    <span
-                      data-testid={`quality-badge-${item.id}`}
-                      className={`text-[10px] font-mono-tabular font-bold px-1.5 py-0.5 rounded border shrink-0 ${getQualityBadgeClasses(
-                        item.quality
-                      )}`}
-                    >
-                      Q{item.quality}
-                    </span>
+            {matchingCollectibles.map((item) => {
+              const activeSlot = pedestals.find(
+                (p) => p.id === effectiveSelectedPedestalId
+              );
+              const isAssigned = activeSlot?.itemId === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  data-testid={`collectible-result-${item.id}`}
+                  aria-pressed={isAssigned}
+                  onClick={() => onAssignCollectible(effectiveSelectedPedestalId, item.id)}
+                  className={`w-full p-1.5 rounded border text-left flex items-center gap-2 transition-colors cursor-pointer ${
+                    isAssigned
+                      ? 'bg-[#231F28] border-[#E5A93C]'
+                      : 'bg-[#19161C] border-[#2A252D] hover:bg-[#231F28]/70'
+                  }`}
+                >
+                  <div
+                    className="w-8 h-8 pixelated shrink-0"
+                    style={getCollectibleAtlasSpriteStyle(
+                      item.atlasCol,
+                      item.atlasRow
+                    )}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-xs font-bold text-[#F4EFEA] truncate">
+                        {item.name}
+                      </span>
+                      <span
+                        data-testid={`quality-badge-${item.id}`}
+                        className={`text-[10px] font-mono-tabular font-bold px-1.5 py-0.5 rounded border shrink-0 ${getQualityBadgeClasses(
+                          item.quality
+                        )}`}
+                      >
+                        Q{item.quality}
+                      </span>
+                    </div>
+                    <div className="text-[10px] font-mono-tabular text-[#9E95A8]">
+                      #{item.id} • {item.kind}
+                    </div>
                   </div>
-                  <div className="text-[10px] font-mono-tabular text-[#9E95A8]">
-                    #{item.id} • {item.kind}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

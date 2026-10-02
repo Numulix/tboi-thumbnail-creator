@@ -184,8 +184,8 @@ describe('PedestalDrawer', () => {
     // No slot cards are rendered
     expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
 
-    // Target display indicates None
-    expect(screen.getByText('Target: None')).toBeInTheDocument();
+    // Assign Collectible search is omitted when no pedestals are present
+    expect(screen.queryByTestId('collectible-search-input')).not.toBeInTheDocument();
 
     // Active add button in empty state banner calls onUpdateCount with 1
     const addAltarBtn = screen.getByTestId('pedestal-empty-state-add-btn');

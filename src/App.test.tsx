@@ -581,7 +581,7 @@ describe('StudioWorkbenchUI (App)', () => {
     expect(screen.getByTestId('pedestal-empty-state')).toBeInTheDocument();
     expect(screen.getByText(/no altars in.*scene/i)).toBeInTheDocument();
     expect(screen.queryAllByTestId(/^pedestal-slot-card-/)).toHaveLength(0);
-    expect(screen.getByText('Target: None')).toBeInTheDocument();
+    expect(screen.queryByTestId('collectible-search-input')).not.toBeInTheDocument();
 
     // 3. Switch formation presets quietly without forcing pedestal creation
     const rowPresetBtn = screen.getByTestId('formation-preset-row');
