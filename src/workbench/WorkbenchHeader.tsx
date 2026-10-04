@@ -8,7 +8,6 @@ import {
   Eye,
   Grid,
   Plus,
-  Skull,
   Trash2,
   X,
 } from 'lucide-react';
@@ -101,8 +100,14 @@ export function WorkbenchHeader({
         {/* Left: Brand & Project Status */}
         <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-[#231F28] border border-[#2A252D] flex items-center justify-center shadow-inner shrink-0">
-              <Skull className="w-4 h-4 text-[#C83A3A]" />
+            <div className="w-8 h-8 rounded bg-[#231F28] border border-[#2A252D] flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
+              <img
+                src="/logo.png"
+                alt="Isaac Thumb Studio"
+                data-testid="header-logo"
+                className="w-7 h-7 object-contain"
+                draggable={false}
+              />
             </div>
             <span className="font-black tracking-tight text-sm uppercase text-[#F4EFEA]">
               ISAAC THUMB STUDIO
