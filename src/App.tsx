@@ -392,6 +392,7 @@ export function App(): React.ReactElement {
           activeCharacterName={activeCharacterEntry.name}
           stageCanvasRef={stageCanvasRef}
           previewCanvasRef={previewCanvasRef}
+          assetRevision={assetRevision}
           onPointerDown={handleCanvasPointerDown}
           onPointerMove={handleCanvasPointerMove}
           onPointerUp={handleCanvasPointerUp}

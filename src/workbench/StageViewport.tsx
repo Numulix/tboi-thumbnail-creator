@@ -6,6 +6,7 @@ export interface StageViewportProps {
   activeCharacterName: string;
   stageCanvasRef: React.RefObject<HTMLCanvasElement | null>;
   previewCanvasRef: React.RefObject<HTMLCanvasElement | null>;
+  assetRevision?: number;
   onPointerDown: (
     e: React.PointerEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>
   ) => void;
@@ -18,6 +19,7 @@ export function StageViewport({
   activeCharacterName,
   stageCanvasRef,
   previewCanvasRef,
+  assetRevision = 0,
   onPointerDown,
   onPointerMove,
   onPointerUp,
@@ -42,6 +44,7 @@ export function StageViewport({
         <canvas
           ref={stageCanvasRef}
           data-testid="stage-canvas"
+          data-asset-revision={assetRevision}
           width={1280}
           height={720}
           onPointerDown={onPointerDown}
@@ -74,6 +77,7 @@ export function StageViewport({
           <canvas
             ref={previewCanvasRef}
             data-testid="preview-canvas"
+            data-asset-revision={assetRevision}
             width={180}
             height={101}
             className="w-[180px] h-[101px] block pixelated"
