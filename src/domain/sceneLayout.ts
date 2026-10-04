@@ -6,6 +6,13 @@ import {
   type Vec2,
 } from './sceneTypes';
 
+/** Spacing (in stage coordinates) of the editor Snap Grid. */
+export const SNAP_GRID_STEP = 64;
+
+export function snapToGrid(value: number, step: number = SNAP_GRID_STEP): number {
+  return Math.round(value / step) * step;
+}
+
 export function clampStageCoords(x: number, y: number): Vec2 {
   return {
     x: Math.max(40, Math.min(1240, Math.round(x))),

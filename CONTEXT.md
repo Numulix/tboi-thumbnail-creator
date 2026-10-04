@@ -48,6 +48,10 @@ _Avoid_: Properties panel, right sidebar, settings panel
 The multi-pass canvas rasterization pipeline executing backdrop, sprite composite, typography, and editor overlay passes onto stage coordinates.
 _Avoid_: Canvas painter, drawing service, render engine
 
+**Snap Grid**:
+An editor overlay (not exported) drawing a 64-unit grid in Stage Coordinates. While on, the Canvas Interaction Controller snaps the anchor of a node being moved to the nearest grid intersection; rotation and scaling are unaffected.
+_Avoid_: Alignment grid, magnet grid
+
 **Asset Store**:
 The caching and preloading module managing sprite atlas sheets, procedural room surfaces, and web fonts.
 _Avoid_: Image loader, asset manager, texture cache

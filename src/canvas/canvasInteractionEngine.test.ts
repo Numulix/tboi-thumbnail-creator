@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  SNAP_GRID_STEP,
   createDefaultSceneState,
   resolveSceneLayout,
+  snapToGrid,
 } from '../domain/sceneDocument';
 import {
   createCanvasInteractionController,
@@ -136,5 +138,134 @@ describe('canvasInteractionEngine', () => {
     const downRes = controller.onPointerDown({ x: 50, y: 50 }, scene);
     expect(downRes.selectedNode).toBeNull();
     expect(downRes.isDragging).toBe(false);
+  });
+
+  describe('snap grid', () => {
+    function withSnapGrid(enabled: boolean) {
+      const scene = createDefaultSceneState();
+      return {
+        ...scene,
+        editorOverlays: { ...scene.editorOverlays, showSnapGrid: enabled },
+      };
+    }
+
+    it('rounds snapToGrid values to the nearest grid step', () => {
+      expect(snapToGrid(0)).toBe(0);
+      expect(snapToGrid(SNAP_GRID_STEP / 2 - 1)).toBe(0);
+      expect(snapToGrid(SNAP_GRID_STEP / 2)).toBe(SNAP_GRID_STEP);
+      expect(snapToGrid(SNAP_GRID_STEP * 2 - 1)).toBe(SNAP_GRID_STEP * 2);
+      expect(snapToGrid(97, 32)).toBe(96);
+    });
+
+    it('snaps a dragged text layer anchor to the grid when Snap Grid is on', () => {
+      const controller = createCanvasInteractionController();
+      const scene = withSnapGrid(true);
+
+      // Headline is at (640, 96); grab it 5px right / 3px below its anchor.
+      controller.onPointerDown({ x: 645, y: 99 }, scene);
+      const moveRes = controller.onPointerMove({ x: 645 + 100, y: 99 + 30 }, scene);
+
+      // Raw anchor target (740, 126) -> nearest grid points (768, 128)
+      expect(moveRes.hasChanges).toBe(true);
+      expect(moveRes.scene.textLayers[0].x).toBe(snapToGrid(740));
+      expect(moveRes.scene.textLayers[0].y).toBe(snapToGrid(126));
+    });
+
+    it('snaps a dragged character anchor to the grid when Snap Grid is on', () => {
+      const controller = createCanvasInteractionController();
+      const scene = withSnapGrid(true);
+
+      // Character is at (280, 505); grab it 45px above its anchor.
+      controller.onPointerDown({ x: 280, y: 460 }, scene);
+      const moveRes = controller.onPointerMove({ x: 280 + 50, y: 460 + 10 }, scene);
+
+      // Raw anchor target (330, 515)
+      expect(moveRes.scene.character.x).toBe(snapToGrid(330));
+      expect(moveRes.scene.character.y).toBe(snapToGrid(515));
+    });
+
+    it('snaps a dragged pedestal to the grid when Snap Grid is on', () => {
+      const controller = createCanvasInteractionController();
+      const scene = withSnapGrid(true);
+      const pedestal = resolveSceneLayout(scene).find((n) => n.kind === 'pedestal')!;
+
+      const downRes = controller.onPointerDown(
+        { x: pedestal.x, y: pedestal.y - 20 },
+        scene
+      );
+      expect(downRes.selectedNode?.kind).toBe('pedestal');
+      const moveRes = controller.onPointerMove(
+        { x: pedestal.x + 13, y: pedestal.y - 20 + 7 },
+        scene
+      );
+
+      const moved = resolveSceneLayout(moveRes.scene).find((n) => n.id === pedestal.id)!;
+      expect(moved.x % SNAP_GRID_STEP).toBe(0);
+      expect(moved.y % SNAP_GRID_STEP).toBe(0);
+    });
+
+    it('keeps the node on the grid across successive moves in the same drag', () => {
+      const controller = createCanvasInteractionController();
+      let scene = withSnapGrid(true);
+
+      controller.onPointerDown({ x: 640, y: 96 }, scene);
+      scene = controller.onPointerMove({ x: 700, y: 96 }, scene).scene;
+      expect(scene.textLayers[0].x).toBe(snapToGrid(700));
+      scene = controller.onPointerMove({ x: 730, y: 96 }, scene).scene;
+      expect(scene.textLayers[0].x).toBe(snapToGrid(730));
+      scene = controller.onPointerMove({ x: 780, y: 96 }, scene).scene;
+      expect(scene.textLayers[0].x).toBe(snapToGrid(780));
+    });
+
+    it('reports no change once a snapped target is clamped at the stage edge', () => {
+      const controller = createCanvasInteractionController();
+      let scene = withSnapGrid(true);
+
+      controller.onPointerDown({ x: 640, y: 96 }, scene);
+      const first = controller.onPointerMove({ x: 1275, y: 96 }, scene);
+      expect(first.hasChanges).toBe(true);
+      expect(first.scene.textLayers[0].x).toBe(1240);
+      scene = first.scene;
+
+      const second = controller.onPointerMove({ x: 1278, y: 96 }, scene);
+      expect(second.hasChanges).toBe(false);
+      expect(second.scene).toBe(scene);
+    });
+
+    it('moves freely at 1px precision when Snap Grid is off', () => {
+      const controller = createCanvasInteractionController();
+      const scene = withSnapGrid(false);
+
+      controller.onPointerDown({ x: 640, y: 96 }, scene);
+      const moveRes = controller.onPointerMove({ x: 670, y: 111 }, scene);
+      expect(moveRes.scene.textLayers[0].x).toBe(670);
+      expect(moveRes.scene.textLayers[0].y).toBe(111);
+    });
+
+    it('follows the Snap Grid toggle mid-drag without the node jumping', () => {
+      const controller = createCanvasInteractionController();
+
+      controller.onPointerDown({ x: 640, y: 96 }, withSnapGrid(false));
+      const free = controller.onPointerMove({ x: 670, y: 111 }, withSnapGrid(false));
+      expect(free.scene.textLayers[0].x).toBe(670);
+      expect(free.scene.textLayers[0].y).toBe(111);
+
+      const snapped = controller.onPointerMove(
+        { x: 700, y: 111 },
+        { ...free.scene, editorOverlays: { ...free.scene.editorOverlays, showSnapGrid: true } }
+      );
+      expect(snapped.scene.textLayers[0].x).toBe(snapToGrid(700));
+      expect(snapped.scene.textLayers[0].y).toBe(snapToGrid(111));
+
+      const freeAgain = controller.onPointerMove(
+        { x: 710, y: 130 },
+        {
+          ...snapped.scene,
+          editorOverlays: { ...snapped.scene.editorOverlays, showSnapGrid: false },
+        }
+      );
+      expect(freeAgain.scene.textLayers[0].x).toBe(snapToGrid(700) + 10);
+      expect(freeAgain.scene.textLayers[0].y).toBe(snapToGrid(111) + 19);
+    });
   });
 });

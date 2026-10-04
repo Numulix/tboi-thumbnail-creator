@@ -5,6 +5,7 @@ import {
 } from '../catalog/gameAssetsCatalog';
 import { getRoomBackdropById } from '../catalog/roomCatalog';
 import {
+  SNAP_GRID_STEP,
   TEXT_FONT_OPTIONS,
   TEXT_GRADIENT_SWATCHES,
   type ResolvedSceneNode,
@@ -390,12 +391,13 @@ export function renderEditorOverlayPass(
   if (scene.editorOverlays.showSnapGrid) {
     ctx.strokeStyle = 'rgba(229, 169, 60, 0.16)';
     ctx.lineWidth = 1;
-    const step = Math.max(16, Math.round(64 * scaleRatio));
-    for (let x = step; x < width; x += step) {
-      ctx.strokeRect(x, 0, 1, height);
+    // Lines sit at integer multiples of the stage-space step so they always
+    // coincide with the snap points, regardless of canvas scale.
+    for (let sx = SNAP_GRID_STEP; sx * scaleRatio < width; sx += SNAP_GRID_STEP) {
+      ctx.strokeRect(Math.round(sx * scaleRatio), 0, 1, height);
     }
-    for (let y = step; y < height; y += step) {
-      ctx.strokeRect(0, y, width, 1);
+    for (let sy = SNAP_GRID_STEP; sy * scaleRatio < height; sy += SNAP_GRID_STEP) {
+      ctx.strokeRect(0, Math.round(sy * scaleRatio), width, 1);
     }
   }
 

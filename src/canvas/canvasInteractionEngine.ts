@@ -1,6 +1,7 @@
 import {
   clampRotationDeg,
   resolveSceneLayout,
+  snapToGrid,
   updateNodeDragOffset,
   updateNodeRotation,
   updateNodeScaleFromGizmo,
@@ -26,6 +27,8 @@ export interface DragSessionState {
   nodeId: string;
   lastCanvasPos: Vec2;
   anchor?: Vec2;
+  /** Pointer position minus node anchor at drag start; used by Snap Grid moves. */
+  grabOffset?: Vec2;
 }
 
 export interface PointerDownResult {
@@ -137,6 +140,29 @@ export function hitTestSpriteNodes(
   };
 }
 
+function getNodeAnchor(scene: SceneState, nodeId: string): Vec2 | null {
+  const node = resolveSceneLayout(scene).find(
+    (n) => n.id === nodeId || (nodeId === 'character' && n.kind === 'character')
+  );
+  return node ? { x: node.x, y: node.y } : null;
+}
+
+function createMoveSession(
+  scene: SceneState,
+  nodeId: string,
+  stagePt: Vec2
+): DragSessionState {
+  const nodeAnchor = getNodeAnchor(scene, nodeId);
+  return {
+    mode: 'move',
+    nodeId,
+    lastCanvasPos: stagePt,
+    grabOffset: nodeAnchor
+      ? { x: stagePt.x - nodeAnchor.x, y: stagePt.y - nodeAnchor.y }
+      : undefined,
+  };
+}
+
 export function createCanvasInteractionController(): CanvasInteractionController {
   let activeDrag: DragSessionState | null = null;
 
@@ -209,11 +235,7 @@ export function createCanvasInteractionController(): CanvasInteractionController
       // 2. Check if pointer hits any Text Layer node (topmost first)
       const hitText = hitTestTextLayers(scene, stagePt);
       if (hitText) {
-        activeDrag = {
-          mode: 'move',
-          nodeId: hitText.id,
-          lastCanvasPos: stagePt,
-        };
+        activeDrag = createMoveSession(scene, hitText.id, stagePt);
         return {
           scene,
           selectedNode: { id: hitText.id, kind: 'text' },
@@ -225,11 +247,7 @@ export function createCanvasInteractionController(): CanvasInteractionController
       // 3. Check if pointer hits Character or Pedestal sprite nodes
       const hitSprite = hitTestSpriteNodes(scene, stagePt);
       if (hitSprite) {
-        activeDrag = {
-          mode: 'move',
-          nodeId: hitSprite.id,
-          lastCanvasPos: stagePt,
-        };
+        activeDrag = createMoveSession(scene, hitSprite.id, stagePt);
         return {
           scene,
           selectedNode: hitSprite,
@@ -292,6 +310,31 @@ export function createCanvasInteractionController(): CanvasInteractionController
           scaleRatio
         );
         return { scene: nextScene, hasChanges: true, cursor: 'nwse-resize' };
+      }
+
+      // Snap Grid move: snap the node anchor to the nearest grid intersection
+      if (scene.editorOverlays.showSnapGrid && activeDrag.grabOffset) {
+        const current = getNodeAnchor(scene, activeDrag.nodeId);
+        if (current) {
+          const dx =
+            snapToGrid(stagePt.x - activeDrag.grabOffset.x) - current.x;
+          const dy =
+            snapToGrid(stagePt.y - activeDrag.grabOffset.y) - current.y;
+          activeDrag = { ...activeDrag, lastCanvasPos: stagePt };
+          if (dx === 0 && dy === 0) {
+            return { scene, hasChanges: false };
+          }
+          const snappedScene = updateNodeDragOffset(scene, activeDrag.nodeId, {
+            x: dx,
+            y: dy,
+          });
+          const next = getNodeAnchor(snappedScene, activeDrag.nodeId);
+          if (next && next.x === current.x && next.y === current.y) {
+            // Target was clamped to the stage bounds; node is already there.
+            return { scene, hasChanges: false };
+          }
+          return { scene: snappedScene, hasChanges: true, cursor: 'move' };
+        }
       }
 
       // Move translation
