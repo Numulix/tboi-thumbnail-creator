@@ -393,6 +393,8 @@ export function App(): React.ReactElement {
           stageCanvasRef={stageCanvasRef}
           previewCanvasRef={previewCanvasRef}
           assetRevision={assetRevision}
+          selectedNodeId={selectedNodeId}
+          characterPos={{ x: scene.character.x, y: scene.character.y }}
           onPointerDown={handleCanvasPointerDown}
           onPointerMove={handleCanvasPointerMove}
           onPointerUp={handleCanvasPointerUp}
