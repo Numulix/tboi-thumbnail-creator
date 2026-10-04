@@ -39,9 +39,9 @@ test.describe('Domain 4: Multi-Layer Typography & Camera Framing', () => {
     await expect(teamMeatFont).toHaveAttribute('aria-pressed', 'true');
     await expect(upheavalFont).toHaveAttribute('aria-pressed', 'false');
 
-    // Swatch switching
+    // Swatch switching (gold-orange to brimstone-red)
     const goldSwatch = page.locator('[data-testid="swatch-gold-orange"]');
-    const redBrimstoneSwatch = page.locator('[data-testid="swatch-red-brimstone"]');
+    const redBrimstoneSwatch = page.locator('[data-testid="swatch-brimstone-red"]');
 
     await expect(goldSwatch).toHaveAttribute('aria-pressed', 'true');
     await redBrimstoneSwatch.click();
@@ -68,16 +68,16 @@ test.describe('Domain 4: Multi-Layer Typography & Camera Framing', () => {
     const zoomSlider = page.getByLabel('Room Zoom');
     const resetCameraBtn = page.getByRole('button', { name: /Reset Camera & Filters/i });
 
-    // Initial zoom is 1.0 (100%)
-    await expect(page.getByText('100%')).toBeVisible();
+    // Initial zoom is 2.1 (from DEFAULT_CAMERA_FRAMING)
+    await expect(zoomSlider).toHaveValue('2.1');
 
-    // Adjust zoom to 2.0
-    await zoomSlider.fill('2');
-    await expect(page.getByText('200%')).toBeVisible();
+    // Adjust zoom to 2.8
+    await zoomSlider.fill('2.8');
+    await expect(zoomSlider).toHaveValue('2.8');
 
     // Reset camera framing
+    await resetCameraBtn.scrollIntoViewIfNeeded();
     await resetCameraBtn.click();
-    await expect(page.getByText('100%')).toBeVisible();
-    await expect(zoomSlider).toHaveValue('1');
+    await expect(zoomSlider).toHaveValue('2.1');
   });
 });
