@@ -35,9 +35,6 @@ export function StageViewport({
         <span className="bg-[#0D0B0E] px-2.5 py-1 rounded border border-[#2A252D]">
           1280 × 720 px (16:9)
         </span>
-        <span className="bg-[#0D0B0E] px-2.5 py-1 rounded border border-[#2A252D]">
-          imageSmoothingEnabled = false
-        </span>
       </div>
 
       {/* 16:9 Interactive Master Artboard */}
