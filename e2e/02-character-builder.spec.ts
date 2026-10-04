@@ -15,7 +15,7 @@ test.describe('Domain 2: Character Builder & Eden Hair', () => {
     await expect(page.locator('[data-testid="workspace-status-badge"]')).toContainText('Isaac Run');
 
     // Switch to Tainted roster
-    const taintedTab = page.getByRole('button', { name: /Tainted/i });
+    const taintedTab = page.getByRole('button', { name: 'Tainted (17)', exact: true });
     await taintedTab.click();
     await expect(taintedTab).toHaveAttribute('aria-pressed', 'true');
 
@@ -24,13 +24,13 @@ test.describe('Domain 2: Character Builder & Eden Hair', () => {
     await taintedSamsonBtn.click();
     await expect(preview).toContainText('Tainted Samson');
     await expect(preview).toContainText('tainted');
-    await expect(page.locator('[data-testid="workspace-status-badge"]')).toContainText('T. Samson Run');
+    await expect(page.locator('[data-testid="workspace-status-badge"]')).toContainText('Tainted Samson Run');
   });
 
   test('Scenario 2.2: Character Pose Switching', async ({ studioPage: page }) => {
     const preview = page.locator('[data-testid="active-character-preview"]');
     const poses = [
-      { label: '★ Happy Pickup', expectedText: 'Happy Pickup' },
+      { label: 'Happy Pickup', expectedText: 'Happy Pickup' },
       { label: 'Thumbs Up', expectedText: 'Thumbs Up' },
       { label: 'Shocked', expectedText: 'Shocked' },
       { label: 'Agony', expectedText: 'Agony' },
@@ -75,16 +75,16 @@ test.describe('Domain 2: Character Builder & Eden Hair', () => {
     const scaleSlider = page.getByLabel('Character Scale');
     const resetBtn = page.getByRole('button', { name: 'Reset Scale' });
 
-    // Initial scale is 1.00x
-    await expect(preview).toContainText('Scale: 1.00x');
+    // Initial scale is 1.85x
+    await expect(preview).toContainText('Scale: 1.85x');
 
-    // Adjust scale to 1.8x
-    await scaleSlider.fill('1.8');
-    await expect(preview).toContainText('Scale: 1.80x');
+    // Adjust scale to 1.2x
+    await scaleSlider.fill('1.2');
+    await expect(preview).toContainText('Scale: 1.20x');
 
     // Click Reset
     await resetBtn.click();
-    await expect(preview).toContainText('Scale: 1.00x');
-    await expect(scaleSlider).toHaveValue('1');
+    await expect(preview).toContainText('Scale: 1.85x');
+    await expect(scaleSlider).toHaveValue('1.85');
   });
 });

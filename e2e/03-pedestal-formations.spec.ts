@@ -11,7 +11,7 @@ test.describe('Domain 3: Pedestal Formations & Collectibles', () => {
   test('Scenario 3.1: Formation Preset Application', async ({ studioPage: page }) => {
     const arcPreset = page.locator('[data-testid="formation-preset-arc"]');
     const rowPreset = page.locator('[data-testid="formation-preset-row"]');
-    const gridPreset = page.locator('[data-testid="formation-preset-grid"]');
+    const gridPreset = page.locator('[data-testid="formation-preset-grid-2x2"]');
     const flankPreset = page.locator('[data-testid="formation-preset-flank"]');
 
     // Default preset is Arc
@@ -51,15 +51,13 @@ test.describe('Domain 3: Pedestal Formations & Collectibles', () => {
     await expect(countDisplay).toContainText('6 Altars');
     await expect(page.locator('[data-testid^="pedestal-slot-card-"]')).toHaveCount(6);
 
-    // Decrement until minimum 1 Altar
-    await decrementBtn.click();
-    await decrementBtn.click();
-    await decrementBtn.click();
-    await decrementBtn.click();
-    await decrementBtn.click();
-    await expect(countDisplay).toContainText('1 Altar');
-    await expect(page.locator('[data-testid^="pedestal-slot-card-"]')).toHaveCount(1);
+    // Decrement 6 times to reach 0 Altars
+    for (let i = 0; i < 6; i++) {
+      await decrementBtn.click();
+    }
+    await expect(countDisplay).toContainText('0 Altars');
     await expect(decrementBtn).toBeDisabled();
+    await expect(page.locator('[data-testid="pedestal-empty-state"]')).toBeVisible();
   });
 
   test('Scenario 3.3: Collectible Search & Assignment', async ({ studioPage: page }) => {
