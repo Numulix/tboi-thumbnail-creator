@@ -8,7 +8,10 @@ export interface StudioFixtures {
 export const test = base.extend<StudioFixtures>({
   page: async ({ page }, use) => {
     await page.addInitScript(() => {
-      window.localStorage.clear();
+      if (!window.sessionStorage.getItem('__studio_initialized')) {
+        window.localStorage.clear();
+        window.sessionStorage.setItem('__studio_initialized', 'true');
+      }
     });
     await use(page);
   },
